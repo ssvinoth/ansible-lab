@@ -19,4 +19,4 @@
     - name: Generate Compliance Report
       include_role:
         name: wildfly_generate_compliance_report
-        vars_from: passwd.yml
+        vars_from: email_vars.yml

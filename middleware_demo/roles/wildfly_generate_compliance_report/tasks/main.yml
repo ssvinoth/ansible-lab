@@ -69,7 +69,7 @@
         port: 587
         username: "{{ gmail_account }}"
         password: "{{ gmail_account_password }}"
-        to: Anthony Lin <anthony.lin.test@gmail.com>
+        to: "{{ to_gmail_account }}"
         subject: "Ansible Report for JBoss Compliance"
         body: "See attached for the Compliance Report"
         attach:
