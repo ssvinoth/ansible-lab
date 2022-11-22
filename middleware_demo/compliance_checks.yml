@@ -1,7 +1,6 @@
 ---
 - name: Check Wildfly Compliance
   hosts: wildfly
-  remote_user: ec2-user
   become: yes
   gather_facts: true
   vars:

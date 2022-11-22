@@ -1,6 +1,5 @@
 ---
 - name: Wildfy Demo
-  remote_user: ec2-user
   become: yes
   hosts: wildfly
   vars:
