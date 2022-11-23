@@ -75,20 +75,21 @@
     #     attach:
     #      - reports/Consolidated_Servers_Report.html
     #   run_once: yes
-    - name: Debug time
-      debug:
-        var: ansible_date_time
-      run_once: yes
+    # - name: Debug time
+    #   debug:
+    #     var: ansible_date_time
+        
+    #   run_once: yes
     
-    - name: Get date time for the report
-      shell: "date +%Y-%m-%d_%H-%M-%S"
-      register: tstamp
-      run_once: yes
+    # - name: Get date time for the report
+    #   shell: "date +%Y-%m-%d_%H-%M-%S"
+    #   register: tstamp
+    #   run_once: yes
 
     - name: Copy report file to report server
       ansible.builtin.copy:
         src: reports/Consolidated_Servers_Report.html
-        dest: "/opt/ansible/reports/jboss_compliance/JBoss_Consolidated_Servers_Report_{{ tstamp }}.html"
+        dest: "/opt/ansible/reports/jboss_compliance/JBoss_Consolidated_Servers_Report_{{ ansible_date_time.date }}_{{ ansible_date_time.time |  replace(':','-') }}.html"
       run_once: yes
   delegate_to: localhost
   become: false
