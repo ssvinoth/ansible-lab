@@ -17,3 +17,4 @@
       set_stats:
         data:
           vm_name: "{{ inventory_hostname }}"
+        per_host: true
