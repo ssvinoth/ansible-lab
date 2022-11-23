@@ -19,4 +19,4 @@
         data:
           vm_name: "{{ inventory_hostname }}"
         per_host: true
-      when: 'created' in vm_snapshot_result.stdout 
+      when: "'created' in vm_snapshot_result.stdout"
