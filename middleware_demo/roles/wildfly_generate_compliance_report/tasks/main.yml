@@ -85,12 +85,24 @@
     #   shell: "date +%Y-%m-%d_%H-%M-%S"
     #   register: tstamp
     #   run_once: yes
+    - name: Generate Report Date Time
+      set_fact:
+        datetime: "{{ ansible_date_time.date }}_{{ ansible_date_time.time |  replace(':','-') }}" 
+      delegate_to: localhost
+      delegate_facts: true
+      run_once: true
 
     - name: Copy report file to report server
       ansible.builtin.copy:
         src: reports/Consolidated_Servers_Report.html
-        dest: "/opt/ansible/reports/jboss_compliance/JBoss_Consolidated_Servers_Report_{{ ansible_date_time.date }}_{{ ansible_date_time.time |  replace(':','-') }}.html"
+        dest: "/opt/ansible/reports/jboss_compliance/JBoss_Consolidated_Servers_Report_{{ hostvars['localhost'].datetime }}.html"
       run_once: yes
+
+    - name: Print Report location
+      debug:
+        msg: "http://{{ report_server }}/jboss_compliance/JBoss_Consolidated_Servers_Report_{{ hostvars['localhost'].datetime }}.html"
+      run_once: yes
+
   delegate_to: localhost
   become: false
 
