@@ -9,3 +9,6 @@
       register: vm_snapshot_result
       delegate_to: vm_host
 
+    - name: VM snapshot result
+      debug:
+        var: vm_snapshot_result
