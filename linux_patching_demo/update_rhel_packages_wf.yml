@@ -4,8 +4,6 @@
   become: yes
   gather_facts: yes
   tasks:
-    - debug:
-        var: snapshot_ok_vms
 
     - name: Update Packages
       yum:
@@ -13,4 +11,8 @@
         state: latest
         exclude: "{{ exclude_pkgs }}"
       when: inventory_hostname in snapshot_ok_vms
-     
+
+    - name: Print Skipped VMs due to snapshot failure
+      debug:
+        msg: "Snapshot failed for {{ inventory_hostname }} hence it is not updated"
+      when: inventory_hostname not in snapshot_ok_vms
