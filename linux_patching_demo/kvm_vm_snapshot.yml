@@ -2,7 +2,7 @@
 - name: Take KVM VM Snampshot
   hosts: "{{ vm_update_group }}"
   become: yes
-  gather_facts: yes
+  gather_facts: no
   tasks:
     - name: Take VM Snapshot
       shell: "virsh snapshot-create-as --domain {{ kvm_vm_name }} --name {{ snapshot_name }}"
