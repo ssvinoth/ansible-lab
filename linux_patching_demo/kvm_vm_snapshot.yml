@@ -1,0 +1,11 @@
+---
+- name: Take KVM VM Snampshot
+  hosts: "{{ vm_update_group }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Take VM Snapshot
+      shell: "virsh snapshot-create-as --domain {{ inventory_hostname }} --name {{ snapshot_name }}"
+      register: vm_snapshot_result
+      delegate_to: vm_host
+
