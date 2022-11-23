@@ -1,0 +1,11 @@
+---
+- name: Update Packages
+  hosts: "{{ vm_update_group }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Update Packages
+      yum:
+        name: "{{ required_packages }}"
+        state: latest
+     
