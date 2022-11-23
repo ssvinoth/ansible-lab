@@ -8,6 +8,7 @@
       shell: "virsh snapshot-create-as --domain {{ kvm_vm_name }} --name {{ snapshot_name }}"
       register: vm_snapshot_result
       delegate_to: vm_host
+      ignore_errors: true
 
     - name: VM snapshot result
       debug:
@@ -18,3 +19,4 @@
         data:
           vm_name: "{{ inventory_hostname }}"
         per_host: true
+      when: 'created' in vm_snapshot_result.stdout 
