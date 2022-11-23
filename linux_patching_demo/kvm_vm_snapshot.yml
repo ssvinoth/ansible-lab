@@ -12,3 +12,8 @@
     - name: VM snapshot result
       debug:
         var: vm_snapshot_result
+
+    - name: Save information of hostname for subsequent workflow
+      set_stats:
+        data:
+          vm_name: "{{ inventory_hostname }}"
