@@ -78,7 +78,7 @@
     - name: Copy report file to report server
       ansible.builtin.copy:
         src: reports/Consolidated_Servers_Report.html
-        dest: /opt/ansible/reports/jboss_complaince/Consolidated_Servers_Report.html
+        dest: /opt/ansible/reports/jboss_compliance/Consolidated_Servers_Report.html
       run_once: yes
   delegate_to: localhost
   become: false
