@@ -5,7 +5,7 @@
   gather_facts: yes
   tasks:
     - name: Take VM Snapshot
-      shell: "virsh snapshot-create-as --domain {{ inventory_hostname }} --name {{ snapshot_name }}"
+      shell: "virsh snapshot-create-as --domain {{ kvm_vm_name }} --name {{ snapshot_name }}"
       register: vm_snapshot_result
       delegate_to: vm_host
 
