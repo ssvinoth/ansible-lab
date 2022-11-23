@@ -63,17 +63,23 @@
         state: absent
       run_once: yes
 
-    - name: Send Email with Report
-      mail:
-        host: smtp.gmail.com
-        port: 587
-        username: "{{ gmail_account }}"
-        password: "{{ gmail_account_password }}"
-        to: "{{ to_gmail_account }}"
-        subject: "Ansible Report for JBoss Compliance"
-        body: "See attached for the Compliance Report"
-        attach:
-         - reports/Consolidated_Servers_Report.html
+    # - name: Send Email with Report
+    #   mail:
+    #     host: smtp.gmail.com
+    #     port: 587
+    #     username: "{{ gmail_account }}"
+    #     password: "{{ gmail_account_password }}"
+    #     to: "{{ to_gmail_account }}"
+    #     subject: "Ansible Report for JBoss Compliance"
+    #     body: "See attached for the Compliance Report"
+    #     attach:
+    #      - reports/Consolidated_Servers_Report.html
+    #   run_once: yes
+    - name: Copy report file to report server
+      ansible.builtin.copy:
+        src: reports/Consolidated_Servers_Report.html
+        dest: /opt/ansible/reports/jboss_complaince/Consolidated_Servers_Report.html
       run_once: yes
   delegate_to: localhost
   become: false
+
