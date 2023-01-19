@@ -22,14 +22,15 @@ vm_network: 'VM Network'
 vm_ram: 4096
 vm_template: 'windows'
 win_drive: 'E'
-win_update_blacklist:
-  - Windows Malicious Software Removal Tool for Windows
-  - \d{4}-\d{2} Cumulative Update for Windows Server 2016
+# win_update_blacklist:
+#   - Windows Malicious Software Removal Tool for Windows
+#   - \d{4}-\d{2} Cumulative Update for Windows Server 2016
 # win_update_category:
 #   - SecurityUpdates
 #   - CriticalUpdates
 #   - UpdateRollups
+win_update_blacklist: []
 win_update_category: '*'
 win_update_whitelist:
-  - KB4056892
-  - KB4073117
+  - KB2267602
+  - KB890830
