@@ -1,0 +1,15 @@
+---
+- name: Check Windows service
+  hosts: {{ win_vm }}
+  gather_facts: false
+
+  tasks:
+
+    - name: Fetch windows service info
+      ansible.windows.win_service_info:
+        name: Spooler
+      register: service_info
+
+    - name: Print the service info 
+      debug:
+        var: service_info
