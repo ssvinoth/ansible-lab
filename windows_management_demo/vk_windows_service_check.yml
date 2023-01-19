@@ -7,7 +7,7 @@
 
     - name: Fetch windows service info
       ansible.windows.win_service_info:
-        name: "{{ win_service_name | default("Spooler")}}"
+        name: "{{ win_service_name }}"
       register: service_info
 
     - name: Print the service info 
