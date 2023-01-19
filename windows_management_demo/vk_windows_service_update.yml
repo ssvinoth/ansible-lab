@@ -1,0 +1,20 @@
+---
+- name: Check Windows service
+  hosts: "{{ win_vm }}"
+  gather_facts: false
+
+  tasks:
+
+    - name: windows service update
+      ansible.windows.win_service:
+        name: "{{ win_service_name }}"
+        state: "{{ win_service_state }}"
+    
+    - name: Fetch {{ win_service_name }} service info 
+      ansible.windows.win_service_info:
+        name: "{{ win_service_name }}"
+      register: service_info    
+
+    - name: Print {{ win_service_name }} service info 
+      debug:
+        var: service_info
