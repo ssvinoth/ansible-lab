@@ -1,92 +1,102 @@
 ---
-- name: "Search and return list of found updates (if any)"
-  win_updates:
-    category_names: "{{ win_update_category }}"
-    state: searched
-  register: list_of_updates
+- name: Generate update Report
+  block:
+    - name: "Search and return list of found updates (if any)"
+      win_updates:
+        category_names: "{{ win_update_category }}"
+        state: searched
+      register: list_of_updates
 
-- name: Clean Up Reports Directory if it exists
-  file:
-    path: reports
-    state: absent
-  delegate_to: localhost
-  run_once: yes
+    - name: Clean Up Reports Directory if it exists
+      file:
+        path: reports
+        state: absent
+      delegate_to: localhost
+      run_once: yes
 
-- name: Create Reports Directory
-  file:
-    path: reports
-    state: directory
-    mode: 0755
-  delegate_to: localhost
-  run_once: yes
+    - name: Create Reports Directory
+      file:
+        path: reports
+        state: directory
+        mode: 0755
+      delegate_to: localhost
+      run_once: yes
 
-- name: Template Rendering
-  template:
-    src: individual_vm_report.html.j2
-    dest: "reports/z_{{ inventory_hostname }}_interim_report.html"
-  delegate_to: localhost
+    - name: Template Rendering
+      template:
+        src: individual_vm_report.html.j2
+        dest: "reports/z_{{ inventory_hostname }}_interim_report.html"
+      delegate_to: localhost
 
-- name: Create Interim Report
-  template:
-    src: consolidated_vms_report.html.j2
-    dest: "reports/Consolidated_VMs_Report.html"
-  delegate_to: localhost
-  run_once: yes
+    - name: Create Interim Report
+      template:
+        src: consolidated_vms_report.html.j2
+        dest: "reports/Consolidated_VMs_Report.html"
+      delegate_to: localhost
+      run_once: yes
 
-- name: Consolidate Interim Report
-  assemble:
-    src: reports/
-    dest: reports/Consolidated_VMs_Report.html
-  delegate_to: localhost
-  run_once: yes
+    - name: Consolidate Interim Report
+      assemble:
+        src: reports/
+        dest: reports/Consolidated_VMs_Report.html
+      delegate_to: localhost
+      run_once: yes
 
-- name: Generate Remaining Portion of Report
-  template:
-    src: consolidated_vms_report_last_block.html.j2
-    dest: "reports/consolidated_vms_report_last_block.html"
-  delegate_to: localhost
-  run_once: yes
+    - name: Generate Remaining Portion of Report
+      template:
+        src: consolidated_vms_report_last_block.html.j2
+        dest: "reports/consolidated_vms_report_last_block.html"
+      delegate_to: localhost
+      run_once: yes
 
-- name: Get the List of Interim Reports
-  find:
-    paths: reports/
-    patterns: '*_interim_report.html'
-  register: interim_reports_to_delete
-  delegate_to: localhost
-  run_once: yes
+    - name: Get the List of Interim Reports
+      find:
+        paths: reports/
+        patterns: '*_interim_report.html'
+      register: interim_reports_to_delete
+      delegate_to: localhost
+      run_once: yes
 
-- name: Clean Up Interim Reports
-  file:
-    path: "{{ item.path }}"
-    state: absent
-  loop: "{{ interim_reports_to_delete.files }}"
-  delegate_to: localhost
-  run_once: yes
+    - name: Clean Up Interim Reports
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ interim_reports_to_delete.files }}"
+      delegate_to: localhost
+      run_once: yes
 
-- name: Consolidate Final Report
-  assemble:
-    src: reports/
-    dest: reports/Consolidated_VMs_Report.html
-  delegate_to: localhost
-  run_once: yes
+    - name: Consolidate Final Report
+      assemble:
+        src: reports/
+        dest: reports/Consolidated_VMs_Report.html
+      delegate_to: localhost
+      run_once: yes
 
-- name: Final Clean Up
-  file:
-    path: reports/consolidated_vms_report_last_block.html
-    state: absent
-  delegate_to: localhost
-  run_once: yes
+    - name: Final Clean Up
+      file:
+        path: reports/consolidated_vms_report_last_block.html
+        state: absent
+      delegate_to: localhost
+      run_once: yes
+    # VK Updates
+    - name: Generate Report Date Time
+      set_fact:
+        datetime: "{{ ansible_date_time.date }}_{{ ansible_date_time.time |  replace(':','-') }}" 
+      delegate_to: localhost
+      delegate_facts: true
+      run_once: true
 
-- name: Send Email with Report
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: "{{ gmail_account }}"
-    password: "{{ gmail_account_password }}"
-    to: Anthony Lin <anthony.lin.test@gmail.com>
-    subject: "Ansible Report"
-    body: "The list of required Windows Update for the Windows VMs can be found in the attached file"
-    attach:
-     - reports/Consolidated_VMs_Report.html
+    # TODO: This needs to be updated to copy to common report server. Currently, the same exec node is considered as report_server. Hence it is run on localhost.
+    - name: Copy report file to report server
+      ansible.builtin.copy:
+        src: reports/Consolidated_VMs_Report.html
+        dest: "/opt/ansible/reports/os/Win_Servers_Update_Report_{{ hostvars['localhost'].datetime }}.html"
+      run_once: true
+
+    - name: Print Report location
+      debug:
+        msg: "http://{{ report_server_port }}/jboss_compliance/Win_Servers_Update_Report_{{ hostvars['localhost'].datetime }}.html"
+      run_once: true
+
   delegate_to: localhost
-  run_once: yes
+  become: false
