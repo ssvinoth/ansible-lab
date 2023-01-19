@@ -78,7 +78,13 @@
         state: absent
       delegate_to: localhost
       run_once: yes
+
     # VK Updates
+    - name: Collect facts on localhost
+      ansible.builtin.setup:
+        gather_subset:
+          - date_time
+
     - name: Generate Report Date Time
       set_fact:
         datetime: "{{ ansible_date_time.date }}_{{ ansible_date_time.time |  replace(':','-') }}" 
