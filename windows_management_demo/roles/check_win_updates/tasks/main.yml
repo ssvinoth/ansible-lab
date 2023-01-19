@@ -1,12 +1,12 @@
 ---
+- name: "Search and return list of found updates (if any)"
+  win_updates:
+    category_names: "{{ win_update_category }}"
+    state: searched
+  register: list_of_updates
+
 - name: Generate update Report
   block:
-    - name: "Search and return list of found updates (if any)"
-      win_updates:
-        category_names: "{{ win_update_category }}"
-        state: searched
-      register: list_of_updates
-
     - name: Clean Up Reports Directory if it exists
       file:
         path: reports
