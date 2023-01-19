@@ -1,6 +1,6 @@
 ---
 - name: Check Windows service
-  hosts: {{ win_vm }}
+  hosts: "{{ win_vm }}"
   gather_facts: false
 
   tasks:
