@@ -4,8 +4,7 @@
   gather_facts: no
   tasks:
   - name: Get the list of services
-    ansible.windows.win_service:
-      name: "*"
+    ansible.windows.win_service_info:
     register: services
 
   - name: Filter the list of running services
