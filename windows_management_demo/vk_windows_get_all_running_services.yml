@@ -1,0 +1,17 @@
+---
+- name: Get all services running on a Windows machine
+  hosts: "{{ win_vm }}"
+  gather_facts: no
+  tasks:
+  - name: Get the list of services
+    ansible.windows.win_service:
+      name: "*"
+    register: services
+
+  - name: Filter the list of running services
+    set_fact:
+      running_services: "{{ services.services|selectattr('state', 'equalto', 'running')|map(attribute='name')|list }}"
+
+  - name: Display the list of services
+    debug:
+      var: running_services
