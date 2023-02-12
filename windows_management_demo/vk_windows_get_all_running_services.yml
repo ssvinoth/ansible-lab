@@ -9,7 +9,7 @@
 
   - name: Filter the list of running services
     set_fact:
-      running_services: "{{ services.services|selectattr('state', 'equalto', 'running')|map(attribute='name')|list }}"
+      running_services: "{{ services.services|selectattr('state', 'equalto', 'started')|map(attribute='name')|list }}"
 
   - name: Display the list of services
     debug:
