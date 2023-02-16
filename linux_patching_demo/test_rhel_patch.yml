@@ -17,8 +17,7 @@
     #   ansible.builtin.debug:
     #     var: yum_upd_result
     - name: Get running services
-      service_facts:
-        name: "*"
+      ansible.builtin.service_facts:
       register: result
 
     - name: Display running services
