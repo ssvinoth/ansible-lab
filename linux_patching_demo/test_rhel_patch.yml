@@ -6,9 +6,10 @@
   tasks:
     - name: Update Packages
       yum:
-        name: "*"
-        state: latest
-      check_mode: true
+        list: updates
+        # name: "*"
+        # state: latest
+      #check_mode: true
       register: yum_upd_result
 
     - name: debug yum_upd_result
