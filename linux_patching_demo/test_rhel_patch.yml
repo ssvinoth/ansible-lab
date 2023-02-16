@@ -4,15 +4,23 @@
   become: yes
   gather_facts: yes
   tasks:
-    - name: Update Packages
-      ansible.builtin.shell: 'yum update --assumeno'
-      # yum:
-      #   list: updates
-        # name: "*"
-        # state: latest
-      #check_mode: true
-      register: yum_upd_result
+    # - name: Update Packages
+    #   ansible.builtin.shell: 'yum update --assumeno'
+    #   # yum:
+    #   #   list: updates
+    #     # name: "*"
+    #     # state: latest
+    #   #check_mode: true
+    #   register: yum_upd_result
 
-    - name: debug yum_upd_result
-      ansible.builtin.debug:
-        var: yum_upd_result
+    # - name: debug yum_upd_result
+    #   ansible.builtin.debug:
+    #     var: yum_upd_result
+    - name: Get running services
+      service_facts:
+        name: "*"
+      register: result
+
+    - name: Display running services
+      debug:
+        var: result.ansible_facts.services
