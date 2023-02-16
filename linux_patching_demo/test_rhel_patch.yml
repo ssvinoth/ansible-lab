@@ -1,0 +1,16 @@
+---
+- name: Update Packages
+  hosts: "{{ vm_name }}"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Update Packages
+      yum:
+        name: "*"
+        state: latest
+      check_mode: true
+      register: yum_upd_result
+
+    - name: debug yum_upd_result
+      ansible.builtin.debug:
+        var: yum_upd_result
