@@ -5,8 +5,9 @@
   gather_facts: yes
   tasks:
     - name: Update Packages
-      yum:
-        list: updates
+      ansible.builtin.shell: 'yum update --assumeno'
+      # yum:
+      #   list: updates
         # name: "*"
         # state: latest
       #check_mode: true
