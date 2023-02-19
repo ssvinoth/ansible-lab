@@ -4,9 +4,26 @@
   gather_facts: false
   become: true
 
+  # >> 2gb in /var
+  # 500Mb in /usr
+  # 1Gb in /
+  # 250Mb /boot
+
   vars:
     some_var: 'test variable'
-
+    fs_check_val:
+      - mount: '/'
+        free_size_g: 1
+        free_size_b: 1073741824
+      - mount: '/usr'
+        free_size_g: 0.5
+        free_size_b: 524288000
+      - mount: '/var'
+        free_size_g: 2
+        free_size_b: 2147483648      
+      - mount: '/boot'
+        free_size_g: 0.25
+        free_size_b: 262144000   
   tasks:
     - name: 'Precheck | Get the precheck facts'
       ansible.builtin.setup:
@@ -16,3 +33,17 @@
       ansible.builtin.debug:
         var: precheck_facts_result
 
+    - name: debug precheck_facts_result
+      ansible.builtin.debug:
+        var: precheck_facts_result.ansible_facts.mounts
+
+    - name: debug fs_check_val details
+      ansible.builtin.debug:
+        var: precheck_facts_result.ansible_facts.mounts[item.mount]
+      loop: fs_check_val
+
+    - name: debug fs_check size details
+      ansible.builtin.debug:
+        msg: " {{ precheck_facts_result.ansible_facts.mounts[item.mount] }} has enough free space"
+      when: precheck_facts_result.ansible_facts.mounts[item.mount].size_available > item.free_size_b
+      loop: fs_check_val
