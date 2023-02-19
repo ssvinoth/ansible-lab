@@ -14,8 +14,8 @@
     fs_check_val:
       - mount: '/'
         free_size_g: 1
-        #free_size_b: 1073741824
-        free_size_b: 5358223360
+        free_size_b: 1073741824
+        #free_size_b: 5358223360
       - mount: '/usr'
         free_size_g: 0.5
         free_size_b: 524288000
@@ -24,7 +24,9 @@
         free_size_b: 2147483648      
       - mount: '/boot'
         free_size_g: 0.25
-        free_size_b: 262144000   
+        free_size_b: 262144000
+    vol_vol_fail_msgs: []
+    vg_vol_fail_msg: []
   tasks:
     - name: 'Precheck | Get the precheck facts'
       ansible.builtin.setup:
@@ -52,16 +54,56 @@
         size_avail: "{{ ansible_facts | json_query(size_avail_json_query)  }}"
       loop: "{{ fs_check_val }}"
 
-    - name: 'Precheck : BLOCK : Check if we have enough free space in the required root volumes'
+    # Check if we have enough space using when - gets all fs with not enough space
+    - name: 'Precheck |  BLOCK : Check if we have enough free space in the required root volumes'
       block:
-      # Check if we have enough space
-        - name: 'Precheck : Check if enough free space on the required root volumes'
+        - name: 'FS_CHECK | Check if enough free space on the required root volumes'
+          ansible.builtin.set_fact:
+            vol_fail_msgs: "{{ vol_fail_msgs + vol_fail_msg }} "
+          when: size_avail | int < item.free_size_b
+          vars:
+            size_avail_json_query: "mounts[?mount==`{{ item.mount }}`].size_available | [0]"
+            size_avail: "{{ ansible_facts | json_query(size_avail_json_query)  }}"
+            vol_fail_msg: "{{ item.mount }} does not have enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
+            success_msg: "{{ item.mount }} has enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
+          loop: "{{ fs_check_val }}"
+
+        # - name: 'FS_CHECK | Check if any failures'
+        #   ansible.builtin.fail:
+        #     msg: "{{ vol_fail_msgs | join('\n') }}"
+        #   when: vol_fail_msgs | length > 0 
+
+        
+
+      rescue:
+        - name: 'FS_CHECK |  Set failure message'
+          ansible.builtin.set_fact:
+            pre_check_status: false
+            pre_check_fail: true
+            pre_check_fail_stage: 'FS_CHECK'
+            pre_check_vol_fail_msg: "{{ ansible_failed_result }}" 
+
+
+
+
+
+    # Check if we have enough space using assert
+    - name: 'Precheck |  BLOCK : Check if we have enough free space in the required root volumes'
+      block:
+        - name: 'Precheck | FS_CHECK | Check if enough free space on the required root volumes'
           ansible.builtin.assert:
             that:
               - size_avail | int > item.free_size_b
-            fail_msg: "{{ item.mount }} does not have enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
+            vol_fail_msg: "{{ item.mount }} does not have enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
             success_msg: "{{ item.mount }} has enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
           vars:
             size_avail_json_query: "mounts[?mount==`{{ item.mount }}`].size_available | [0]"
             size_avail: "{{ ansible_facts | json_query(size_avail_json_query) }}"
-          loop: "{{ fs_check_val }}"       
+          loop: "{{ fs_check_val }}"
+      rescue:
+        - name: 'Precheck | FS_CHECK |  Set failure message'
+          ansible.builtin.set_fact:
+            pre_check_status: false
+            pre_check_fail: true
+            pre_check_fail_stage: 'FS_CHECK'
+            pre_check_vol_fail_msg: "{{ ansible_failed_result }}" 
