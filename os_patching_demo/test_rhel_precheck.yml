@@ -58,7 +58,7 @@
     # Check if we have enough space using when - gets all fs with not enough space
     - name: 'Precheck |  BLOCK : Check if we have enough free space in the required root volumes'
       block:
-        - name: 'FS_CHECK | Check if enough free space on the required root volumes'
+        - name: 'FS_CHECK | Check if enough free space is NOT available on the required root volumes'
           ansible.builtin.set_fact:
             vol_fail_msgs: "{{ vol_fail_msgs + vol_fail_msg }} "
           when: size_avail | int < item.free_size_b
@@ -74,9 +74,9 @@
         #     msg: "{{ vol_fail_msgs | join('\n') }}"
         #   when: vol_fail_msgs | length > 0 
 
-        # Get the lv name from the mounts list dict
-        # then use the lv_name to get the VG and subtract the required val from the free space.
-        # OR use the vg name from the mount list dict , now - the value
+        
+        # Get the vg name from the mount list dict. Add the required free size to the value in vg_required_sizes dictionary
+        # This addsup all the required spaces so that we can check it in next task
         - name: 'FS_CHECK | Get required free size for each VG'
           ansible.builtin.set_fact:
             vg_reqd_sizes: "{{ vg_reqd_sizes | combine({ mount_device_vg : (vg_reqd_sizes[mount_device_vg] | default(0) + item.free_size_g)}) }}"
@@ -92,7 +92,7 @@
           ansible.builtin.debug:
             var: vg_reqd_sizes
 
-        - name: 'FS_CHECK | Check if required free space available in VGs'
+        - name: 'FS_CHECK | Check if required free space is NOT available in VGs'
           ansible.builtin.set_fact:
             vg_fail_msgs: "{{ vg_fail_msgs + vg_fail_msg }} "
           when: ansible_facts.lvm.vgs[item.key].free_g | float  < item.value
@@ -100,6 +100,11 @@
             vg_fail_msg: "{{ item.key }} VG does not have enough free space. Required={{ item.value }} Available={{ ansible_facts.lvm.vgs[item.key].free_g }} "
           loop: "{{ vg_reqd_sizes | dict2items }}"
 
+        - name: 'FS_CHECK | Check if any failures'
+          ansible.builtin.fail:
+            msg: "{{ (vol_fail_msgs + vg_fail_msgs) | join('\n') }}"
+          when: |
+            ((vol_fail_msgs | length > 0) or (vg_fail_msgs | length > 0))
 
       rescue:
         - name: 'FS_CHECK |  Set failure message'
