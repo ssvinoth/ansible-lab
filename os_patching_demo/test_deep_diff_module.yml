@@ -12,33 +12,37 @@
   vars:
     some_var: 'test variable'
     fs_check_val:
-      - mount: '/'
-        free_size_g: 1
-        free_size_b: 1073741824
-        #free_size_b: 5358223360
-      - mount: '/usr'
-        free_size_g: 0.5
-        free_size_b: 524288000
-      - mount: '/var'
-        free_size_g: 2
-        free_size_b: 2147483648      
-      - mount: '/boot'
-        free_size_g: 0.25
-        free_size_b: 262144000
+      insta: 'first'
+      vala:
+        - mount: '/'
+          free_size_g: 1
+          free_size_b: 1073741824
+          #free_size_b: 5358223360
+        - mount: '/usr'
+          free_size_g: 0.5
+          free_size_b: 524288000
+        - mount: '/var'
+          free_size_g: 2
+          free_size_b: 2147483648      
+        - mount: '/boot'
+          free_size_g: 0.25
+          free_size_b: 262144000
     fs_check_val2:
-      - mount: '/'
-        free_size_g: 1
-        #free_size_b: 1073741824
-        free_size_b: 5358223360
-      - mount: '/usr'
-        free_size_g: 0.5
-        free_size_b: 524288000
-      - mount: '/boot'
-        free_size_g: 0.25
-        free_size_b: 262144000
-      - mount: '/var'
-        free_size_g: 2
-        free_size_b: 2147483648      
+      insta: 'first'
+      vala:
+        - mount: '/'
+          free_size_g: 1
+          #free_size_b: 1073741824
+          free_size_b: 5358223360
+        - mount: '/usr'
+          free_size_g: 0.5
+          free_size_b: 524288000
+        - mount: '/boot'
+          free_size_g: 0.25
+          free_size_b: 262144000
+        - mount: '/var'
+          free_size_g: 2
+          free_size_b: 2147483648      
 
 
     vol_vol_fail_msgs: []
