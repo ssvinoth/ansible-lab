@@ -1,4 +1,8 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Copyright: Contributors to the Ansible project
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 DOCUMENTATION = '''
 ---
@@ -80,7 +84,7 @@ is_same:
         is_same: true 
 '''
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 from deepdiff import DeepDiff
 from pprint import pprint
 

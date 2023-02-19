@@ -53,6 +53,7 @@
         first_object: "{{ fs_check_val }}"
         second_object: "{{ fs_check_val2 }}"
       register: ddiff_result
+      delegate_to: localhost
 
     - name: debug ddiff_result
       ansible.builtin.debug:
