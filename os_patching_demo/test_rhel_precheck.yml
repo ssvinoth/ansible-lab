@@ -46,14 +46,14 @@
     #     var: ansible_facts.mounts[item.mount]
     #   loop: "{{ fs_check_val }}"
 
-    - name: debug fs_check size details
-      ansible.builtin.debug:
-        msg: " {{ item.mount }} has enough free space"
-      when: size_avail | int > item.free_size_b
-      vars:
-        size_avail_json_query: "mounts[?mount==`{{ item.mount }}`].size_available | [0]"
-        size_avail: "{{ ansible_facts | json_query(size_avail_json_query)  }}"
-      loop: "{{ fs_check_val }}"
+    # - name: debug fs_check size details
+    #   ansible.builtin.debug:
+    #     msg: " {{ item.mount }} has enough free space"
+    #   when: size_avail | int > item.free_size_b
+    #   vars:
+    #     size_avail_json_query: "mounts[?mount==`{{ item.mount }}`].size_available | [0]"
+    #     size_avail: "{{ ansible_facts | json_query(size_avail_json_query)  }}"
+    #   loop: "{{ fs_check_val }}"
 
     # Check if we have enough space using when - gets all fs with not enough space
     - name: 'Precheck |  BLOCK : Check if we have enough free space in the required root volumes'
