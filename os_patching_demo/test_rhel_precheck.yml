@@ -27,6 +27,7 @@
         free_size_b: 262144000
     vol_vol_fail_msgs: []
     vg_vol_fail_msg: []
+    vg_reqd_sizes: {}
   tasks:
     - name: 'Precheck | Get the precheck facts'
       ansible.builtin.setup:
@@ -73,7 +74,24 @@
         #     msg: "{{ vol_fail_msgs | join('\n') }}"
         #   when: vol_fail_msgs | length > 0 
 
+        # Get the lv name from the mounts list dict
+        # then use the lv_name to get the VG and subtract the required val from the free space.
+        # OR use the vg name from the mount list dict , now - the value
+        - name: 'FS_CHECK | Get required free size for each VG'
+          ansible.builtin.set_fact:
+            vg_reqd_sizes: "{{ vg_reqd_sizes | combine({ mount_device_vg : (vg_reqd_sizes[mount_device_vg] | default(0) + item.free_size_g)}) }}"
+          when: "'/dev/mapper' in mount_device"
+          vars:
+            device_json_query: "mounts[?mount==`{{ item.mount }}`].device | [0]"
+            # This is assuming its based on lvm and also the /dev/mapper/vgname-lvname format
+            mount_device: "{{ ansible_facts | json_query(size_avail_json_query)  }}"
+            mount_device_vg: "{{ mount_device.split('/')[3].split('-')[0]  }}"
+          loop: "{{ fs_check_val }}"        
         
+        - name: debug vg_reqd_sizes
+          ansible.builtin.debug:
+            var: vg_reqd_sizes
+
 
       rescue:
         - name: 'FS_CHECK |  Set failure message'
