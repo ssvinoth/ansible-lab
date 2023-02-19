@@ -30,13 +30,13 @@
       ansible.builtin.setup:
       register: precheck_facts_result
 
-    - name: debug precheck_facts_result
-      ansible.builtin.debug:
-        var: precheck_facts_result
+    # - name: debug precheck_facts_result
+    #   ansible.builtin.debug:
+    #     var: precheck_facts_result
 
-    - name: debug precheck_facts_result
-      ansible.builtin.debug:
-        var: ansible_facts.mounts
+    # - name: debug precheck_facts_result
+    #   ansible.builtin.debug:
+    #     var: ansible_facts.mounts
 
     # - name: debug fs_check_val details
     #   ansible.builtin.debug:
@@ -46,8 +46,22 @@
     - name: debug fs_check size details
       ansible.builtin.debug:
         msg: " {{ item.mount }} has enough free space"
-      when: size_avail | int  > item.free_size_b
+      when: size_avail > item.free_size_b
       vars:
         size_avail_json_query: "mounts[?mount==`{{ item.mount }}`].size_available | [0]"
-        size_avail: "{{ ansible_facts | json_query(size_avail_json_query) }}"
+        size_avail: "{{ ansible_facts | json_query(size_avail_json_query) | int }}"
       loop: "{{ fs_check_val }}"
+
+    - name: 'Precheck : BLOCK : Check if we have enough free space in the required root volumes'
+      block:
+      # Check if we have enough space
+        - name: 'Precheck : Check if enough free space on the required root volumes'
+          ansible.builtin.assert:
+            that:
+              - size_avail  > item.free_size_b
+            fail_msg: "{{ item.mount }} does not have enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
+            success_msg: "{{ item.mount }} has enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
+          vars:
+            size_avail_json_query: "mounts[?mount==`{{ item.mount }}`].size_available | [0]"
+            size_avail: "{{ ansible_facts | json_query(size_avail_json_query) | int }}"
+          loop: "{{ fs_check_val }}"       
