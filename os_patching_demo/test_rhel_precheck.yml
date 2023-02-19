@@ -92,6 +92,14 @@
           ansible.builtin.debug:
             var: vg_reqd_sizes
 
+        - name: 'FS_CHECK | Check if required free space available in VGs'
+          ansible.builtin.set_fact:
+            vg_fail_msgs: "{{ vg_fail_msgs + vg_fail_msg }} "
+          when: ansible_facts.vgs[item.key].free_g | float  < item.free_size_b
+          vars:
+            vg_fail_msg: "{{ item.key }} VG does not have enough free space. Required={{ item.value }} Available={{ ansible_facts.vgs[item.key].free_g }} "
+          loop: "{{ vg_reqd_sizes | dict2items }}"
+
 
       rescue:
         - name: 'FS_CHECK |  Set failure message'
