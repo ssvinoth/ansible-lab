@@ -14,7 +14,8 @@
     fs_check_val:
       - mount: '/'
         free_size_g: 1
-        free_size_b: 1073741824
+        #free_size_b: 1073741824
+        free_size_b: 5358223360
       - mount: '/usr'
         free_size_g: 0.5
         free_size_b: 524288000
