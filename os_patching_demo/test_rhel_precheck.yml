@@ -39,11 +39,11 @@
 
     - name: debug fs_check_val details
       ansible.builtin.debug:
-        var: precheck_facts_result.ansible_facts.mounts[item.mount]
+        var: precheck_facts_result.ansible_facts.ansible_mounts[item.mount]
       loop: "{{ fs_check_val }}"
 
     - name: debug fs_check size details
       ansible.builtin.debug:
-        msg: " {{ precheck_facts_result.ansible_facts.mounts[item.mount] }} has enough free space"
-      when: precheck_facts_result.ansible_facts.mounts[item.mount].size_available > item.free_size_b
+        msg: " {{ precheck_facts_result.ansible_facts.ansible_mounts[item.mount] }} has enough free space"
+      when: precheck_facts_result.ansible_facts.ansible_mounts[item.mount].size_available > item.free_size_b
       loop: "{{ fs_check_val }}"
