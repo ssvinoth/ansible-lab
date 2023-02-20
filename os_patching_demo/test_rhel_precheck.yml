@@ -49,6 +49,12 @@
         chdir: /tmp
       register: precheck_script_result
 
+    - name: 'Precheck | Run post-check script'
+      ansible.builtin.script:
+        cmd: rhel_check_vaulted.sh pst
+        decrypt: true
+        chdir: /tmp
+      register: postcheck_script_result
 
 
 
