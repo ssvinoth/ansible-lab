@@ -111,6 +111,7 @@
           ansible.builtin.copy:
             src: /boot
             dest: /var/backup/
+            remote_src: true
          
 
         - name: 'LVM_SNAPSHOT | Create snapshots for the root volumes'
