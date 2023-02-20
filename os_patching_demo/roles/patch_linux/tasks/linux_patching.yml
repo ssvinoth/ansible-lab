@@ -8,6 +8,7 @@
         exclude: "{{ exclude_pkgs }}"
       async: "{{ patching_timeout }}"
       poll: "{{ patching_poll }}"
+      register: yum_update_result
 
   rescue:
     - name: 'OS_UPDATE |  Set failure message'

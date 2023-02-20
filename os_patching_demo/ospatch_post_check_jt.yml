@@ -1,10 +1,10 @@
 ---
-- name: "Linux Patching : Precheck Process"
+- name: "Linux Patching : Post Check Process"
   hosts: "{{ vm_nodes }}"
   strategy: free
   gather_facts: false
   become: true
   tasks:
-    - name: 'Include pre-check role'
+    - name: 'Include post-check role'
       ansible.builtin.include_role: 
         name: postcheck_linux

@@ -4,6 +4,7 @@
     - name: 'PATCHING_RESULTS | Capture the yum update history'
       ansible.builtin.shell: yum history info last
       register: yum_update_history_result
+      when: yum_update_result.changed
 
     - name: 'PATCHING_RESULTS | Capture all precheck results'
       set_stats: 

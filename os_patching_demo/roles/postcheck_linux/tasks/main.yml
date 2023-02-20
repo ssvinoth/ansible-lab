@@ -1,7 +1,5 @@
 ---
-# tasks file for postcheck_linux
----
-# tasks file for patch_linux
+# tasks file for post check linux
 - name: 'Post Check | BLOCK - Run Post Checks if precheck and patch is successful'
   block:
     # Get post facts
