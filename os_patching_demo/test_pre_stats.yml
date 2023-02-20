@@ -3,7 +3,10 @@
   gather_facts: false
   become: true
   tasks:
-    - name: 'Show all stats data'
+    - name: 'Show all stats data msg'
+      ansible.builtin.debug: 
+        msg: "CHECK_MSG={{ pre_check[inventory_hostname_short] }}"
+    - name: 'Show all stats data var'
       ansible.builtin.debug: 
         var: pre_check[inventory_hostname_short]
     - name: 'Run only if pre_check_fail is not true'
