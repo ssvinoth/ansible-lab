@@ -28,8 +28,8 @@
       - mount: '/boot'
         free_size_g: 0.25
         free_size_b: 262144000
-    vol_vol_fail_msgs: []
-    vg_vol_fail_msg: []
+    vol_fail_msgs: []
+    vg_fail_msgs: []
     vg_reqd_sizes: {}
   tasks:
     - name: 'Precheck | Get the precheck facts'
@@ -77,8 +77,8 @@
         - name: 'FS_CHECK | Check if any failures'
           ansible.builtin.fail:
             msg: "{{ (vol_fail_msgs + vg_fail_msgs) | join('\n') }}"
-          when: |
-            ((vol_fail_msgs | length > 0) or (vg_fail_msgs | length > 0))
+          when: 
+            - ((vol_fail_msgs|default([]) | length > 0) or (vg_fail_msgs|default([]) | length > 0))
 
       rescue:
         - name: 'FS_CHECK |  Set failure message'
@@ -124,7 +124,7 @@
         - name: 'Precheck | Get the precheck LVM facts'
           ansible.builtin.setup:
           register: lvm_facts_result
-          
+
       rescue:
         - name: 'LVM_SNAPSHOT |  Set failure message'
           ansible.builtin.set_fact:
