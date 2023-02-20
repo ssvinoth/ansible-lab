@@ -1,0 +1,15 @@
+- name: 'Patch |  BLOCK : Perform Patching'
+  block:
+
+    - name: 'OS_UPDATE | Perform patching'
+      ansible.builtin.yum:
+        name: "{{ required_pkgs }}"
+        state: latest
+        exclude: "{{ exclude_pkgs }}"
+
+  rescue:
+    - name: 'OS_UPDATE |  Set failure message'
+      ansible.builtin.set_fact:
+        patch_fail: true
+        patch_fail_stage: 'OS_UPDATE'
+        patch_fail_msg: "{{ ansible_failed_result }}"       

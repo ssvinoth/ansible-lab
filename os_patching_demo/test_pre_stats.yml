@@ -3,13 +3,18 @@
   gather_facts: false
   become: true
   tasks:
-    - name: 'Show all stats data msg'
+    - name: 'Show all pre_check stats data var'
       ansible.builtin.debug: 
-        msg: "CHECK_MSG={{ pre_check[inventory_hostname_short] }}"
-    - name: 'Show all stats data var'
+        var: pre_check
+    - name: 'Show all pre_check stats data var'
       ansible.builtin.debug: 
-        var: pre_check[inventory_hostname_short]
-    - name: 'Run only if pre_check_fail is not true'
+        var: os_update
+    - name: 'Show all os_update stats data msg'
       ansible.builtin.debug: 
-        msg: 'All good in precheck for {{ inventory_hostname_short }}'
-      when: not pre_check[inventory_hostname_short].pre_check_fail
+        msg: "CHECK_MSG={{ os_update[inventory_hostname_short] }}"
+    # - name: 'Show all stats data var'
+    #   ansible.builtin.debug: 
+    #     var: pre_check[inventory_hostname_short]
+    # - name: 'Show all stats data var'
+    #   ansible.builtin.debug: 
+    #     var: pre_check[inventory_hostname_short]
