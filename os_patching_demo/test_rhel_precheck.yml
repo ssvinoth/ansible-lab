@@ -97,6 +97,7 @@
             lv: "{{ mount_device_lv }}"
             snapshot: "{{ item.lv_snapshot_name }}"
             state: absent
+            force: true
           when: "'/dev/mapper' in mount_device"
           vars:
             device_json_query: "mounts[?mount==`{{ item.mount }}`].device | [0]"
