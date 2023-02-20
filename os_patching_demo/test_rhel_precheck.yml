@@ -113,7 +113,6 @@
             dest: /var/backup/
             remote_src: true
          
-
         - name: 'LVM_SNAPSHOT | Create snapshots for the root volumes'
           community.general.lvol:
             vg: "{{ mount_device_vg }}"
