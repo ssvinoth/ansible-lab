@@ -6,6 +6,8 @@
         name: "{{ required_pkgs }}"
         state: latest
         exclude: "{{ exclude_pkgs }}"
+      async: "{{ patching_timeout }}"
+      poll: "{{ patching_poll }}"
 
   rescue:
     - name: 'OS_UPDATE |  Set failure message'
