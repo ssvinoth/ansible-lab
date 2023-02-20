@@ -2,7 +2,7 @@
   block:
     # Get the Last Yum history info
     - name: 'PATCHING_RESULTS | Capture the yum update history'
-      ansible.builtin.shell: yum history info last
+      ansible.builtin.shell: yum history info
       register: yum_update_history_result
       when: yum_update_result.changed
 
@@ -21,7 +21,6 @@
   rescue:
     - name: 'PATCHING_RESULTS |  Set failure message'
       ansible.builtin.set_fact:
-        pre_check_status: false
-        pre_check_fail: true
-        pre_check_fail_stage: 'PATCHING_RESULTS'
-        pre_check_fail_msg: "{{ ansible_failed_result }}"  
+        patch_fail: true
+        patch_fail_stage: 'PATCHING_RESULTS'
+        patch_fail_msg: "{{ ansible_failed_result }}"  
