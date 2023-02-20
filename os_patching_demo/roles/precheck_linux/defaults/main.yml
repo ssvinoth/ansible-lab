@@ -1,2 +1,21 @@
 ---
 # defaults file for precheck_linux
+fs_check_val:
+  - mount: '/'
+    free_size_g: 1
+    free_size_b: 1073741824
+    #free_size_b: 5358223360
+    lv_snapshot_name: snap_root
+  - mount: '/usr'
+    free_size_g: 0.5
+    free_size_b: 524288000
+    lv_snapshot_name: snap_usr
+  - mount: '/var'
+    free_size_g: 2
+    free_size_b: 2147483648
+    lv_snapshot_name: snap_var      
+  - mount: '/boot'
+    free_size_g: 0.25
+    free_size_b: 262144000
+
+

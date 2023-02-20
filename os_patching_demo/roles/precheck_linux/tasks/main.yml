@@ -1,2 +1,29 @@
 ---
 # tasks file for precheck_linux
+- name: 'Precheck | Get the precheck facts'
+  ansible.builtin.setup:
+  register: precheck_facts_result
+
+# Do the FS/VG Space Check
+- name: 'Precheck | Check FS/VG Free Space'
+  ansible.builtin.include_tasks:
+    file: 'fs_vg_freespace_check.yml'
+  when: not pre_check_fail
+
+# Do the lvm Snapshots
+- name: 'Precheck | Create LVM Snapshots'
+  ansible.builtin.include_tasks:
+    file: 'create_lvm_snapshots.yml'
+  when: not pre_check_fail
+
+# Get the running Services
+- name: 'Precheck | Check FS/VG Free Space'
+  ansible.builtin.include_tasks:
+    file: 'fs_vg_freespace_check.yml'
+  when: not pre_check_fail
+
+# Run the Pre-Check Script
+- name: 'Precheck | Check FS/VG Free Space'
+  ansible.builtin.include_tasks:
+    file: 'fs_vg_freespace_check.yml'
+  when: not pre_check_fail
