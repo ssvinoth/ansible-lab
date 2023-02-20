@@ -1,0 +1,20 @@
+- name: 'Precheck |  BLOCK : Run Precheck Script'
+  block:
+    - name: 'PRECHK_SCRIPT | Clean up any existing pre-check backups'
+      ansible.builtin.file:
+        path: "/var/tmp/backup-{{ ansible_facts.hostname }}"
+        state: absent
+
+    - name: 'PRECHK_SCRIPT | Run pre-check script'
+      ansible.builtin.script:
+        cmd: rhel_check_vaulted.sh pre
+        decrypt: true
+        chdir: /tmp
+      register: precheck_script_result     
+  rescue:
+    - name: 'PRECHK_SCRIPT |  Set failure message'
+      ansible.builtin.set_fact:
+        pre_check_status: false
+        pre_check_fail: true
+        pre_check_fail_stage: 'PRECHK_SCRIPT'
+        pre_check_fail_msg: "{{ ansible_failed_result }}"       

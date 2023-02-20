@@ -1,0 +1,9 @@
+---
+- name: "Linux Patching : Precheck Process"
+  hosts: "{{ vm_nodes }}"
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'Include pre-check role'
+      ansible.builtin.include_role: 
+        name: precheck_linux

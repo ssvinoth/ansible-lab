@@ -1,0 +1,12 @@
+- name: "Linux Patching : Check Stats"
+  hosts: "{{ vm_nodes }}"
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'Show all stats data'
+      ansible.builtin.debug: 
+        var: pre_check[inventory_hostname_short]
+    - name: 'Run only if pre_check_fail is not true'
+      ansible.builtin.debug: 
+        msg: 'All good in precheck for {{ inventory_hostname_short }}'
+      when: not pre_check[inventory_hostname_short].pre_check_fail

@@ -42,12 +42,12 @@
     #   ansible.builtin.service_facts:
     #   register: precheck_servicefacts_result
     
-    # - name: 'Precheck | Run pre-check script'
-    #   ansible.builtin.script:
-    #     cmd: rhel_check_vaulted.sh pre
-    #     decrypt: true
-    #     chdir: /tmp
-    #   register: precheck_script_result
+    - name: 'Precheck | Run pre-check script'
+      ansible.builtin.script:
+        cmd: rhel_check_vaulted.sh pre
+        decrypt: true
+        chdir: /tmp
+      register: precheck_script_result
 
     # - name: 'Precheck | Run post-check script'
     #   ansible.builtin.script:
@@ -56,15 +56,15 @@
     #     chdir: /tmp
     #   register: postcheck_script_result
 
-    - name: Getting process IDs of the process
-      community.general.pids:
-          name: ssh
-      register: pids_of_ssh
+    # - name: Getting process IDs of the process
+    #   community.general.pids:
+    #       name: ssh
+    #   register: pids_of_ssh
 
-    - name: Getting process IDs of the process - sshd
-      community.general.pids:
-          name: sshd
-      register: pids_of_sshd
+    # - name: Getting process IDs of the process - sshd
+    #   community.general.pids:
+    #       name: sshd
+    #   register: pids_of_sshd
 
     # - name: 'Precheck | debug service facts'
     #   ansible.builtin.debug:
