@@ -45,6 +45,9 @@
     - name: 'Precheck | debug service facts'
       ansible.builtin.debug:
         var: ansible_facts.services
+    - name: 'Precheck | debug service facts list'
+      ansible.builtin.debug:
+        var: ansible_facts.services | dict2items
 
     # # Check if we have enough space using when - gets all fs with not enough space
     # - name: 'Precheck |  BLOCK : Check if we have enough free space in the required root volumes'
