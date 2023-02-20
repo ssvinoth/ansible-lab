@@ -4,6 +4,10 @@
   ansible.builtin.setup:
   register: precheck_facts_result
 
+- name: 'Precheck | Get service facts'
+  ansible.builtin.service_facts:
+  register: precheck_servicefacts_result
+
 # Do the FS/VG Space Check
 - name: 'Precheck | Check FS/VG Free Space'
   ansible.builtin.include_tasks:
