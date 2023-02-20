@@ -46,8 +46,8 @@
       ansible.builtin.fail:
         msg: "{{ (vol_fail_msgs + vg_fail_msgs) | join('\n') }}"
       when: |
-        ((vol_fail_msgs | length > 0) or (vg_fail_msgs | length > 0))
-
+        ((vol_fail_msgs|default([]) | length > 0) or (vg_fail_msgs|default([]) | length > 0))
+  
   rescue:
     - name: 'FS_CHECK |  Set failure message'
       ansible.builtin.set_fact:

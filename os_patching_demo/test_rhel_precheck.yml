@@ -31,6 +31,7 @@
     vol_fail_msgs: []
     vg_fail_msgs: []
     vg_reqd_sizes: {}
+    pre_check_fail: false
   tasks:
     - name: 'Precheck | Get the precheck facts'
       ansible.builtin.setup:
@@ -124,7 +125,7 @@
         - name: 'Precheck | Get the precheck LVM facts'
           ansible.builtin.setup:
           register: lvm_facts_result
-
+      when: not pre_check_fail
       rescue:
         - name: 'LVM_SNAPSHOT |  Set failure message'
           ansible.builtin.set_fact:
