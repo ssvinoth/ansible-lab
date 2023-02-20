@@ -62,7 +62,7 @@
         msg: "{{pre_services_list | json_query(running_services_jq)}}"
       vars:
         temp_var: 'running'
-        running_services_jq: "pre_services_list[?value.state==`{{temp_var}}`] | []"
+        running_services_jq: "[?value.state==`{{temp_var}}`]"
 
     - name: 'Precheck | debug run service facts list'
       ansible.builtin.debug:
