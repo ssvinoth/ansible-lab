@@ -34,42 +34,56 @@
     pre_check_fail: false
     
   tasks:
-    - name: 'Precheck | Get the precheck facts'
-      ansible.builtin.setup:
-      register: precheck_facts_result
+    # - name: 'Precheck | Get the precheck facts'
+    #   ansible.builtin.setup:
+    #   register: precheck_facts_result
 
-    - name: 'Precheck | Get service facts'
-      ansible.builtin.service_facts:
-      register: precheck_servicefacts_result
+    # - name: 'Precheck | Get service facts'
+    #   ansible.builtin.service_facts:
+    #   register: precheck_servicefacts_result
+    
+    - name: 'Precheck | Run pre-check script'
+      ansible.builtin.script:
+        cmd: rhel_check_vaulted.sh pre
+        decrypt: true
+        chdir: /tmp
+      register: precheck_script_result
 
-    - name: 'Precheck | debug service facts'
-      ansible.builtin.debug:
-        var: ansible_facts.services
 
-    - name: 'Precheck | service fact'
-      ansible.builtin.set_fact:
-        pre_services_list: "{{ ansible_facts.services | dict2items }}"
-        pre_running_svcs_list: "{{ ansible_facts.services | dict2items | json_query(running_services_jq) }}"
-      vars:
-        running_services_jq: "[?value.state==`running`].key"
 
-    - name: 'Precheck | debug service facts list'
-      ansible.builtin.debug:
-        var: pre_running_svcs_list
 
-    - name: 'Precheck | debug run service facts list'
-      ansible.builtin.debug:
-        msg: "{{pre_services_list | json_query(running_services_jq)}}"
-      vars:
-        temp_var: 'running'
-        running_services_jq: "[?value.state==`{{temp_var}}`]"
+    # - name: 'Precheck | debug service facts'
+    #   ansible.builtin.debug:
+    #     var: ansible_facts.services
 
-    - name: 'Precheck | debug run service facts list'
-      ansible.builtin.debug:
-        msg: "{{ansible_facts.services | dict2items | json_query(running_services_jq)}}"
-      vars:
-        temp_var: 'running'
-        running_services_jq: "[?value.state==`{{temp_var}}`].key"
+    # - name: 'Precheck | service fact'
+    #   ansible.builtin.set_fact:
+    #     pre_services_list: "{{ ansible_facts.services | dict2items }}"
+    #     pre_running_svcs_list: "{{ ansible_facts.services | dict2items | json_query(running_services_jq) }}"
+    #   vars:
+    #     running_services_jq: "[?value.state==`running`].key"
+
+    # - name: 'Precheck | debug service facts'
+    #   ansible.builtin.debug:
+    #     var: ansible_facts.services
+
+    # - name: 'Precheck | debug service facts list'
+    #   ansible.builtin.debug:
+    #     var: pre_running_svcs_list
+
+    # - name: 'Precheck | debug run service facts list'
+    #   ansible.builtin.debug:
+    #     msg: "{{pre_services_list | json_query(running_services_jq)}}"
+    #   vars:
+    #     temp_var: 'running'
+    #     running_services_jq: "[?value.state==`{{temp_var}}`]"
+
+    # - name: 'Precheck | debug run service facts list'
+    #   ansible.builtin.debug:
+    #     msg: "{{ansible_facts.services | dict2items | json_query(running_services_jq)}}"
+    #   vars:
+    #     temp_var: 'running'
+    #     running_services_jq: "[?value.state==`{{temp_var}}`].key"
     # # services[?value.state == 'running']
 
     # # Check if we have enough space using when - gets all fs with not enough space
