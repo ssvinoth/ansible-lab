@@ -14,4 +14,4 @@
       ansible.builtin.set_fact:
         patch_fail: true
         patch_fail_stage: 'OS_UPDATE'
-        patch_fail_msg: "{{ ansible_failed_result }}"       
+        patch_fail_msg: "{{ ansible_failed_result }}"     

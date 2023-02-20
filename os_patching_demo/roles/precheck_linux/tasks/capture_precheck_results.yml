@@ -10,7 +10,7 @@
               "pre_check_fail" : "{{ pre_check_fail | default(false) }}",
               "pre_check_fail_stage" : "{{ pre_check_fail_stage | default('') }}",
               "pre_check_fail_msg" : "{{ pre_check_fail_msg | default('') }}",
-              "pre_check_script_out" : "{{ precheck_script_result | default('') }}",
+              "pre_check_script_out" : "{{ precheck_script_result | default('') }}"
             }
           }  
   rescue:
