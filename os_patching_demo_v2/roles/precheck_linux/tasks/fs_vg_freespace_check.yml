@@ -7,7 +7,7 @@
     - name: 'FS_CHECK | Check if enough free space is available on the required root volumes'
       ansible.builtin.assert:
         that:
-          - size_avail | int < size_required | int
+          - size_avail | int > size_required | int
         fail_msg: "{{ item.key }} does not have enough free space. Required={{ size_required }} Available={{ size_avail }} "
         success_msg: "{{ item.key }} has enough free space. Required={{ size_required }} Available={{ size_avail }} "    
       vars:
@@ -29,7 +29,7 @@
     - name: 'FS_CHECK | Check if enough free space is available on the required rootvg'
       ansible.builtin.assert:
         that:
-          - vg_size_avail | float  < vg_reqd_size | float
+          - vg_size_avail | float  > vg_reqd_size | float
         fail_msg: "{{ root_vol_vg }} vg does not have enough free space. Required={{ vg_reqd_size }} Available={{ vg_size_avail }} "
         success_msg: "{{ root_vol_vg }} vg has enough free space. Required={{ vg_reqd_size }} Available={{ vg_size_avail }} "    
       vars:
