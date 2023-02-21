@@ -8,7 +8,7 @@
       ansible.builtin.assert:
         that:
           - size_avail | int < size_required | int
-        vol_fail_msg: "{{ item.key }} does not have enough free space. Required={{ size_required }} Available={{ size_avail }} "
+        fail_msg: "{{ item.key }} does not have enough free space. Required={{ size_required }} Available={{ size_avail }} "
         success_msg: "{{ item.key }} has enough free space. Required={{ size_required }} Available={{ size_avail }} "    
       vars:
         size_avail: "{{ mount_free_space[item.key] }}"
@@ -30,7 +30,7 @@
       ansible.builtin.assert:
         that:
           - vg_size_avail | float  < vg_reqd_size | float
-        vol_fail_msg: "{{ root_vol_vg }} vg does not have enough free space. Required={{ vg_reqd_size }} Available={{ vg_size_avail }} "
+        fail_msg: "{{ root_vol_vg }} vg does not have enough free space. Required={{ vg_reqd_size }} Available={{ vg_size_avail }} "
         success_msg: "{{ root_vol_vg }} vg has enough free space. Required={{ vg_reqd_size }} Available={{ vg_size_avail }} "    
       vars:
         vg_size_avail: "{{ ansible_facts.lvm.vgs[root_vol_vg].free_g }}"

@@ -114,9 +114,6 @@
             pre_check_fail_stage: 'FS_CHECK'
             pre_check_fail_msg: "{{ ansible_failed_result }}" 
 
-      
-
-
 
     # Check if we have enough space using assert
     # - name: 'Precheck |  BLOCK : Check if we have enough free space in the required root volumes'
@@ -125,7 +122,7 @@
           ansible.builtin.assert:
             that:
               - size_avail | int > item.free_size_b
-            vol_fail_msg: "{{ item.mount }} does not have enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
+            fail_msg: "{{ item.mount }} does not have enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
             success_msg: "{{ item.mount }} has enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
     #       vars:
     #         size_avail_json_query: "mounts[?mount==`{{ item.mount }}`].size_available | [0]"
