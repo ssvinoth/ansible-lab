@@ -26,4 +26,6 @@
         file: 'capture_patching_results.yml'
       when: not patch_fail 
 
-  when: not pre_check[inventory_hostname_short].pre_check_fail
+  when: 
+    - pre_check[inventory_hostname_short] is defined
+    - not pre_check[inventory_hostname_short].pre_check_fail
