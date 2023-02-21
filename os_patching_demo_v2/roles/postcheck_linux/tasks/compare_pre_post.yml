@@ -2,8 +2,8 @@
   block:
     - name: 'PRE_POST_COMPARE | Get Pre and Post Running Service List'
       ansible.builtin.set_fact:
-        pre_running_svcs: "{{ pre_check[inventory_hostname_short].pre_check_facts.services | dict2items | json_query(running_services_jq) }}"
-        post_running_svcs: "{{ ansible_facts.services | dict2items | json_query(running_services_jq) }}"
+        pre_running_svcs: "{{ pre_check[inventory_hostname_short].pre_check_facts.services | dict2items | selectattr('value.state','equalto','running') | map(attribute='key')| list }}"
+        post_running_svcs: "{{ ansible_facts.services | dict2items | selectattr('value.state','equalto','running') | map(attribute='key')| list }}"
       vars:
         running_services_jq: "[?value.state==`running`].key"
 
