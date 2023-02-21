@@ -18,7 +18,7 @@
     # Assumption : All root volumes are in same vg = rootvg
     - name: 'FS_CHECK | Get total required free size on rootvg'
       ansible.builtin.set_fact:
-        vg_reqd_size: "{{ (vg_reqd_size | default(0)) + item.value.free_size_g }}"
+        vg_reqd_size: "{{ ((vg_reqd_size | default(0)) + item.value.free_size_g) }}"
       when: not (item.key=='/boot')
       loop: "{{ fs_check_val | dict2items }}"
 
