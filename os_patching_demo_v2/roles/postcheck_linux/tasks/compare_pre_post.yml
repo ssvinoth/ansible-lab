@@ -1,0 +1,28 @@
+- name: 'Post Check |  BLOCK : Run Pre and Post Comparision'
+  block:
+    - name: 'PRE_POST_COMPARE | Get Pre and Post Running Service List'
+      ansible.builtin.set_fact:
+        pre_running_svcs: "{{ pre_check[inventory_hostname_short].pre_check_facts.services | dict2items | json_query(running_services_jq) }}"
+        post_running_svcs: "{{ ansible_facts.services | dict2items | json_query(running_services_jq) }}"
+      vars:
+        running_services_jq: "[?value.state==`running`].key"
+
+
+    # - name: 'PRE_POST_COMPARE | Get Pre and Post Running Service List'
+    #   ansible.builtin.set_fact:
+    #     pre_running_svcs: "{{ pre_check[inventory_hostname_short].pre_check_facts.services | dict2items | json_query(running_services_jq) }}"
+    #     post_running_svcs: "{{ ansible_facts.services | dict2items | json_query(running_services_jq) }}"
+    #   vars:
+    #     running_services_jq: "[?value.state==`running`].key"
+
+    - name: 'PRE_POST_COMPARE | Run Pre and Post Services list comparision'
+      ansible.builtin.set_fact:
+        running_svcs_diff: "{{ pre_running_svcs | difference(post_running_svcs)}}"
+    
+  rescue:
+    - name: 'PRE_POST_COMPARE |  Set failure message'
+      ansible.builtin.set_fact:
+        post_check_status: false
+        post_check_fail: true
+        post_check_fail_stage: 'PRE_POST_COMPARE'
+        post_check_fail_msg: "{{ ansible_failed_result }}"  

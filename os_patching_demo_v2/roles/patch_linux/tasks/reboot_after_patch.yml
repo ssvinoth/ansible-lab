@@ -1,0 +1,16 @@
+- name: 'Patch |  BLOCK : Sanity Reboot'
+  block:
+
+    - name: 'REBOOT_AFTER_UPDATE | Perform Reboot after updates'
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_timeout }}"
+        connect_timeout: "{{ check_conn_freq }}"
+        post_reboot_delay: "{{ post_reboot_delay }}"
+        test_command: "{{ test_command }}"
+  
+  rescue:
+    - name: 'REBOOT_AFTER_UPDATE |  Set failure message'
+      ansible.builtin.set_fact:
+        patch_fail: true
+        patch_fail_stage: 'SANITY_REBOOT'
+        patch_fail_msg: "{{ ansible_failed_result }}"       

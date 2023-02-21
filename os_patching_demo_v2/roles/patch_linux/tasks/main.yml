@@ -1,0 +1,29 @@
+---
+# tasks file for patch_linux
+- name: 'Patch Linux | BLOCK - Patch and reboot only if pre_check is success'
+  block:
+    # Do Sanity Reboot
+    - name: 'Patching | Perform Sanity Reboot before patching'
+      ansible.builtin.include_tasks:
+        file: 'sanity_reboot.yml'
+      when: not patch_fail
+
+    # Do Patching
+    - name: 'Patching | Perform Patching'
+      ansible.builtin.include_tasks:
+        file: 'linux_patching.yml'
+      when: not patch_fail    
+
+    # Do Post Patch Reboot
+    - name: 'Patching | Rebooting post update'
+      ansible.builtin.include_tasks:
+        file: 'reboot_after_patch.yml'
+      when: not patch_fail 
+
+    # Capture Patching Results
+    - name: 'Patching | Capture Patching Results'
+      ansible.builtin.include_tasks:
+        file: 'capture_patching_results.yml'
+      when: not patch_fail 
+
+  when: not pre_check[inventory_hostname_short].pre_check_fail

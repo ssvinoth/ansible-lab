@@ -1,0 +1,26 @@
+- name: 'Patching |  BLOCK : Capture all patching results'
+  block:
+    # Get the Last Yum history info
+    - name: 'PATCHING_RESULTS | Capture the yum update history'
+      ansible.builtin.shell: yum history info
+      register: yum_update_history_result
+      when: yum_update_result.changed
+
+    - name: 'PATCHING_RESULTS | Capture all precheck results'
+      set_stats: 
+        data:
+          os_update: "{{ os_update | default({}) | combine ({ item.key : item.value }) }}"
+      with_items:
+        - { "key": "{{ inventory_hostname_short }}" , "value": {
+              "patch_fail" : "{{ patch_fail | default(false) }}",
+              "patch_fail_stage" : "{{ patch_fail_stage | default('') }}",
+              "patch_fail_msg" : "{{ patch_fail_msg | default('') }}",
+              "patch_yum_history" : "{{ yum_update_history_result | default('') }}",
+            }
+          }  
+  rescue:
+    - name: 'PATCHING_RESULTS |  Set failure message'
+      ansible.builtin.set_fact:
+        patch_fail: true
+        patch_fail_stage: 'PATCHING_RESULTS'
+        patch_fail_msg: "{{ ansible_failed_result }}"  

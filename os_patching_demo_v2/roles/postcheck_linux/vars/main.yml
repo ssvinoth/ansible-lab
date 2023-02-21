@@ -1,0 +1,3 @@
+---
+# vars file for postcheck_linux
+post_check_fail: false

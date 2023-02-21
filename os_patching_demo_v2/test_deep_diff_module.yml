@@ -1,0 +1,64 @@
+---
+- name: Playbook Name
+  hosts: rhelvm-5
+  gather_facts: false
+  become: true
+
+  # >> 2gb in /var
+  # 500Mb in /usr
+  # 1Gb in /
+  # 250Mb /boot
+
+  vars:
+    some_var: 'test variable'
+    fs_check_val:
+      insta: 'first'
+      vala:
+        - mount: '/'
+          free_size_g: 1
+          free_size_b: 1073741824
+          #free_size_b: 5358223360
+        - mount: '/usr'
+          free_size_g: 0.5
+          free_size_b: 524288000
+        - mount: '/var'
+          free_size_g: 2
+          free_size_b: 2147483648      
+        - mount: '/boot'
+          free_size_g: 0.25
+          free_size_b: 262144000
+    fs_check_val2:
+      insta: 'first'
+      vala:
+        - mount: '/'
+          free_size_g: 1
+          #free_size_b: 1073741824
+          free_size_b: 5358223360
+        - mount: '/usr'
+          free_size_g: 0.5
+          free_size_b: 524288000
+        - mount: '/boot'
+          free_size_g: 0.25
+          free_size_b: 262144000
+        - mount: '/var'
+          free_size_g: 2
+          free_size_b: 2147483648      
+
+
+    vol_vol_fail_msgs: []
+    vg_vol_fail_msg: []
+    vg_reqd_sizes: {}
+  tasks:
+    - name: 'Precheck | Get the precheck facts'
+      ansible.builtin.setup:
+      register: precheck_facts_result
+    - name: 'Checking deep_diff custom module'
+      deep_diff:
+        first_object: "{{ fs_check_val }}"
+        second_object: "{{ fs_check_val2 }}"
+      register: ddiff_result
+      delegate_to: localhost
+
+    - name: debug ddiff_result
+      ansible.builtin.debug:
+        var: ddiff_result | to_nice_json

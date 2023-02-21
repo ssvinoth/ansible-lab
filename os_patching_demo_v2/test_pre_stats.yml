@@ -1,0 +1,23 @@
+- name: "Linux Patching : Check Stats"
+  hosts: "{{ vm_nodes }}"
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'Show all pre_check stats data var'
+      ansible.builtin.debug: 
+        var: pre_check
+    - name: 'Show all os_update stats data var'
+      ansible.builtin.debug: 
+        var: os_update
+    - name: 'Show all post_check stats data var'
+      ansible.builtin.debug: 
+        var: post_check
+    - name: 'Show all os_update stats data msg'
+      ansible.builtin.debug: 
+        msg: "CHECK_MSG={{ post_check[inventory_hostname_short] }}"
+    # - name: 'Show all stats data var'
+    #   ansible.builtin.debug: 
+    #     var: pre_check[inventory_hostname_short]
+    # - name: 'Show all stats data var'
+    #   ansible.builtin.debug: 
+    #     var: pre_check[inventory_hostname_short]

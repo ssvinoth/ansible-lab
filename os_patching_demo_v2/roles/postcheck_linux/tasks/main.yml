@@ -1,0 +1,43 @@
+---
+# tasks file for post check linux
+- name: 'Post Check | BLOCK - Run Post Checks if precheck and patch is successful'
+  block:
+    # Get post facts
+    - name: 'Post Check | Get Post update ansible facts'
+      ansible.builtin.setup:
+      register: postcheck_facts_result
+
+    # Get all running services
+    - name: 'Post Check | Get service facts'
+      ansible.builtin.service_facts:
+      register: postcheck_servicefacts_result
+    
+    # Run the Post-Check Script
+    - name: 'Post Check | Run postcheck script'
+      ansible.builtin.include_tasks:
+        file: 'run_post_check_script.yml'
+      when: not post_check_fail
+
+    # # Capture all postcheck results
+    # - name: 'Precheck | Capture all precheck details'
+    #   ansible.builtin.include_tasks:
+    #     file: 'capture_postcheck_results.yml'
+    #   when: not post_check_fail 
+
+    # Compare Pre and Post Check Services
+    - name: 'Post Check | Get Services Difference'
+      ansible.builtin.include_tasks:
+        file: 'compare_pre_post.yml'
+      when: not post_check_fail 
+
+    # Capture Patching Results
+    - name: 'Patching | Capture Post Check Results'
+      ansible.builtin.include_tasks:
+        file: 'capture_postcheck_results.yml'
+      when: not post_check_fail 
+    
+    # TODO: Create Report 
+
+  when: 
+    - not pre_check[inventory_hostname_short].pre_check_fail
+    - not os_update[inventory_hostname_short].patch_fail

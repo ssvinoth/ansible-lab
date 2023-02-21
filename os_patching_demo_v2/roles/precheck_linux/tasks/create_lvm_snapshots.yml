@@ -1,0 +1,34 @@
+- name: 'Precheck |  BLOCK : Create LVM Snapshots'
+  block:
+    - name: 'FS_CHECK | Get all free space on the mounts'
+      ansible.builtin.set_fact:
+        lvm_mount_devices: "{{ ansible_facts.mounts | items2dict('mount','device') }} "
+
+    - name: 'LVM_SNAPSHOT | Make sure there are no existing snapshots for the root volumes'
+      ansible.builtin.shell:
+        cmd: "lvremove -f /dev/mapper/{{ root_vol_vg }}-{{ item.value.lv_snapshot_name}}"
+      ignore_errors: true
+      when: not (item.key=='/boot')
+      loop: "{{ fs_check_val_list }}"           
+
+    - name: 'LVM_SNAPSHOT | Create /boot backup in /var/backup'
+      ansible.builtin.copy:
+        src: /boot
+        dest: /var/backup/
+        remote_src: true
+
+    - name: 'LVM_SNAPSHOT | Create snapshots for the root volumes'
+      ansible.builtin.shell:
+        cmd: "lvcreate -s -L {{ item.value.free_size_g }}g -n  {{ item.value.lv_snapshot_name }} {{ mount_device }}"
+      when: not (item.key=='/boot')
+      vars:
+        mount_device: "{{ lvm_mount_devices[item.key] }}"
+      loop: "{{ fs_check_val_list }}"      
+
+  rescue:
+    - name: 'LVM_SNAPSHOT |  Set failure message'
+      ansible.builtin.set_fact:
+        pre_check_status: false
+        pre_check_fail: true
+        pre_check_fail_stage: 'LVM_SNAPSHOT'
+        pre_check_fail_msg: "{{ ansible_failed_result }}"       

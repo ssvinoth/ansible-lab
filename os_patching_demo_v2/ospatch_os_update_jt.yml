@@ -1,0 +1,10 @@
+---
+- name: "Linux Patching : Patching Process"
+  hosts: "{{ vm_nodes }}"
+  strategy: free
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'Include os update role'
+      ansible.builtin.include_role: 
+        name: patch_linux

@@ -34,22 +34,20 @@
     pre_check_fail: false
     
   tasks:
-    - name: 'Precheck | Get the precheck facts'
-      ansible.builtin.setup:
-      register: precheck_facts_result
+    # - name: 'Precheck | Get the precheck facts'
+    #   ansible.builtin.setup:
+    #   register: precheck_facts_result
 
-    - name: 'Precheck | Get service facts'
-      ansible.builtin.service_facts:
-      register: precheck_servicefacts_result
-    - name: 'Precheck | debug service facts'
-      ansible.builtin.debug:
-        var: ansible_facts.services    
-    - name: 'Precheck | debug service facts dict2items'
-      ansible.builtin.debug:
-        var: ansible_facts.services | dict2items    
-    - name: 'Precheck | debug service facts dict2items selectattr list'
-      ansible.builtin.debug:
-        msg: "{{ ansible_facts.services | dict2items | selectattr('value.state','equalto','running') | list }}"
+    # - name: 'Precheck | Get service facts'
+    #   ansible.builtin.service_facts:
+    #   register: precheck_servicefacts_result
+    
+    - name: 'Precheck | Run pre-check script'
+      ansible.builtin.script:
+        cmd: rhel_check_vaulted.sh pre
+        decrypt: true
+        chdir: /tmp
+      register: precheck_script_result
 
     # - name: 'Precheck | Run post-check script'
     #   ansible.builtin.script:
@@ -68,7 +66,9 @@
     #       name: sshd
     #   register: pids_of_sshd
 
-
+    # - name: 'Precheck | debug service facts'
+    #   ansible.builtin.debug:
+    #     var: ansible_facts.services
 
     # - name: 'Precheck | service fact'
     #   ansible.builtin.set_fact:
