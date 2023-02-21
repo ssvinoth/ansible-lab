@@ -49,7 +49,7 @@
         var: ansible_facts.services | dict2items    
     - name: 'Precheck | debug service facts dict2items selectattr list'
       ansible.builtin.debug:
-        msg: "{{ ansible_facts.services | dict2items | selectattr('value.state','equalto','running') | list }}"
+        msg: "{{ ansible_facts.services | dict2items | selectattr('value.state','equalto','running') | map(attribute='key')| list }}"
 
     # - name: 'Precheck | Run post-check script'
     #   ansible.builtin.script:
