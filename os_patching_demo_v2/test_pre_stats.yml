@@ -12,9 +12,9 @@
     - name: 'Show all post_check stats data var'
       ansible.builtin.debug: 
         var: post_check
-    - name: 'Show all os_update stats data msg'
-      ansible.builtin.debug: 
-        msg: "CHECK_MSG={{ post_check[inventory_hostname_short] }}"
+    # - name: 'Show all os_update stats data msg'
+    #   ansible.builtin.debug: 
+    #     msg: "CHECK_MSG={{ post_check[inventory_hostname_short] }}"
     # - name: 'Show all stats data var'
     #   ansible.builtin.debug: 
     #     var: pre_check[inventory_hostname_short]

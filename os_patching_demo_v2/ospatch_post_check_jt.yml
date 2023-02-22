@@ -8,3 +8,9 @@
     - name: 'Include post-check role'
       ansible.builtin.include_role: 
         name: postcheck_linux
+    - name: 'Test'
+      ansible.builtin.debug: 
+        msg:
+          - "{{ ansible_play_hosts }}"
+          - "{{ ansible_play_hosts_all }}"
+      run_once: true
