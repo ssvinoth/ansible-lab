@@ -68,11 +68,11 @@
             {% endif %}
           </tr>
         </table>
-    <p><strong>{% raw %} Post Check Comparision Running Services difference  {% endraw %}</strong></p>
+    <p><strong>{% raw %}Comparision between Pre and Post Patch Statuses{% endraw %}</strong></p>
       <!-- Post Check Difference Table -->
       <table>
           <tr>
-            <th>Check</th>
+            <th>Post Check</th>
             <th>Status</th>
             <th>Output</th>
           </tr>
@@ -103,7 +103,11 @@
             {% if v_post_check['post_check_script_out'] is defined %}
               {% if not v_post_check['post_check_script_diff'] %}
                 <td class="status-completed">No Difference</td>
-                <td class="status-completed"></td>
+                <td class="status-completed">
+                  {% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] %}
+                    {{ lineitem }}
+                  {% endfor %}   
+                </td>
               {% else %}
                 <td class="status-failed">There are Differences.</td>
                 <td class="status-failed">
