@@ -1,14 +1,14 @@
 ---
 # tasks file for precheck_linux
-- name: 'Precheck | Check Connectivity'
-  ansible.builtin.include_tasks:
-    file: 'check_connectivity.yml'
+# - name: 'Precheck | Check Connectivity'
+#   ansible.builtin.include_tasks:
+#     file: 'check_connectivity.yml'
 
 - name: 'Precheck | Gather all facts'
   ansible.builtin.include_tasks:
     file: 'gather_all_facts.yml'
   when: not pre_check_fail
-  
+
 # Do the FS/VG Space Check
 - name: 'Precheck | Check FS/VG Free Space'
   ansible.builtin.include_tasks:
