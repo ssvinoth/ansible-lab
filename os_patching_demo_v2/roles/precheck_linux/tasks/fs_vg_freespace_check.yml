@@ -8,13 +8,12 @@
     # if not then add the free space required to the root volume free_size_b
     - name: 'FS_CHECK | Check if /usr , /var has separate mount points and adjust the free space required accordingly'
       ansible.builtin.set_fact:
-        root_reqd_free_space_sum: "{{ ( (root_reqd_free_space_sum | default(fs_check_val_list['/'].free_size_b)|int) + (fs_check_val_list[item].free_size_b | default(0)| int) ) }}"
+        root_reqd_free_space_sum: "{{ ( (root_reqd_free_space_sum | default(fs_check_val['/'].free_size_b)|int) + (fs_check_val[item].free_size_b | default(0)| int) ) }}"
       when: 
-        - fs_check_val_list['/'].free_size_b is defined
+        - fs_check_val['/'].free_size_b is defined
         - mount_free_space[item] is not defined
-      loop:
-        - '/usr'
-        - '/var'
+      loop: "{{ fs_non_root_vols }}"
+
 
     - name: 'FS_CHECK | Check if enough free space is available on /  volume'
       ansible.builtin.assert:
@@ -24,7 +23,7 @@
         success_msg: "'/' has enough free space. Required={{ size_required }} Available={{ size_avail }} "    
       vars:
         size_avail: "{{ mount_free_space['/'] | default(0)}}"
-        size_required: "{{ root_reqd_free_space_sum is defined | ternary(root_reqd_free_space_sum,fs_check_val_list['/'].free_size_b) }}"
+        size_required: "{{ root_reqd_free_space_sum is defined | ternary(root_reqd_free_space_sum,fs_check_val['/'].free_size_b) }}"
 
 
     - name: 'FS_CHECK | Check if enough free space is available on other required root volumes'

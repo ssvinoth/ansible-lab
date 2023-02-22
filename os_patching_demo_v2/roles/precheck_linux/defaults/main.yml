@@ -42,3 +42,6 @@ fs_check_val:
     free_size_g: 0.25
     free_size_b: 262144000
 fs_check_val_list: "{{ fs_check_val | dict2items }}"
+fs_non_root_vols:
+  - "/usr"
+  - "/var"
