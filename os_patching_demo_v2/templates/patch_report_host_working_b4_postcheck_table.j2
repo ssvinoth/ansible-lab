@@ -69,56 +69,31 @@
           </tr>
         </table>
     <p><strong>{% raw %} Post Check Comparision Running Services difference  {% endraw %}</strong></p>
-      <!-- Post Check Difference Table -->
-      <table>
-          <tr>
-            <th>Check</th>
-            <th>Status</th>
-            <th>Output</th>
-          </tr>
-          <!-- Running Services Diff -->
-          <tr>
-            <td>Running Services</td>
-            {% if v_post_check['post_check_services_diff'] is defined %}
-              {% if v_post_check['post_check_services_diff'] | length == 0 %}
-                <td class="status-completed">No Difference</td>
-                <td class="status-completed"></td>
-              {% else %}
-                <td class="status-failed">There are Differences.</td>
-                <td class="status-failed">
-                 {% for lineitem in v_post_check['post_check_services_diff'] %}
-                    {{ lineitem }}
-                {% endfor %}               
-                </td>
-              {% endif %} 
-            {% else %}
-                <td class="status-in-progress">Error. Please check the post_check status</td>
-                <td class="status-in-progress"></td>            
-            {% endif %}
-          </tr>
+      <div class="code">
+        <pre>
+{% if v_post_check['post_check_services_diff'] is defined %}
+  {% if v_post_check['post_check_services_diff'] | length > 0 %}
+These services were running pre-patching but not running after patching.
+    {% for lineitem in v_post_check['post_check_services_diff'] %}
+{{ lineitem }}
+    {% endfor %}
+  {% else %}
+No Difference. All Good !
+  {% endif %}
+{% else %}
+No output
+{% endif %}
 
-          <!-- Post-Check Script Out Diff -->
-          <tr>
-            <td>Post-Check Script</td>
-            {% if v_post_check['post_check_script_out'] is defined %}
-              {% if not v_post_check['post_check_script_diff'] %}
-                <td class="status-completed">No Difference</td>
-                <td class="status-completed"></td>
-              {% else %}
-                <td class="status-failed">There are Differences.</td>
-                <td class="status-failed">
-                  {% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] %}
-                    {{ lineitem }}
-                  {% endfor %}          
-                </td>
-              {% endif %} 
-            {% else %}
-                <td class="status-in-progress">Error. Please check the post_check status</td>
-                <td class="status-in-progress"></td>            
-            {% endif %}
-          </tr>
-
-      </table>
+        </pre>
+      </div>   
+    <p><strong>{% raw %} Post Check Comparision Post Check Script Output {% endraw %}</strong></p>
+      <div class="code">
+        <pre>
+{% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] | default(['no output']) %}
+{{ lineitem }}
+{% endfor %}
+        </pre>
+      </div>  
        
 {% endif %}
     
