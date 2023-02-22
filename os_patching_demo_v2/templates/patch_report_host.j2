@@ -77,7 +77,7 @@
     <p><strong>{% raw %} Post Check Comparision Post Check Script Output {% endraw %}</strong></p>
       <div class="code">
         <pre>
-{% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] | default(['no output'] %}
+{% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] | default(['no output']) %}
 {{ lineitem }}
 {% endfor %}
         </pre>
