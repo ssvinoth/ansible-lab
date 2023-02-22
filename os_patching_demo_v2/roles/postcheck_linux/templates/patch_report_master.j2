@@ -5,6 +5,7 @@
     {% set v_post_check = post_check[thehost] %}
     {% if pre_check[thehost] is not defined %}
       <a class=missing-style href="#{{ thehost }}">{{ thehost }}</a>
+    {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) %}
+      <a href="#{{ thehost }}">{{ thehost }}</a>
     {% endif %}
-
 {% endfor %}
