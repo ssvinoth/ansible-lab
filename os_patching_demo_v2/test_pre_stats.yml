@@ -9,7 +9,7 @@
     - name: 'Show all os_update stats data var'
       ansible.builtin.debug: 
         var: os_update
-    - name: 'Show all post_check stats data var'
+    - name: 'Show all post_check stats data vars'
       ansible.builtin.debug: 
         var: post_check
     # - name: 'Show all os_update stats data msg'
