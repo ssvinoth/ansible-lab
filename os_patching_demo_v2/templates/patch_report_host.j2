@@ -71,7 +71,19 @@
     <p><strong>{% raw %} Post Check Comparision Running Services difference  {% endraw %}</strong></p>
       <div class="code">
         <pre>
-{{ v_post_check['post_check_services_diff'] | default('no output') | trim }}
+{% if v_post_check['post_check_services_diff'] is defined %}
+  {% if v_post_check['post_check_services_diff'] | length > 0 %}
+These services were running pre-patching but not running after patching.
+    {% for lineitem in v_post_check['post_check_services_diff'] %}
+{{ lineitem }}
+    {% endfor %}
+  {% else %}
+No Difference. All Good !
+  {% endif %}
+{% else %}
+No output
+{% endif %}
+
         </pre>
       </div>   
     <p><strong>{% raw %} Post Check Comparision Post Check Script Output {% endraw %}</strong></p>
