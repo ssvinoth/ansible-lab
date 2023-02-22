@@ -56,25 +56,14 @@
         {% set v_post_check = {{ post_check[thehost] }} %}
     <tr>
       <td><a href="#{{ thehost }}">{{ thehost }}</a></td>      
-      {% if pre_check[thehost] is not defined %}
-        <td class="status-missing">Unreachable</td>
-        <!-- <a class=missing-style href="#{{ thehost }}">{{ thehost }}</a> -->
-      {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) %}
-          <!--  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues -->
-          {% if (v_post_check['post_check_script_diff']) or ( v_post_check['post_check_services_diff'] | length > 0 ) %}
-            <td class="status-in-progress">Patch Completed but Post Check found some differences. Please check the details</td>
-          {% else %}
-            <td class="status-completed">Success. All good.</td>
-          {% endif %}
-      {% else %}
-        <td class="status-failed">Failed. Please check the details below</td>
-         <a class=failed-style href="#{{ thehost }}">Failed. Please check the details below</a>
-      {% endif %}
+      {% raw %} TESTING HERE {% endraw %}
+
     </tr>
     {% endfor %}
 
-{% raw %} TESTING IF SUBTEMPLATE ERROR {% endraw %}
-
+    {% for thehost in ansible_play_hosts_all | sort %}
+      {% include './patch_report_host.j2' %}
+    {% endfor %}
     
 {% raw %}     
     <hr>
