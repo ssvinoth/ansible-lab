@@ -25,7 +25,7 @@
 {% endraw %}
 
     {% for thehost in ansible_play_hosts_all | sort %}
-        {% set v_pre_check =  pre_check[thehost]  %}
+        {% set v_pre_check =  pre_check[thehost] | default({}) %}
         {% set v_os_update =  os_update[thehost]  %}
         {% set v_post_check = post_check[thehost] %}
       {% if pre_check[thehost] is not defined %}
@@ -55,9 +55,8 @@
 
     {% for thehost in ansible_play_hosts_all | sort %}
     
-        {% set v_pre_check =  pre_check[thehost]  %}
-        {% set v_os_update =  os_update[thehost]  %}
-        {% set v_post_check = post_check[thehost] %}
+    {% raw %} TESTING HERE {% endraw %}
+
     <tr>
       <td><a href="#{{ thehost }}">{{ thehost }}</a></td>      
       {% if pre_check[thehost] is not defined %}
@@ -79,7 +78,9 @@
     </tr>
     {% endfor %}
 
-
+    {% for thehost in ansible_play_hosts_all | sort %}
+      {% include './patch_report_host.j2' %}
+    {% endfor %}
     
 {% raw %}     
     <hr>
