@@ -59,23 +59,8 @@
         {% set v_os_update =  os_update[thehost]  %}
         {% set v_post_check = post_check[thehost] %}
 
-    <tr>
-      <td><a href="#{{ thehost }}">{{ thehost }}</a></td>      
-      {% if pre_check[thehost] is not defined %}
-        <td class="status-missing">Unreachable</td>
+      {% raw %} TESTING HERE {% endraw %}
 
-      {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) %}
-
-    {% raw %}           <!--  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues --> {% endraw %}
-
-      {% raw %}  TESTING HERE  {% endraw %}
-
-      {% else %}
-        <td class="status-failed">Failed. Please check the details below</td>
-         <a class=failed-style href="#{{ thehost }}">Failed. Please check the details below</a>
-      {% endif %}
-
-    </tr>
     {% endfor %}
 
     {% for thehost in ansible_play_hosts_all | sort %}
