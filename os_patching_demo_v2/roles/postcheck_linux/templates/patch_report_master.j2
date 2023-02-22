@@ -68,7 +68,8 @@
 
     {% raw %}           <!--  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues --> {% endraw %}
 
-       TESTING HERE 
+      {% raw %}  TESTING HERE  {% endraw %}
+
       {% else %}
         <td class="status-failed">Failed. Please check the details below</td>
          <a class=failed-style href="#{{ thehost }}">Failed. Please check the details below</a>
