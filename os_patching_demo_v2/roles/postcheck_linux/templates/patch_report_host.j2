@@ -8,9 +8,9 @@
       <p style="color:red;"><strong>Host was unavailable at the time of this job; please investigate</strong></p> 
     {% endraw %}
 {% else %} 
-  {% set v_pre_check = {{ pre_check[thehost] }} %}
-  {% set v_os_update = {{ os_update[thehost] }} %}
-  {% set v_post_check = {{ post_check[thehost] }} %}
+  {% set v_pre_check = pre_check[thehost] %}
+  {% set v_os_update = os_update[thehost] %}
+  {% set v_post_check = post_check[thehost] %}
 
   {% if ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) %}
       {% raw %} 
