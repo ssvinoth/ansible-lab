@@ -104,16 +104,20 @@
               {% if not v_post_check['post_check_script_diff'] %}
                 <td class="status-completed">No Difference</td>
                 <td class="status-completed">
-                  {% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] %}
-                    {{ lineitem }}
-                  {% endfor %}   
+                  <div class="code"><pre>
+{% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] %}
+{{ lineitem }}
+{% endfor %}
+                  </pre></div>   
                 </td>
               {% else %}
                 <td class="status-failed">There are Differences.</td>
                 <td class="status-failed">
-                  {% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] %}
-                    {{ lineitem }}
-                  {% endfor %}          
+                  <div class="code"><pre>
+{% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] %}
+{{ lineitem }}
+{% endfor %}
+                  </pre></div>         
                 </td>
               {% endif %} 
             {% else %}
