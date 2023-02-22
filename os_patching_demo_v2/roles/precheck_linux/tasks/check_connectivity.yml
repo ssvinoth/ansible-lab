@@ -1,0 +1,12 @@
+- name: 'Precheck |  BLOCK : Check Connectivity'
+  block:
+    - name: 'CHECK_CONN | Check Connectivity'
+      ansible.builtin.ping:
+
+  rescue:
+    - name: 'CHECK_CONN |  Set failure message'
+      ansible.builtin.set_fact:
+        pre_check_status: false
+        pre_check_fail: true
+        pre_check_fail_stage: 'CHECK_CONN'
+        pre_check_fail_msg: "{{ ansible_failed_result }}"       

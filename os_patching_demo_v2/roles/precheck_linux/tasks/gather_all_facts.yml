@@ -1,0 +1,18 @@
+- name: 'Precheck |  BLOCK : Gather all facts'
+  block:
+    - name: 'GATHER_FACTS | Get the precheck facts'
+      ansible.builtin.setup:
+      register: precheck_facts_result
+
+    # Get all running services
+    - name: 'GATHER_FACTS | Get service facts'
+      ansible.builtin.service_facts:
+      register: precheck_servicefacts_result
+
+  rescue:
+    - name: 'GATHER_FACTS |  Set failure message'
+      ansible.builtin.set_fact:
+        pre_check_status: false
+        pre_check_fail: true
+        pre_check_fail_stage: 'GATHER_FACTS'
+        pre_check_fail_msg: "{{ ansible_failed_result }}"       
