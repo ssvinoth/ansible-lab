@@ -64,7 +64,8 @@
         <td class="status-missing">Unreachable</td>
 
       {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) %}
-          <!--  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues -->
+    {% raw %}           <!--  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues --> {% endraw %}
+
           {% if (v_post_check['post_check_script_diff']) or ( v_post_check['post_check_services_diff'] | length > 0 ) %}
             <td class="status-in-progress">Patch Completed but Post Check found some differences. Please check the details</td>
           {% else %}
