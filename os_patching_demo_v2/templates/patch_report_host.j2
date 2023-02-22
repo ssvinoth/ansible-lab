@@ -25,7 +25,7 @@
       <!-- HOST INFO -->
       <p><strong>{% raw %}Host info{% endraw %}</strong></p>
         <ul>
-          <li>{% raw %}OS {% endraw %}{{ v_post_check['post_check_facts']['ansible_distribution'] | default('N/A') }} {{ v_post_check['post_check_facts']['ansible_distribution_version'] | default('N/A') }},{% raw %}Kernel  {% endraw %}{{ v_post_check['post_check_facts']['kernel'] | default('N/A') }}
+          <li>{% raw %}OS {% endraw %}{{ v_post_check['post_check_facts']['distribution'] | default('N/A') }} {{ v_post_check['post_check_facts']['distribution_version'] | default('N/A') }},{% raw %}Kernel  {% endraw %}{{ v_post_check['post_check_facts']['kernel'] | default('N/A') }}
           <li>{% raw %}IP addresses {% endraw %}{{ v_post_check['post_check_facts']['all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
         </ul>  
         <!-- Patch Status Info -->      
