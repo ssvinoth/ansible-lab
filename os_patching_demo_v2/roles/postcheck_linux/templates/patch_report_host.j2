@@ -5,13 +5,157 @@
     <!-- 
       If the host is in ansible_play_hosts_all and in the post_check[inventory_hostname_short] then its a success_list
       If the host is not in post_check vars then there was a failure in either pre,patch or post.
-      
-
     -->
+    {% if hostvars[thehost]['hostname'] is defined %}
+      {% set v_hostname = hostvars[thehost]['hostname'] %}
+      {% set v_has_ran_postchecks = true %}
+      {% set v_pre_check = {{ pre_check[v_hostname] }} %}
+      {% set v_os_update = {{ os_update[v_hostname] }} %}
+      {% set v_post_check = {{ post_check[v_hostname] }} %}
+    {% else %}
+      {% set v_has_ran_postchecks = false %}
+    {% endif %}
+
+    <!-- Check the Each stage status -->
+    {% if (pre_check[thehost] is defined) and (pre_check[thehost]['pre_check_fail'] is defined) and ( pre_check[thehost]['pre_check_fail']  == false ) %}
+      {% set v_pre_check_status = true %}
+    {% else %}
+      {% set v_pre_check_status = false %}
+    {% endif %}
+
+    {% if (os_update[thehost] is defined) and (os_update[thehost]['patch_fail'] is defined) and ( os_update[thehost]['patch_fail']  == false ) %}
+      {% set v_os_update_status = true %}
+    {% else %}
+      {% set v_os_update_status = false %}
+    {% endif %}
+
+    {% if (post_check[thehost] is defined) and (post_check[thehost]['pre_check_fail'] is defined) and ( post_check[thehost]['pre_check_fail']  == false ) %}
+      {% set v_post_check_status = true %}
+    {% else %}
+      {% set v_post_check_status = false %}
+    {% endif %}
+
+    {% if (v_hostname is defined) and  (v_pre_check['pre_check_fail'] is defined) and ( v_pre_check['pre_check_fail']  == false ) %}
+      {% set v_pre_check_status = true %}
+    {% else %}
+      {% set v_pre_check_status = false %}
+    {% endif %}
+
+    {% if (v_hostname is defined) and  (v_os_update['patch_fail'] is defined) %}
+      {% set v_os_update_status = {{ v_os_update['patch_fail'] | bool}} %}
+    {% else %}
+      {% set v_os_update_status = false %}
+    {% endif %}
+
+    {% if (v_hostname is defined) and  (v_post_check['post_check_fail'] is defined) %}
+      {% set v_post_check_status = {{ v_post_check['post_check_fail'] | bool}} %}
+    {% else %}
+      {% set v_post_check_status = false %}
+    {% endif %}
+
+
+
+
+    {% if (v_has_ran_postchecks) and (post_check[v_hostname] is defined)  and (not post_check[v_hostname]['post_check_fail']) %}
+    <!-- The host patching is a success. Put all contents here -->
+    {% set v_pre_check = {{ pre_check[v_hostname] }} %}
+    {% set v_os_update = {{ os_update[v_hostname] }} %}
+    {% set v_post_check = {{ post_check[v_hostname] }} %}
+    <!-- HOST INFO -->
+    <hr>
+    <p><strong>Host info:</strong></p>
+      <ul>
+        <li>OS: {{ hostvars[thehost]['ansible_distribution'] | default('N/A') }} {{ hostvars[thehost]['ansible_distribution_version'] | default('N/A') }}, Kernel: {{ hostvars[thehost]['ansible_kernel'] | default('N/A') }}
+        <li>IP addresses: {{ hostvars[thehost]['ansible_all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
+    </ul>
+    <!-- Table with Pre ,Patch and Post Status -->
+    <table>
+      <tr>
+        <th>Task</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>Pre-Checks</td>
+        {% if v_pre_check['pre_check_fail']|bool %}
+          <td class="status-failed"> Failed. Pl. check details below</td>
+        {% else %}
+          <td class="status-completed">Success</td>
+        {% endif %}
+      </tr>
+      <tr>
+        <td>OS Updates</td>
+        {% if v_os_update['patch_fail']|bool %}
+          <td class="status-failed"> Failed. Pl. check details below</td>
+        {% else %}
+          <td class="status-completed">Success</td>
+        {% endif %}
+      </tr>
+      <tr>
+        <td>Post-Checks</td>
+        {% if v_post_check['post_check_fail']|bool %}
+          <td class="status-failed"> Failed. Pl. check details below</td>
+        {% else %}
+          <td class="status-completed">Success</td>
+        {% endif %}
+      </tr>
+    </table>
+    <!-- PRECHECK INFO -->
+    <p><strong>Pre-Check Details:</strong></p>
+
+    <!-- PATCH INFO -->
+    <!-- POSTCHECK INFO -->
+    
+    {% else %}
+    <hr>
+    <!-- The host patching is a failure. Put all contents here -->
+    <p style="color:red"><strong>Host encountered issues during patch execution, see information below.</strong></p>{% endif %}
+    <!-- HOST INFO -->
+  
+    <p><strong>Host info:</strong></p>
+      <ul>
+        <li>OS: {{ hostvars[thehost]['ansible_distribution'] | default('N/A') }} {{ hostvars[thehost]['ansible_distribution_version'] | default('N/A') }}, Kernel: {{ hostvars[thehost]['ansible_kernel'] | default('N/A') }}
+        <li>IP addresses: {{ hostvars[thehost]['ansible_all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
+    </ul>
+
+    <!-- Table with Pre ,Patch and Post Status -->
+    <table>
+      <tr>
+        <th>Task</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>Pre-Checks</td>       
+        {% if {{ (v_pre_check['pre_check_fail']|bool) if (v_pre_check['pre_check_fail'] is defined) else true }}|bool %}
+          <td class="status-failed"> Failed. Pl. check details below</td>
+        {% else %}
+          <td class="status-completed">Success</td>
+        {% endif %}
+      </tr>
+      <tr>
+        <td>OS Updates</td>
+        {% if {{ (v_os_update['patch_fail']|bool) if (v_os_update['patch_fail'] is defined) else true }}|bool %}
+          <td class="status-failed"> Failed. Pl. check details below</td>
+        {% else %}
+          <td class="status-completed">Success</td>
+        {% endif %}
+      </tr>
+      <tr>
+        <td>Post-Checks</td>
+        {% if v_post_check['post_check_fail']|bool %}
+          <td class="status-failed"> Failed. Pl. check details below</td>
+        {% else %}
+          <td class="status-completed">Success</td>
+        {% endif %}
+      </tr>
+    </table>
+    {% endif %}
+    
+    
+
     <!-- If host was missing, give a generic error. Otherwise, print facts and job output. Use default() to guard against missing variables. -->
     {% if hostvars[thehost]['missing']|bool %}
 
-      <p style="color:red;"><strong>Host was unavailable at the time of this job; please investigate whether this was a planned or unplanned outage.</strong></p>
+      <p style="color:red;"><strong>Host was unavailable at the time of this job; please investigate</strong></p>
 
     {% else %}
 

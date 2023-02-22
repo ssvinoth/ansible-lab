@@ -1,10 +1,15 @@
 - name: 'Post Check |  BLOCK : Capture all patching results'
   block:
 
-    - name: 'POSTCHECK_RESULTS | Capture all precheck results'
+    - name: 'POSTCHECK_RESULTS | Capture all post check results'
       set_stats: 
         data:
           post_check: "{{ post_check | default({}) | combine ({ item.key : item.value }) }}"
+      when: 
+        - pre_check[inventory_hostname_short] is defined
+        - os_update[inventory_hostname_short] is defined
+        - not pre_check[inventory_hostname_short].pre_check_fail
+        - not os_update[inventory_hostname_short].patch_fail 
       with_items:
         - { "key": "{{ inventory_hostname_short }}" , "value": {
               "post_check_facts" : "{{ ansible_facts }}",
@@ -14,6 +19,26 @@
               "post_check_script_out" : "{{ postcheck_script_result | default('') }}",
               "post_check_services_diff" : "{{ running_svcs_diff | default('') }}",
               "post_check_script_diff" : "{{ post_check_script_diff | default(false) }}"
+            }
+          }  
+
+    - name: 'POSTCHECK_RESULTS | Capture all post check results - Skipped Details'
+      set_stats: 
+        data:
+          post_check: "{{ post_check | default({}) | combine ({ item.key : item.value }) }}"
+      when: 
+        - pre_check[inventory_hostname_short] is defined
+        - os_update[inventory_hostname_short] is defined
+        - (pre_check[inventory_hostname_short].pre_check_fail) or (os_update[inventory_hostname_short].patch_fail)
+      with_items:
+        - { "key": "{{ inventory_hostname_short }}" , "value": {
+              "post_check_facts" : "{{ ansible_facts }}",
+              "post_check_fail" : true,
+              "post_check_fail_stage" : "SKIPPED",
+              "post_check_fail_msg" : "SKIPPED due to precheck/os_update failure",
+              "post_check_script_out" : "",
+              "post_check_services_diff" : "",
+              "post_check_script_diff" : false
             }
           }  
   rescue:

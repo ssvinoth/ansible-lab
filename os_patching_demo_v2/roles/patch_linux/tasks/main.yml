@@ -6,7 +6,7 @@
     - name: 'Patching | Perform Sanity Reboot before patching'
       ansible.builtin.include_tasks:
         file: 'sanity_reboot.yml'
-      when: not patch_fail
+      #when: not patch_fail
 
     # Do Patching
     - name: 'Patching | Perform Patching'
@@ -20,12 +20,26 @@
         file: 'reboot_after_patch.yml'
       when: not patch_fail 
 
+    # Get the Last Yum history info
+    - name: 'PATCHING_RESULTS | Capture the yum update history'
+      ansible.builtin.shell: yum history info
+      register: yum_update_history_result
+      when: 
+        - yum_update_result.changed
+        - not patch_fail
+
     # Capture Patching Results
-    - name: 'Patching | Capture Patching Results'
-      ansible.builtin.include_tasks:
-        file: 'capture_patching_results.yml'
-      when: not patch_fail 
+    # - name: 'Patching | Capture Patching Results'
+    #   ansible.builtin.include_tasks:
+    #     file: 'capture_patching_results.yml'
+    #   #when: not patch_fail 
 
   when: 
     - pre_check[inventory_hostname_short] is defined
     - not pre_check[inventory_hostname_short].pre_check_fail
+  
+# Capture Patching Results
+- name: 'Patching | Capture Patching Results'
+  ansible.builtin.include_tasks:
+    file: 'capture_patching_results.yml'
+  #when: not patch_fail 

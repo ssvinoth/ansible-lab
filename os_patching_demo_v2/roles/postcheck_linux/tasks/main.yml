@@ -30,11 +30,11 @@
         file: 'compare_pre_post.yml'
       when: not post_check_fail 
 
-    # Capture Patching Results
-    - name: 'Patching | Capture Post Check Results'
-      ansible.builtin.include_tasks:
-        file: 'capture_postcheck_results.yml'
-      when: not post_check_fail 
+    # # Capture Patching Results
+    # - name: 'Patching | Capture Post Check Results'
+    #   ansible.builtin.include_tasks:
+    #     file: 'capture_postcheck_results.yml'
+    #   #when: not post_check_fail 
     
     # TODO: Create Report 
 
@@ -43,3 +43,9 @@
     - os_update[inventory_hostname_short] is defined
     - not pre_check[inventory_hostname_short].pre_check_fail
     - not os_update[inventory_hostname_short].patch_fail
+  
+  # Capture Post Check Results
+- name: 'Patching | Capture Post Check Results'
+  ansible.builtin.include_tasks:
+    file: 'capture_postcheck_results.yml'
+  #when: not post_check_fail 

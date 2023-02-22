@@ -31,4 +31,4 @@
 - name: 'Precheck | Capture all precheck details'
   ansible.builtin.include_tasks:
     file: 'capture_precheck_results.yml'
-  when: not pre_check_fail
+  #when: not pre_check_fail
