@@ -51,8 +51,10 @@
 {% endraw %}
 
     {% for thehost in ansible_play_hosts_all | sort %}
-      {% raw %} TESTING HERE {% endraw %}
-
+    
+        {% set v_pre_check = "{{ pre_check[thehost] }}" %}
+        {% set v_os_update = "{{ os_update[thehost] }}" %}
+        {% set v_post_check = "{{ post_check[thehost] }}" %}
     <tr>
       <td><a href="#{{ thehost }}">{{ thehost }}</a></td>      
       {% if pre_check[thehost] is not defined %}
