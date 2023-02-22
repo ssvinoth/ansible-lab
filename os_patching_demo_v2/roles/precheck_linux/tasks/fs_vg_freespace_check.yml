@@ -57,9 +57,9 @@
           - vg_size_avail | float  > vg_reqd_size | float
         fail_msg: "{{ root_vol_vg }} vg does not have enough free space. Required={{ vg_reqd_size }} Available={{ vg_size_avail }} "
         success_msg: "{{ root_vol_vg }} vg has enough free space. Required={{ vg_reqd_size }} Available={{ vg_size_avail }} "    
+      #when: ansible_facts.lvm.vgs[root_vol_vg] is defined
       vars:
-        vg_size_avail: "{{ ansible_facts.lvm.vgs[root_vol_vg].free_g }}"
-      loop: "{{ fs_check_val | dict2items }}"    
+        vg_size_avail: "{{ (ansible_facts.lvm.vgs[root_vol_vg] is defined) | ternary(ansible_facts.lvm.vgs[root_vol_vg].free_g,0) }}"
 
 
   rescue:
