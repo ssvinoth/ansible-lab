@@ -1,1 +1,6 @@
 {{ ansible_play_hosts_all }}
+{% for thehost in ansible_play_hosts_all | sort %}
+    {% set v_pre_check =  pre_check[thehost] | default({}) %}
+    {% set v_os_update =  os_update[thehost]  %}
+    {% set v_post_check = post_check[thehost] %}
+{% endfor %}
