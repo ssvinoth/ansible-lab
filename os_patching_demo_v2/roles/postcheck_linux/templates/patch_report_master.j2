@@ -79,9 +79,7 @@
     </tr>
     {% endfor %}
 
-    {% for thehost in ansible_play_hosts_all | sort %}
-      {% include './patch_report_host.j2' %}
-    {% endfor %}
+
     
 {% raw %}     
     <hr>
