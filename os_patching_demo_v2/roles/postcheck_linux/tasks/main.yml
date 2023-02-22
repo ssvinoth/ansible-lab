@@ -49,10 +49,3 @@
   ansible.builtin.include_tasks:
     file: 'capture_postcheck_results.yml'
   #when: not post_check_fail 
-
-- name: Save job report to {{ report_out_dir }}
-  delegate_to: localhost
-  run_once: true
-  template:
-    src: patch_report_master.j2
-    dest: "{{ report_out_dir  }}/patch_report.html"

@@ -1,0 +1,140 @@
+<!-- This is a 'child' template sourced from our master report template. -->
+<!-- To reference a host's facts, use our loop variable named thehost, i.e. hostvars[thehost]['some_fact'] -->
+<hr>
+<h2 id="{{ thehost }}">{{ thehost }}</h2>
+{% if pre_check[thehost] is not defined %}
+  <!-- If pre_check does not have this host that means it was unreachable. So we wont have any info -->
+{% raw %} 
+  <p style="color:red;"><strong>Host was unavailable at the time of this job; please investigate</strong></p> 
+{% endraw %}
+
+{% else %} 
+  {% set v_pre_check = {{ pre_check[thehost] }} %}
+  {% set v_os_update = {{ os_update[thehost] }} %}
+  {% set v_post_check = {{ post_check[thehost] }} %}
+
+
+  
+  {% if ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) %}
+      <!-- When all fail flags are false then the patch should be success -->     
+      <!-- HOST INFO -->
+      <p><strong>{% raw %}Host info:{% endraw %}</strong></p>
+        <ul>
+          <li>{% raw %}OS: {% endraw %}{{ hostvars[thehost]['ansible_distribution'] | default('N/A') }} {{ hostvars[thehost]['ansible_distribution_version'] | default('N/A') }}, Kernel: {{ hostvars[thehost]['ansible_kernel'] | default('N/A') }}
+          <li>{% raw %}IP addresses: {% endraw %}{{ hostvars[thehost]['ansible_all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
+        </ul>  
+        <!-- Patch Status Info -->      
+      <p><strong>{% raw %}Patch Status: {% endraw %}</strong></p>
+        <table>
+          <tr>
+            <th>Task</th>
+            <th>Status</th>
+          </tr>
+          <tr>
+            <td>Pre-Checks</td>
+            {% if v_pre_check['pre_check_fail']|bool %}
+              <td class="status-failed"> Failed. Pl. check details below</td>
+            {% else %}
+              <td class="status-completed">Success</td>
+            {% endif %}
+          </tr>
+          <tr>
+            <td>OS Updates</td>
+            {% if v_os_update['patch_fail']|bool %}
+              <td class="status-failed"> Failed. Pl. check details below</td>
+            {% else %}
+              <td class="status-completed">Success</td>
+            {% endif %}
+          </tr>
+          <tr>
+            <td>Post-Checks</td>
+            {% if v_post_check['post_check_fail']|bool %}
+              <td class="status-failed"> Failed. Pl. check details below</td>
+            {% else %}
+              <!--  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues -->
+              {% if (v_post_check['post_check_script_diff']) or ( v_post_check['post_check_services_diff'] | length > 0 ) %}
+                <td class="status-in-progress">Post Check found some differences. Please check below</td>
+              {% else %}
+                <td class="status-completed">Success. All good.</td>
+              {% endif %}
+            {% endif %}
+          </tr>
+        </table>
+    <p><strong>{% raw %} Post Check Comparision: Running Services difference  {% endraw %}</strong></p>
+      <div class="code">
+        <pre>
+{{ post_check['post_check_services_diff'] | default('no output') | trim }}
+        </pre>
+      </div>   
+    <p><strong>{% raw %} Post Check Comparision: Post Check Script Output {% endraw %}</strong></p>
+      <div class="code">
+        <pre>
+{{ post_check['post_check_script_out'] | default('no output') | trim }}
+        </pre>
+      </div>  
+
+  {% elif (v_pre_check['pre_check_fail']|bool) or (v_os_update['patch_fail']|bool) or (v_post_check['post_check_fail']|bool )%}
+   {% raw %}  <p style="color:red;"><strong>Patching Unsuccessful. Please see details below.</strong></p>         {% endraw %}
+
+    <!-- HOST INFO -->
+      <hr>
+      {% raw %} <p><strong>Host info:</strong></p> {% endraw %}
+
+        <ul>
+          <li>{% raw %} OS:  {% endraw %}{{ hostvars[thehost]['ansible_distribution'] | default('N/A') }} {{ hostvars[thehost]['ansible_distribution_version'] | default('N/A') }}, Kernel: {{ hostvars[thehost]['ansible_kernel'] | default('N/A') }}
+          <li>{% raw %} IP addresses:  {% endraw %}{{ hostvars[thehost]['ansible_all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
+        </ul>  
+    <!-- Patch Status Info -->      
+      <p><strong>{% raw %} Patch Status: {% endraw %}</strong></p>
+        <table>
+          <tr>
+            <th>Task</th>
+            <th>Status</th>
+          </tr>
+          <tr>
+            <td>Pre-Checks</td>
+            {% if v_pre_check['pre_check_fail']|bool %}
+              <td class="status-failed"> Failed. Pl. check details below</td>
+            {% else %}
+              <td class="status-completed">Success</td>
+            {% endif %}
+          </tr>
+          <tr>
+            <td>OS Updates</td>
+            {% if v_os_update['patch_fail']|bool %}
+              <td class="status-failed"> Failed. Pl. check details below</td>
+            {% else %}
+              <td class="status-completed">Success</td>
+            {% endif %}
+          </tr>
+          <tr>
+            <td>Post-Checks</td>
+            {% if v_post_check['post_check_fail']|bool %}
+              <td class="status-failed"> Failed. Pl. check details below</td>
+            {% else %}
+              <!--  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues -->
+              {% if (v_post_check['post_check_script_diff']) or ( v_post_check['post_check_services_diff'] | length > 0 ) %}
+                <td class="status-in-progress">Post Check found some differences. Please check below</td>
+              {% else %}
+                <td class="status-completed">Success. All good.</td>
+              {% endif %}
+            {% endif %}
+          </tr>
+        </table>
+      <p><strong>{% raw %} Post Check Comparision: Running Services difference  {% endraw %}</strong></p>
+        <div class="code">
+        <pre>
+{{ post_check['post_check_services_diff'] | default('no output') | trim }}
+        </pre>
+      </div>   
+      <p><strong>{% raw %} Post Check Comparision: Post Check Script Output {% endraw %}</strong></p>
+        <div class="code">
+        <pre>
+{{ post_check['post_check_script_out'] | default('no output') | trim }}
+        </pre>
+      </div>        
+  {% endif %}
+       
+{% endif %}
+    
+

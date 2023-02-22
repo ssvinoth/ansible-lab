@@ -2,6 +2,9 @@
   hosts: "{{ vm_nodes }}"
   gather_facts: false
   become: true
+  vars:
+    report_out_dir: '/opt/ansible/reports/patching'
+
   tasks:
     - name: 'Show all pre_check stats data var'
       ansible.builtin.debug: 
@@ -12,6 +15,12 @@
     - name: 'Show all post_check stats data vars'
       ansible.builtin.debug: 
         var: post_check
+    - name: Save job report to {{ report_out_dir }}
+      delegate_to: localhost
+      run_once: true
+      template:
+        src: templates/patch_report_master.j2
+        dest: "{{ report_out_dir  }}/patch_report.html"    
     # - name: 'Show all os_update stats data msg'
     #   ansible.builtin.debug: 
     #     msg: "CHECK_MSG={{ post_check[inventory_hostname_short] }}"
