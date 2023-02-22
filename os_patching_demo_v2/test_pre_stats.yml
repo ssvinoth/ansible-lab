@@ -4,7 +4,7 @@
   become: true
   vars:
     report_out_dir: '/opt/ansible/reports/patching'
-
+    required_kernel_ver: '4.18.0-372.9.1.el8.x86_64'
   tasks:
     - name: 'Show all pre_check stats data var'
       ansible.builtin.debug: 
