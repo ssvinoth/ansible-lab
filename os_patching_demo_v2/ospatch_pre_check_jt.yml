@@ -1,7 +1,7 @@
 ---
 - name: "Linux Patching : Precheck Process"
   hosts: "{{ vm_nodes }}"
-  strategy: free
+  #strategy: free
   gather_facts: false
   become: true
   tasks:
