@@ -15,6 +15,21 @@
     - name: 'Show all post_check stats data vars'
       ansible.builtin.debug: 
         var: post_check
+
+    - name: Save job json logs to {{ report_out_dir }}
+      delegate_to: localhost
+      run_once: true
+      template:
+        src: templates/patch_logs_json.j2
+        dest: "{{ report_out_dir  }}/patch_logs_json.json"   
+
+    - name: Save job yaml logs to {{ report_out_dir }}
+      delegate_to: localhost
+      run_once: true
+      template:
+        src: templates/patch_logs_yaml.j2
+        dest: "{{ report_out_dir  }}/patch_logs_yaml.yml"   
+
     - name: Save job report to {{ report_out_dir }}
       delegate_to: localhost
       run_once: true

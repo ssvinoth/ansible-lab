@@ -82,7 +82,7 @@
             {% if v_post_check['post_check_services_diff'] is defined %}
               {% if v_post_check['post_check_services_diff'] | length == 0 %}
                 <td class="status-completed">No Difference</td>
-                <td class="status-completed"></td>
+                <td></td>
               {% else %}
                 <td class="status-failed">There are Differences.</td>
                 <td class="status-failed">
@@ -103,23 +103,16 @@
             {% if v_post_check['post_check_script_out'] is defined %}
               {% if not v_post_check['post_check_script_diff'] %}
                 <td class="status-completed">No Difference</td>
-                <td class="status-completed">
-                  <div class="code"><pre>
-{% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] %}
-{{ lineitem }}
-{% endfor %}
-                  </pre></div>   
-                </td>
               {% else %}
                 <td class="status-failed">There are Differences.</td>
-                <td class="status-failed">
+              {% endif %} 
+                <td>
                   <div class="code"><pre>
 {% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] %}
 {{ lineitem }}
 {% endfor %}
                   </pre></div>         
                 </td>
-              {% endif %} 
             {% else %}
                 <td class="status-in-progress">Error. Please check the post_check status</td>
                 <td class="status-in-progress"></td>            
