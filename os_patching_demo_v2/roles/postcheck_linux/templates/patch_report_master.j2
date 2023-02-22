@@ -1,13 +1,18 @@
+{% raw %} 
 <html>
 <head>
   <!-- Viewport options can make the page scale better on mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
+  <style> 
   <!-- CSS styling for our HTML report -->
+{% endraw %}
   {% include './stylesheet.css.j2' %}
+{% raw %} 
   </style>
 </head>
+{% endraw %}
 
+{% raw %} 
 <body>
   <!-- This is our left-hand menu and navigation bar.
   We will generate links for each host, breaking them up by job status. 
@@ -16,7 +21,9 @@
   <div class="sidenav">
     <p><a style="text-align:center;font-weight:bold;font-size:medium" href="#summary">Summary</a></p>
     <hr>
-    <p>Host Results</p>
+    <p>Host Results</p> 
+{% endraw %}
+
     {% for thehost in ansible_play_hosts_all | sort %}
       {% if pre_check[thehost] is not defined %}
         <a class=missing-style href="#{{ thehost }}">{{ thehost }}</a>
@@ -26,8 +33,9 @@
          <a class=failed-style href="#{{ thehost }}">{{ thehost }}</a>
       {% endif %}
     {% endfor %}
-  </div>
+{% raw %} </div> {% endraw %}
 
+{% raw %} 
   <div class="content">
     <h1 id="top">Patch Status Report</h1>
     <hr>
@@ -37,7 +45,9 @@
       <tr>
         <th>Server</th>
         <th>Patch Status</th>
-      </tr>
+      </tr> 
+{% endraw %}
+
     {% for thehost in ansible_play_hosts_all | sort %}
         {% set v_pre_check = {{ pre_check[thehost] }} %}
         {% set v_os_update = {{ os_update[thehost] }} %}

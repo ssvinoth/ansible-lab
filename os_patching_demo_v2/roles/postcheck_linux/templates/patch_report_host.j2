@@ -4,7 +4,10 @@
 <h2 id="{{ thehost }}">{{ thehost }}</h2>
 {% if pre_check[thehost] is not defined %}
   <!-- If pre_check does not have this host that means it was unreachable. So we wont have any info -->
-  <p style="color:red;"><strong>Host was unavailable at the time of this job; please investigate</strong></p>
+{% raw %} 
+  <p style="color:red;"><strong>Host was unavailable at the time of this job; please investigate</strong></p> 
+{% endraw %}
+
 {% else %} 
   {% set v_pre_check = {{ pre_check[thehost] }} %}
   {% set v_os_update = {{ os_update[thehost] }} %}
@@ -12,13 +15,13 @@
   {% if ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) %}
       <!-- When all fail flags are false then the patch should be success -->     
       <!-- HOST INFO -->
-      <p><strong>Host info:</strong></p>
+      <p><strong>{% raw %}Host info:{% endraw %}</strong></p>
         <ul>
-          <li>OS: {{ hostvars[thehost]['ansible_distribution'] | default('N/A') }} {{ hostvars[thehost]['ansible_distribution_version'] | default('N/A') }}, Kernel: {{ hostvars[thehost]['ansible_kernel'] | default('N/A') }}
-          <li>IP addresses: {{ hostvars[thehost]['ansible_all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
+          <li>{% raw %}OS: {% endraw %}{{ hostvars[thehost]['ansible_distribution'] | default('N/A') }} {{ hostvars[thehost]['ansible_distribution_version'] | default('N/A') }}, Kernel: {{ hostvars[thehost]['ansible_kernel'] | default('N/A') }}
+          <li>{% raw %}IP addresses: {% endraw %}{{ hostvars[thehost]['ansible_all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
         </ul>  
         <!-- Patch Status Info -->      
-      <p><strong>Patch Status:</strong></p>
+      <p><strong>{% raw %}Patch Status: {% endraw %}</strong></p>
         <table>
           <tr>
             <th>Task</th>
@@ -54,13 +57,13 @@
             {% endif %}
           </tr>
         </table>
-    <p><strong>Post Check Comparision: Running Services difference </strong></p>
+    <p><strong>{% raw %} Post Check Comparision: Running Services difference  {% endraw %}</strong></p>
       <div class="code">
         <pre>
 {{ post_check['post_check_services_diff'] | default('no output') | trim }}
         </pre>
       </div>   
-    <p><strong>Post Check Comparision: Post Check Script Output</strong></p>
+    <p><strong>{% raw %} Post Check Comparision: Post Check Script Output {% endraw %}</strong></p>
       <div class="code">
         <pre>
 {{ post_check['post_check_script_out'] | default('no output') | trim }}
@@ -68,16 +71,18 @@
       </div>  
 
   {% elif (v_pre_check['pre_check_fail']|bool) or (v_os_update['patch_fail']|bool) or (v_post_check['post_check_fail']|bool )%}
-    <p style="color:red;"><strong>Patching Unsuccessful. Please see details below.</strong></p>        
+   {% raw %}  <p style="color:red;"><strong>Patching Unsuccessful. Please see details below.</strong></p>         {% endraw %}
+
     <!-- HOST INFO -->
       <hr>
-      <p><strong>Host info:</strong></p>
+      {% raw %} <p><strong>Host info:</strong></p> {% endraw %}
+
         <ul>
-          <li>OS: {{ hostvars[thehost]['ansible_distribution'] | default('N/A') }} {{ hostvars[thehost]['ansible_distribution_version'] | default('N/A') }}, Kernel: {{ hostvars[thehost]['ansible_kernel'] | default('N/A') }}
-          <li>IP addresses: {{ hostvars[thehost]['ansible_all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
+          <li>{% raw %} OS:  {% endraw %}{{ hostvars[thehost]['ansible_distribution'] | default('N/A') }} {{ hostvars[thehost]['ansible_distribution_version'] | default('N/A') }}, Kernel: {{ hostvars[thehost]['ansible_kernel'] | default('N/A') }}
+          <li>{% raw %} IP addresses:  {% endraw %}{{ hostvars[thehost]['ansible_all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
         </ul>  
     <!-- Patch Status Info -->      
-      <p><strong>Patch Status:</strong></p>
+      <p><strong>{% raw %} Patch Status: {% endraw %}</strong></p>
         <table>
           <tr>
             <th>Task</th>
@@ -113,13 +118,13 @@
             {% endif %}
           </tr>
         </table>
-      <p><strong>Post Check Comparision: Running Services difference </strong></p>
+      <p><strong>{% raw %} Post Check Comparision: Running Services difference  {% endraw %}</strong></p>
         <div class="code">
         <pre>
 {{ post_check['post_check_services_diff'] | default('no output') | trim }}
         </pre>
       </div>   
-      <p><strong>Post Check Comparision: Post Check Script Output</strong></p>
+      <p><strong>{% raw %} Post Check Comparision: Post Check Script Output {% endraw %}</strong></p>
         <div class="code">
         <pre>
 {{ post_check['post_check_script_out'] | default('no output') | trim }}
