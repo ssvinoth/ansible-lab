@@ -2,7 +2,11 @@
   block:
     - name: 'CHECK_CONN | Check Connectivity'
       ansible.builtin.ping:
+      # ignore_unreachable: true
+      # register: ping_result
 
+      # ping_result.unreachable is defined
+    
   rescue:
     - name: 'CHECK_CONN |  Set failure message'
       ansible.builtin.set_fact:

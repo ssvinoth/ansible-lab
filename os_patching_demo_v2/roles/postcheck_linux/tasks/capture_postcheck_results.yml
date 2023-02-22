@@ -17,7 +17,7 @@
               "post_check_fail_stage" : "{{ post_check_fail_stage | default('') }}",
               "post_check_fail_msg" : "{{ post_check_fail_msg | default('') }}",
               "post_check_script_out" : "{{ postcheck_script_result | default('') }}",
-              "post_check_services_diff" : "{{ running_svcs_diff | default('') }}",
+              "post_check_services_diff" : "{{ running_svcs_diff | default([]) }}",
               "post_check_script_diff" : "{{ post_check_script_diff | default(false) }}"
             }
           }  
@@ -37,7 +37,7 @@
               "post_check_fail_stage" : "SKIPPED",
               "post_check_fail_msg" : "SKIPPED due to precheck/os_update failure",
               "post_check_script_out" : "",
-              "post_check_services_diff" : "",
+              "post_check_services_diff" : "[]",
               "post_check_script_diff" : false
             }
           }  
