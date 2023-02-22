@@ -22,13 +22,13 @@
   {% endif %}
 
       <!-- HOST INFO -->
-      <p><strong>{% raw %}Host info:{% endraw %}</strong></p>
+      <p><strong>{% raw %}Host info{% endraw %}</strong></p>
         <ul>
-          <li>{% raw %}OS: {% endraw %}{{ hostvars[thehost]['ansible_distribution'] | default('N/A') }} {{ hostvars[thehost]['ansible_distribution_version'] | default('N/A') }},{% raw %}Kernel:  {% endraw %}{{ hostvars[thehost]['ansible_kernel'] | default('N/A') }}
-          <li>{% raw %}IP addresses: {% endraw %}{{ hostvars[thehost]['ansible_all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
+          <li>{% raw %}OS {% endraw %}{{ hostvars[thehost]['ansible_distribution'] | default('N/A') }} {{ hostvars[thehost]['ansible_distribution_version'] | default('N/A') }},{% raw %}Kernel  {% endraw %}{{ hostvars[thehost]['ansible_kernel'] | default('N/A') }}
+          <li>{% raw %}IP addresses {% endraw %}{{ hostvars[thehost]['ansible_all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
         </ul>  
         <!-- Patch Status Info -->      
-      <p><strong>{% raw %}Patch Status: {% endraw %}</strong></p>
+      <p><strong>{% raw %}Patch Status {% endraw %}</strong></p>
         <table>
           <tr>
             <th>Task</th>
@@ -64,13 +64,13 @@
             {% endif %}
           </tr>
         </table>
-    <p><strong>{% raw %} Post Check Comparision: Running Services difference  {% endraw %}</strong></p>
+    <p><strong>{% raw %} Post Check Comparision Running Services difference  {% endraw %}</strong></p>
       <div class="code">
         <pre>
 {{ post_check['post_check_services_diff'] | default('no output') | trim }}
         </pre>
       </div>   
-    <p><strong>{% raw %} Post Check Comparision: Post Check Script Output {% endraw %}</strong></p>
+    <p><strong>{% raw %} Post Check Comparision Post Check Script Output {% endraw %}</strong></p>
       <div class="code">
         <pre>
 {{ post_check['post_check_script_out'] | default('no output') | trim }}
