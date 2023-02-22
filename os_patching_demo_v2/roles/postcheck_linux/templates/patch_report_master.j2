@@ -24,7 +24,16 @@
     <p>Host Results</p> 
 {% endraw %}
 
-{% raw %} TESTING THIS PORTION 1{% endraw %}
+    {% for thehost in ansible_play_hosts_all | sort %}
+      {% if pre_check[thehost] is not defined %}
+        <a class=missing-style href="#{{ thehost }}">{{ thehost }}</a>
+      {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) %}
+        <a href="#{{ thehost }}">{{ thehost }}</a>
+      {% else %}
+         <a class=failed-style href="#{{ thehost }}">{{ thehost }}</a>
+      {% endif %}
+    {% endfor %}
+
 
 {% raw %} </div> {% endraw %}
 
@@ -64,10 +73,8 @@
     </tr>
     {% endfor %}
 
+{% raw %} TESTING IF SUBTEMPLATE ERROR {% endraw %}
 
-    {% for thehost in ansible_play_hosts_all | sort %}
-      {% include './patch_report_host.j2' %}
-    {% endfor %}
     
 {% raw %}     
     <hr>
