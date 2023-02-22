@@ -8,7 +8,9 @@
       ansible.builtin.shell:
         cmd: "lvremove -f /dev/mapper/{{ root_vol_vg }}-{{ item.value.lv_snapshot_name}}"
       ignore_errors: true
-      when: not (item.key=='/boot')
+      when: 
+        - not (item.key=='/boot')
+        - lvm_mount_devices[item.key] is defined
       loop: "{{ fs_check_val_list }}"           
 
     - name: 'LVM_SNAPSHOT | Create /boot backup in /var/backup'
@@ -20,7 +22,9 @@
     - name: 'LVM_SNAPSHOT | Create snapshots for the root volumes'
       ansible.builtin.shell:
         cmd: "lvcreate -s -L {{ item.value.free_size_g }}g -n  {{ item.value.lv_snapshot_name }} {{ mount_device }}"
-      when: not (item.key=='/boot')
+      when: 
+        - not (item.key=='/boot')
+        - lvm_mount_devices[item.key] is defined
       vars:
         mount_device: "{{ lvm_mount_devices[item.key] }}"
       loop: "{{ fs_check_val_list }}"      
