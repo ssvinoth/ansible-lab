@@ -1,3 +1,5 @@
-{{ pre_check | to_nice_json }}
-{{ os_update | to_nice_json }}
-{{ post_check | to_nice_json }}
+{
+'pre_check': {{ pre_check | to_nice_json }},
+'os_update': {{ os_update | to_nice_json }},
+'post_check':{{ post_check | to_nice_json }}
+}

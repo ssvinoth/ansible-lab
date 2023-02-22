@@ -1,3 +1,6 @@
-{{ pre_check | to_nice_yaml }}
-{{ os_update | to_nice_yaml }}
-{{ post_check | to_nice_yaml }}
+patchlogs:
+   pre_check: {{ pre_check | to_nice_yaml }}
+   os_update: {{ os_update | to_nice_yaml }}
+   post_check: {{ post_check | to_nice_yaml }}
+
+
