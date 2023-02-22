@@ -39,5 +39,7 @@
     # TODO: Create Report 
 
   when: 
+    - pre_check[inventory_hostname_short] is defined
+    - os_update[inventory_hostname_short] is defined
     - not pre_check[inventory_hostname_short].pre_check_fail
     - not os_update[inventory_hostname_short].patch_fail
