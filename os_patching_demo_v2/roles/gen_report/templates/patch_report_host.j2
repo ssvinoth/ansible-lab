@@ -13,6 +13,7 @@
   {% set v_os_update = os_update[thehost] %}
   {% set v_post_check = post_check[thehost] %}
 
+
       {% if ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) %}
           {% raw %} 
           <!-- When all fail flags are false then the patch should be success -->

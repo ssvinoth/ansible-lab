@@ -34,7 +34,8 @@
 
 - name: debug datetime
   ansible.builtin.debug:
-    var: datetime
+    var: hostvars['localhost'].datetime
+  run_once: true
 
 - name: Save job json logs to {{ report_out_dir }}
   delegate_to: localhost

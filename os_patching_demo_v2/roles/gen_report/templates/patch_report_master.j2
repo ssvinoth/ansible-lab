@@ -62,6 +62,8 @@
         {% set v_os_update =  os_update[thehost]  %}
         {% set v_post_check = post_check[thehost] %}
 
+
+
     <tr>
       <td><a href="#{{ thehost }}">{{ thehost }}</a></td>   
       {% if pre_check[thehost] is not defined %}
@@ -71,6 +73,15 @@
         <td class="status-missing">NA</td>
         <td class="status-missing">Unreachable</td>
       {% else %}
+        <!-- Get required kernel version based on the OS Version -->
+        {% if v_post_check['distribution_major_version'] == 7 %}
+          {% set required_kernel_ver = rhel7_reqd_kernel_ver %}
+        {% elif v_post_check['distribution_major_version'] == 8 %}
+          {% set required_kernel_ver = rhel8_reqd_kernel_ver %}
+        {% else %}
+          {% set required_kernel_ver = 'UNKNOWN' %}
+        {% endif %}
+
           <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('N/A') }}</td>
           <td>{{ required_kernel_ver | default('N/A') }}</td>
           <td class="{{ 'status-completed' if (v_post_check['post_check_facts']['kernel'] == required_kernel_ver) else 'status-failed'  }}">{{ v_post_check['post_check_facts']['kernel'] | default('N/A') }}</td>
