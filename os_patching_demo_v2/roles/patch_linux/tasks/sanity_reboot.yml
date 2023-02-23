@@ -7,6 +7,7 @@
         connect_timeout: "{{ check_conn_freq }}"
         post_reboot_delay: "{{ post_reboot_delay }}"
         test_command: "{{ test_command }}"
+        pre_reboot_delay: "{{ pre_reboot_delay }}"
   
   rescue:
     - name: 'SANITY_REBOOT |  Set failure message'
