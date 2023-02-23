@@ -4,11 +4,12 @@
 <hr>
 <h2 id="{{ thehost }}">{{ thehost }}</h2>
 {% if pre_check[thehost] is not defined %}
-  <!-- If pre_check does not have this host that means it was unreachable. So we wont have any info -->
+<!-- If pre_check does not have this host that means it was unreachable. So we wont have any info -->
     {% raw %} 
       <p style="color:red;"><strong>Host was unavailable at the time of this job; please investigate</strong></p> 
     {% endraw %}
-{% else %} 
+{% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool )  %} 
+<!-- All good, Just check if there are any post check differences -->
   {% set v_pre_check = pre_check[thehost] %}
   {% set v_os_update = os_update[thehost] %}
   {% set v_post_check = post_check[thehost] %}
@@ -124,11 +125,149 @@
       <p><strong>{% raw %}Patches Info:  {% endraw %}</strong></p>
         <div class="code">
         <pre>
-{% for lineitem in v_os_update['patch_yum_history']['stdout_lines']| default([]) %}
+{% for lineitem in v_os_update['patch_yum_history']['stdout_lines']| default(['No Updates']) %}
 {{ lineitem }}
 {% endfor %}
         </pre>
       </div>       
+
+
+{% elif (v_pre_check['pre_check_fail']|bool) or (v_os_update['patch_fail']|bool) or (v_post_check['post_check_fail']|bool )%}
+<!-- Something went wrong, Just print the statuses of all the steps -->
+{% raw %}  <p style="color:red;"><strong>Patching Unsuccessful. Please see details below.</strong></p>{% endraw %}
+  {% set v_pre_check = pre_check[thehost] %}
+  {% set v_os_update = os_update[thehost] %}
+  {% set v_post_check = post_check[thehost] %}
+
+      {% if v_pre_check['pre_check_facts'] is defined %}
+            <p><strong>{% raw %}Host info{% endraw %}</strong></p>
+              <ul>
+                <li>{% raw %}Hostname: {% endraw %} {{ v_pre_check['pre_check_facts']['hostname']}}</li>
+                <li>{% raw %}FQDN: {% endraw %} {{ v_pre_check['pre_check_facts']['nodename']}}</li>
+                <li>{% raw %}OS: {% endraw %}{{ v_pre_check['pre_check_facts']['distribution'] | default('N/A') }} {{ v_pre_check['pre_check_facts']['distribution_version'] | default('N/A') }}
+                <li>{% raw %}IP addresses: {% endraw %}{{ v_pre_check['pre_check_facts']['all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
+                <li>{% raw %}Kernel  {% endraw %}{{ v_pre_check['pre_check_facts']['kernel'] | default('N/A') }}</li>
+              </ul>  
+      {% endif %}
+
+      <p><strong>{% raw %}Patch Status {% endraw %}</strong></p>
+        <table>
+          <tr>
+            <th>Task</th>
+            <th>Status</th>
+            <th>Fail Stage</th>
+            <th>Fail Message</th>
+          </tr>
+          <tr>
+            <td>Pre-Checks</td>
+            {% if v_pre_check['pre_check_fail']|bool %}
+              <td class="status-failed"> Failed. Pl. check details below</td>
+              <td class="status-failed">{{ v_pre_check['pre_check_fail_stage'] | default('')}}</td>
+              <td class="status-failed">{{ v_pre_check['pre_check_fail_msg'] | default('')}}</td>
+            {% else %}
+              <td class="status-completed">Success</td>
+              <td class="status-completed">{{ v_pre_check['pre_check_fail_stage'] | default('')}}</td>
+              <td class="status-completed">{{ v_pre_check['pre_check_fail_msg'] | default('')}}</td>
+            {% endif %}
+          </tr>
+          <tr>
+            <td>OS Updates</td>
+            {% if v_os_update['patch_fail']|bool %}
+              <td class="status-failed"> Failed. Pl. check details below</td>
+              <td class="status-failed">{{ v_os_update['patch_fail_stage'] | default('')}}</td>
+              <td class="status-failed">{{ v_os_update['patch_fail_msg'] | default('')}}</td>
+            {% else %}
+              <td class="status-completed">Success</td>
+              <td class="status-completed">{{ v_os_update['patch_fail_stage'] | default('')}}</td>
+              <td class="status-completed">{{ v_os_update['patch_fail_msg'] | default('')}}</td>
+            {% endif %}
+          </tr>
+          <tr>
+            <td>Post-Checks</td>
+            {% if v_post_check['post_check_fail']|bool %}
+              <td class="status-failed"> Failed. Pl. check details below</td>
+              <td class="status-failed">{{ v_post_check['post_check_fail_stage'] | default('')}}</td>
+              <td class="status-failed">{{ v_post_check['post_check_fail_msg'] | default('')}}</td>
+            {% else %}
+              {% raw %} <!--  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues --> {% endraw %}
+              {% if (v_post_check['post_check_script_diff']) or ( v_post_check['post_check_services_diff'] | length > 0 ) %}
+                {% set v_post_check_diff = true %}
+                <td class="status-in-progress">Post Check found some differences. Please check below</td>
+                <td class="status-in-progress">{{ v_post_check['post_check_fail_stage'] | default('')}}</td>
+                <td class="status-in-progress">{{ v_post_check['post_check_fail_msg'] | default('')}}</td>               
+              {% else %}
+                <td class="status-completed">Success. All good.</td>
+                <td class="status-completed">{{ v_post_check['post_check_fail_stage'] | default('')}}</td>
+               <td class="status-completed">{{ v_post_check['post_check_fail_msg'] | default('')}}</td>
+              {% endif %}
+            {% endif %}
+          </tr>
+        </table>
+  {% if not v_post_check['post_check_fail']|bool %}
+
+  <p><strong>{% raw %}Comparision between Pre and Post Patch Statuses{% endraw %}</strong></p>
+      <!-- Post Check Difference Table -->
+      <table>
+          <tr>
+            <th>Post Check</th>
+            <th>Status</th>
+            <th>Output</th>
+          </tr>
+          <!-- Running Services Diff -->
+          <tr>
+            <td>Running Services</td>
+            {% if v_post_check['post_check_services_diff'] is defined %}
+              {% if v_post_check['post_check_services_diff'] | length == 0 %}
+                <td class="status-completed">No Difference</td>
+                <td></td>
+              {% else %}
+                <td class="status-failed">There are Differences.</td>
+                <td class="status-failed">
+                 {% for lineitem in v_post_check['post_check_services_diff'] %}
+                    {{ lineitem }}
+                {% endfor %}               
+                </td>
+              {% endif %} 
+            {% else %}
+                <td class="status-in-progress">Error. Please check the post_check status</td>
+                <td class="status-in-progress"></td>            
+            {% endif %}
+          </tr>
+
+          <!-- Post-Check Script Out Diff -->
+          <tr>
+            <td>Post-Check Script</td>
+            {% if v_post_check['post_check_script_out'] is defined %}
+              {% if not v_post_check['post_check_script_diff'] %}
+                <td class="status-completed">No Difference</td>
+              {% else %}
+                <td class="status-failed">There are Differences.</td>
+              {% endif %} 
+                <td>
+                  <div class="code"><pre>
+{% for lineitem in v_post_check['post_check_script_out']['stdout_lines'] %}
+{{ lineitem }}
+{% endfor %}
+                  </pre></div>         
+                </td>
+            {% else %}
+                <td class="status-in-progress">Error. Please check the post_check status</td>
+                <td class="status-in-progress"></td>            
+            {% endif %}
+          </tr>
+
+      </table>
+      <p><strong>{% raw %}Patches Info:  {% endraw %}</strong></p>
+        <div class="code">
+        <pre>
+{% for lineitem in v_os_update['patch_yum_history']['stdout_lines']| default(['No Updates']) %}
+{{ lineitem }}
+{% endfor %}
+        </pre>
+      </div>   
+  {% endif %}
+
+
 {% endif %}
     
 
