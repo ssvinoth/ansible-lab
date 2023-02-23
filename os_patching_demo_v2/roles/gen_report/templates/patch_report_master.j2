@@ -74,9 +74,9 @@
         <td class="status-missing">Unreachable</td>
       {% else %}
         <!-- Get required kernel version based on the OS Version -->
-        {% if v_post_check['distribution_major_version'] == 7 %}
+        {% if v_post_check['post_check_facts']['distribution_major_version'] == 7 %}
           {% set required_kernel_ver = rhel7_reqd_kernel_ver %}
-        {% elif v_post_check['distribution_major_version'] == 8 %}
+        {% elif v_post_check['post_check_facts']['distribution_major_version'] == 8 %}
           {% set required_kernel_ver = rhel8_reqd_kernel_ver %}
         {% else %}
           {% set required_kernel_ver = 'UNKNOWN' %}
