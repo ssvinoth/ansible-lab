@@ -1,0 +1,58 @@
+---
+# tasks file for gen_report
+- name: 'Show all pre_check stats data var'
+  ansible.builtin.debug: 
+    var: pre_check
+  delegate_to: localhost
+  run_once: true
+
+- name: 'Show all os_update stats data var'
+  ansible.builtin.debug: 
+    var: os_update
+  delegate_to: localhost
+  run_once: true
+
+- name: 'Show all post_check stats data vars'
+  ansible.builtin.debug: 
+    var: post_check
+  delegate_to: localhost
+  run_once: true
+
+# Get time
+- ansible.builtin.setup:
+    filter: ansible_date_time
+  register: result
+  delegate_to: localhost
+  run_once: true
+
+- ansible.builtin.set_fact:
+    datetime: "{{ ansible_date_time.date }}_{{ ansible_date_time.time |  replace(':','-') }}" 
+    end_time: "{{ lookup('pipe','date \"+%T %Z %F\"') }}"
+  delegate_to: localhost
+  delegate_facts: true
+  run_once: true
+
+- name: debug datetime
+  ansible.builtin.debug:
+    var: datetime
+
+- name: Save job json logs to {{ report_out_dir }}
+  delegate_to: localhost
+  run_once: true
+  template:
+    src: templates/patch_logs_json.j2
+    dest: "{{ report_out_dir  }}/patch_logs_json_{{hostvars['localhost'].datetime}}.json"   
+
+- name: Save job yaml logs to {{ report_out_dir }}
+  delegate_to: localhost
+  run_once: true
+  template:
+    src: templates/patch_logs_yaml.j2
+    dest: "{{ report_out_dir  }}/patch_logs_yaml_{{hostvars['localhost'].datetime}}.yml"   
+
+- name: Save job report to {{ report_out_dir }}
+  delegate_to: localhost
+  run_once: true
+  template:
+    src: templates/patch_report_master.j2
+    dest: "{{ report_out_dir  }}/patch_report_{{hostvars['localhost'].datetime}}.html"    

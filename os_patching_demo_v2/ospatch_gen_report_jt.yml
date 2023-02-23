@@ -1,0 +1,10 @@
+---
+- name: "Linux Patching : Generate Report"
+  hosts: "{{ vm_nodes }}"
+  #strategy: free
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'Include generate-report role'
+      ansible.builtin.include_role: 
+        name: gen_report

@@ -1,0 +1,10 @@
+---
+# defaults file for gen_report
+report_out_dir: '/opt/ansible/reports/patching'
+# REQUIRES
+## patch_job_name to be used in reporting  
+# patch_job_name: os_patch_vms
+## hosts  
+# vm_nodes: os_patch_vms
+## required kernel verstion to compare
+# required_kernel_ver: '4.19.0-372.9.1.el8.x86_64'
