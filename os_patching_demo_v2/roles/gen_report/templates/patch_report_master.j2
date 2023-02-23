@@ -72,7 +72,7 @@
         <td class="status-missing">NA</td>
         <td class="status-missing">NA</td>
         <td class="status-missing">Unreachable</td>
-      {% else %}
+      {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool )  %}
         <!-- Get required kernel version based on the OS Version -->
         {% if v_post_check['post_check_facts']['distribution_major_version'] == '7' %}
           {% set required_kernel_ver = rhel7_reqd_kernel_ver %}
@@ -95,6 +95,38 @@
           {% else %}
             <td class="status-failed">Failed. Please check the details below</td>
           {% endif %}
+      {% else %}
+        <!-- Patching Failed in the process -->
+        <!-- 
+          We need 
+            Pre-Patch kernel
+            Required kernel
+            pos-patch kernel
+            patch status
+          If we know the pre-patch kernel then we can put that and then use that to identify reqd patch        
+        -->
+
+          {% if  v_pre_check['pre_check_facts']['kernel'] is defined %}            
+            <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('UNKNOWN') }}</td>
+                {% if v_pre_check['pre_check_facts']['distribution_major_version'] == '7' %}
+                  {% set required_kernel_ver = rhel7_reqd_kernel_ver %}
+                {% elif v_pre_check['pre_check_facts']['distribution_major_version'] == '8' %}
+                  {% set required_kernel_ver = rhel8_reqd_kernel_ver %}
+                {% else %}
+                  {% set required_kernel_ver = 'UNKNOWN' %}
+                {% endif %} 
+            <td>{{ required_kernel_ver | default('UNKNOWN') }}</td>
+                {% if v_post_check['post_check_facts']['kernel'] is defined %}
+                  <td class="{{ 'status-completed' if (v_post_check['post_check_facts']['kernel'] == required_kernel_ver) else 'status-failed'  }}">{{ v_post_check['post_check_facts']['kernel'] | default('N/A') }}</td>
+                {% else %}
+                  <td class="status-failed">UNKNOWN</td>
+                {% endif %}       
+          {% else %}
+            <td class="status-failed">UNKNOWN</td>
+            <td class="status-failed">UNKNOWN</td>
+            <td class="status-failed">UNKNOWN</td>
+          {% endif %}
+        <td class="status-failed">Failed. Please check the details below</td>
       {% endif %}
     </tr>
 

@@ -121,7 +121,14 @@
           </tr>
 
       </table>
-       
+      <p><strong>{% raw %}Patches Info:  {% endraw %}</strong></p>
+        <div class="code">
+        <pre>
+{% for lineitem in v_os_update['patch_yum_history']['stdout_lines']| default([]) %}
+{{ lineitem }}
+{% endfor %}
+        </pre>
+      </div>       
 {% endif %}
     
 

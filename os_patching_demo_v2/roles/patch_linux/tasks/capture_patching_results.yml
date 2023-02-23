@@ -18,7 +18,7 @@
               "patch_fail" : "{{ patch_fail | default(false) }}",
               "patch_fail_stage" : "{{ patch_fail_stage | default('') }}",
               "patch_fail_msg" : "{{ patch_fail_msg | default('') }}",
-              "patch_yum_history" : "{{ yum_update_history_result | default('') }}",
+              "patch_yum_history" : "{{ yum_update_history_result | default({}) }}",
             }
           }  
 
@@ -34,7 +34,7 @@
               "patch_fail" : true,
               "patch_fail_stage" : "SKIPPED",
               "patch_fail_msg" : "SKIPPED due to precheck failure",
-              "patch_yum_history" : "",
+              "patch_yum_history" : {},
             }
           }  
   rescue:
