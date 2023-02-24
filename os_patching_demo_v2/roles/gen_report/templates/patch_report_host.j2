@@ -158,7 +158,7 @@
               <td class="status-failed"> Failed. Pl. check details below</td>
               <td class="status-failed">{{ v_pre_check['pre_check_fail_stage'] | default('')}}</td>
               <td class="status-failed">
-                {% for lineitem in ( v_pre_check['pre_check_fail_msg']['results'] is defined | ternary( (v_pre_check['pre_check_fail_msg']['results'] |  selectattr('failed','equalto',true) | map(attribute='msg')| list),  ([v_pre_check['pre_check_fail_msg']['msg'] | default('')]))) %}
+                {% for lineitem in ( v_pre_check['pre_check_fail_msg']['results'] is defined | ternary( (v_pre_check['pre_check_fail_msg']['results'] | selectattr('failed','defined')| selectattr('failed','equalto',true) | map(attribute='msg')| list),  ([v_pre_check['pre_check_fail_msg']['msg'] | default('')]))) %}
                 {{ lineitem }}
                 {% endfor %}
               </td>
@@ -174,7 +174,7 @@
               <td class="status-failed"> Failed. Pl. check details below</td>
               <td class="status-failed">{{ v_os_update['patch_fail_stage'] | default('')}}</td>
               <td class="status-failed">
-                {% for lineitem in ( v_os_update['patch_fail_msg']['results'] is defined | ternary( (v_os_update['patch_fail_msg']['results'] |  selectattr('failed','equalto',true) | map(attribute='msg')| list),  ([v_os_update['patch_fail_msg']['msg'] | default('')]))) %}
+                {% for lineitem in ( v_os_update['patch_fail_msg']['results'] is defined | ternary( (v_os_update['patch_fail_msg']['results'] | selectattr('failed','defined')|  selectattr('failed','equalto',true) | map(attribute='msg')| list),  ([v_os_update['patch_fail_msg']['msg'] | default('')]))) %}
                 {{ lineitem }}
                 {% endfor %}
               </td>
@@ -190,7 +190,7 @@
               <td class="status-failed"> Failed. Pl. check details below</td>
               <td class="status-failed">{{ v_post_check['post_check_fail_stage'] | default('')}}</td>
               <td class="status-failed">
-                {% for lineitem in ( v_post_check['post_check_fail_msg']['results'] is defined | ternary( (v_post_check['post_check_fail_msg']['results'] |  selectattr('failed','equalto',true) | map(attribute='msg')| list),  ([v_post_check['post_check_fail_msg']['msg'] | default('')]))) %}
+                {% for lineitem in ( v_post_check['post_check_fail_msg']['results'] is defined | ternary( (v_post_check['post_check_fail_msg']['results'] | selectattr('failed','defined')|   selectattr('failed','equalto',true) | map(attribute='msg')| list),  ([v_post_check['post_check_fail_msg']['msg'] | default('')]))) %}
                 {{ lineitem }}
                 {% endfor %}
               </td>
