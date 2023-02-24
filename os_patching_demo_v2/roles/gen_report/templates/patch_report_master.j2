@@ -1,23 +1,22 @@
-{% raw %} 
 <html>
 <head>
-  <!-- Viewport options can make the page scale better on mobile -->
+  {# Viewport options can make the page scale better on mobile #}
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style> 
-  <!-- CSS styling for our HTML report -->
-{% endraw %}
+  {# CSS styling for our HTML report #}
   {% include './stylesheet.css.j2' %}
 {% raw %} 
   </style>
 </head>
 {% endraw %}
 
-{% raw %} 
-<body>
-  <!-- This is our left-hand menu and navigation bar.
-  We will generate links for each host, breaking them up by job status. 
-  The color / style for failed and missing hosts can be tuned in playbook vars. -->
 
+<body>
+  {# This is our left-hand menu and navigation bar.
+  We will generate links for each host, breaking them up by job status. 
+  The color / style for failed and missing hosts can be tuned in playbook vars. #}
+
+{% raw %} 
   <div class="sidenav">
     <p><a style="text-align:center;font-weight:bold;font-size:medium" href="#summary">Summary</a></p>
     <hr>
@@ -29,7 +28,7 @@
         {% set v_os_update =  os_update[thehost]  %}
         {% set v_post_check = post_check[thehost] %}
       {% if pre_check[thehost] is not defined %}
-        <!-- TODO: currently the class (missing-style, failed-style) values are overwritten. Need to fix it. For now, we will just use the in-line style-->
+        {# TODO: currently the class (missing-style, failed-style) values are overwritten. Need to fix it. For now, we will just use the in-line style#}
         {% raw %}<a style="text-decoration:line-through;color:grey"{% endraw %} href="#{{ thehost }}">{{ thehost }}</a>
       {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) %}
         <a href="#{{ thehost }}">{{ thehost }}</a>
@@ -39,14 +38,14 @@
     {% endfor %}
 
 
-{% raw %} </div> {% endraw %}
+  </div>
 
-{% raw %} 
+
   <div class="content">
     <h1 id="top">Patch Status Report</h1>
     <hr>
     <h1 id="summary">Summary</h1>
-    <!-- Create a table for each hosts -->
+    {# Create a table for each hosts #}
     <table>
       <tr>
         <th>Server</th>
@@ -55,7 +54,7 @@
         <th>Post-Patch Kernel Version</th>
         <th>Patch Status</th>
       </tr> 
-{% endraw %}
+
 
     {% for thehost in ansible_play_hosts_all | sort %}
     
@@ -72,7 +71,7 @@
         <td class="status-missing">NA</td>
         <td class="status-missing">Unreachable</td>
       {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool )  %}
-        <!-- Get required kernel version based on the OS Version -->
+        {# Get required kernel version based on the OS Version #}
         {% if v_post_check['post_check_facts']['distribution_major_version'] == '7' %}
           {% set required_kernel_ver = rhel7_reqd_kernel_ver %}
         {% elif v_post_check['post_check_facts']['distribution_major_version'] == '8' %}
@@ -85,7 +84,7 @@
           <td>{{ required_kernel_ver | default('N/A') }}</td>
           <td class="{{ 'status-completed' if (v_post_check['post_check_facts']['kernel'] == required_kernel_ver) else 'status-failed'  }}">{{ v_post_check['post_check_facts']['kernel'] | default('N/A') }}</td>
           {% if ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) and (v_post_check['post_check_facts']['kernel'] == required_kernel_ver) %}
-              {% raw %}<!--  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues --> {% endraw %}
+             {#  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues #} 
             {% if (v_post_check['post_check_script_diff']) or ( v_post_check['post_check_services_diff'] | length > 0 ) %}
                 <td class="status-in-progress">Patch Completed but Post Check found some differences. Please check the details</td>
               {% else %}
@@ -95,16 +94,7 @@
             <td class="status-failed">Failed. Please check the details below</td>
           {% endif %}
       {% else %}
-        <!-- Patching Failed in the process -->
-        <!-- 
-          We need 
-            Pre-Patch kernel
-            Required kernel
-            pos-patch kernel
-            patch status
-          If we know the pre-patch kernel then we can put that and then use that to identify reqd patch        
-        -->
-
+        {# Patching Failed in the process #}
           {% if  v_pre_check['pre_check_facts']['kernel'] is defined %}            
             <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('UNKNOWN') }}</td>
                 {% if v_pre_check['pre_check_facts']['distribution_major_version'] == '7' %}
