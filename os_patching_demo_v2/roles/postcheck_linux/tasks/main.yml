@@ -29,7 +29,7 @@
       ansible.builtin.command: /usr/bin/python
       args:
         stdin: |
-          from datetime import datetime
+          import datetime
           print(datetime.timedelta(seconds={{ ansible_facts['uptime_seconds']| default(0) |int }}))
       register: uptime_results
       delegate_to: localhost      
