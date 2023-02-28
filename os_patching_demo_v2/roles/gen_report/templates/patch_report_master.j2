@@ -9,7 +9,7 @@
   </style>
 </head>
 {% endraw %}
-
+  
 
 <body>
   {# This is our left-hand menu and navigation bar.
@@ -22,6 +22,7 @@
     <hr>
     <p>Host Results</p> 
 {% endraw %}
+
 
     {% for thehost in ansible_play_hosts_all | sort %}
         {% set v_pre_check =  pre_check[thehost] | default({}) %}
@@ -54,17 +55,24 @@
         <th>Post-Patch Kernel Version</th>
         <th>Patch Status</th>
       </tr> 
-
+    {# Set the initial counts #}
+    {% set ttl = namespace() %}
+    {% set ttl.total = 0 %}
+    {% set ttl.success = 0 %}
+    {% set ttl.failed = 0 %}
+    {% set ttl.unreachable = 0 %}
+    {% set ttl.partialsuccess = 0 %}
 
     {% for thehost in ansible_play_hosts_all | sort %}
     
         {% set v_pre_check =  pre_check[thehost] | default({}) %}
         {% set v_os_update =  os_update[thehost]  %}
         {% set v_post_check = post_check[thehost] %}
-
+        {% set ttl.total = ttl.total + 1 %}
     <tr>
       <td><a href="#{{ thehost }}">{{ thehost }}</a></td>   
       {% if pre_check[thehost] is not defined %}
+        {% set ttl.unreachable = ttl.unreachable + 1 %}
   
         <td class="status-missing">NA</td>
         <td class="status-missing">NA</td>
@@ -87,14 +95,18 @@
              {#  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues #} 
             {% if (v_post_check['post_check_script_diff']) or ( v_post_check['post_check_services_diff'] | length > 0 ) %}
                 <td class="status-in-progress">Patch Completed but Post Check found some differences. Please check the details</td>
+                {% set ttl.partialsuccess = ttl.partialsuccess + 1 %}
               {% else %}
                 <td class="status-completed">Success. All good.</td>
+                {% set ttl.success = ttl.success + 1 %}
               {% endif %}
           {% else %}
             <td class="status-failed">Failed. Please check the details below</td>
+            
           {% endif %}
       {% else %}
         {# Patching Failed in the process #}
+        {% set set ttl.failed = set ttl.failed + 1 %}
           {% if  v_pre_check['pre_check_facts']['kernel'] is defined %}            
             <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('UNKNOWN') }}</td>
                 {% if v_pre_check['pre_check_facts']['distribution_major_version'] == '7' %}
@@ -120,6 +132,24 @@
     </tr>
 
     {% endfor %}
+    </table>
+    {# Add the summary of host counts and status table #}
+    
+    <table>
+      <tr>
+        <th>Total Nodes</th>
+        <th>Success</th>
+        <th>Partial Success</th>
+        <th>Failed</th>
+        <th>Unreachable</th>
+      </tr>
+      <tr>
+        <td>{{ ttl.total }}</td>
+        <th>{{ ttl.success }}</th>
+        <th>{{ ttl.partialsuccess }}</th>
+        <th>{{ ttl.failed }}</th>
+        <th>{{ ttl.Unreachable }}</th>
+      </tr>
     </table>
     <hr>
     <h1 id="patch_details">Patch Details</h1>
