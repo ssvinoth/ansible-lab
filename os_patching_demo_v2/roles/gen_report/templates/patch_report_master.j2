@@ -54,6 +54,7 @@
         <th>Required Kernel Version</th>
         <th>Post-Patch Kernel Version</th>
         <th>Patch Status</th>
+        <th>Post-Patch Uptime</th>
       </tr> 
     {# Set the initial counts #}
     {% set ttl = namespace() %}
@@ -78,6 +79,7 @@
           <td class="status-missing">NA</td>
           <td class="status-missing">NA</td>
           <td class="status-missing">Unreachable</td>
+          <td class="status-missing">NA</td>
         {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool )  %}
           {# Get required kernel version based on the OS Version #}
           {% if v_post_check['post_check_facts']['distribution_major_version'] == '7' %}
@@ -96,14 +98,17 @@
               {% if (v_post_check['post_check_script_diff']) or ( v_post_check['post_check_services_diff'] | length > 0 ) %}
                   <td class="status-in-progress">Patch Completed but Post Check found some differences. Please check the details</td>
                   {% set ttl.partialsuccess = ttl.partialsuccess + 1 %}
+                  <td class="status-in-progress">{{ v_post_check['post_check_uptime'] | default('') }}</td>
                 {% else %}
                   <td class="status-completed">Success. All good.</td>
                   {% set ttl.success = ttl.success + 1 %}
+                  <td class="status-completed">{{ v_post_check['post_check_uptime'] | default('') }}</td>
                 {% endif %}
             {% else %}
               <td class="status-failed">Failed. Please check the details below</td>
-              
+              <td class="status-failed">{{ v_post_check['post_check_uptime'] | default('') }}</td>
             {% endif %}
+            
         {% else %}
           {# Patching Failed in the process #}
             {% set ttl.failed =  ttl.failed + 1 %}
@@ -128,6 +133,7 @@
               <td class="status-failed">UNKNOWN</td>
             {% endif %}
           <td class="status-failed">Failed. Please check the details below</td>
+          <td class="status-failed">{{ v_post_check['post_check_uptime'] | default('') }}</td>
         {% endif %}
       </tr>
 
