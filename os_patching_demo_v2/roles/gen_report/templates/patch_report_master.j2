@@ -134,7 +134,7 @@
     {% endfor %}
     </table>
     {# Add the summary of host counts and status table #}
-    
+    <br>
     <table>
       <tr>
         <th>Total Nodes</th>
@@ -144,11 +144,11 @@
         <th>Unreachable</th>
       </tr>
       <tr>
-        <td>{{ ttl.total }}</td>
-        <th>{{ ttl.success }}</th>
-        <th>{{ ttl.partialsuccess }}</th>
-        <th>{{ ttl.failed }}</th>
-        <th>{{ ttl.unreachable }}</th>
+        <tr>{{ ttl.total }}</tr>
+        <td>{{ ttl.success }}</td>
+        <td>{{ ttl.partialsuccess }}</td>
+        <td>{{ ttl.failed }}</td>
+        <td>{{ ttl.unreachable }}</td>
       </tr>
     </table>
     <hr>
