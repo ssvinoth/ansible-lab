@@ -69,67 +69,67 @@
         {% set v_os_update =  os_update[thehost]  %}
         {% set v_post_check = post_check[thehost] %}
         {% set ttl.total = ttl.total + 1 %}
-    <tr>
-      <td><a href="#{{ thehost }}">{{ thehost }}</a></td>   
-      {% if pre_check[thehost] is not defined %}
-        {% set ttl.unreachable = ttl.unreachable + 1 %}
-  
-        <td class="status-missing">NA</td>
-        <td class="status-missing">NA</td>
-        <td class="status-missing">NA</td>
-        <td class="status-missing">Unreachable</td>
-      {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool )  %}
-        {# Get required kernel version based on the OS Version #}
-        {% if v_post_check['post_check_facts']['distribution_major_version'] == '7' %}
-          {% set required_kernel_ver = rhel7_reqd_kernel_ver %}
-        {% elif v_post_check['post_check_facts']['distribution_major_version'] == '8' %}
-          {% set required_kernel_ver = rhel8_reqd_kernel_ver %}
-        {% else %}
-          {% set required_kernel_ver = 'UNKNOWN' %}
-        {% endif %}
+      <tr>
+        <td><a href="#{{ thehost }}">{{ thehost }}</a></td>   
+        {% if pre_check[thehost] is not defined %}
+          {% set ttl.unreachable = ttl.unreachable + 1 %}
+    
+          <td class="status-missing">NA</td>
+          <td class="status-missing">NA</td>
+          <td class="status-missing">NA</td>
+          <td class="status-missing">Unreachable</td>
+        {% elif ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool )  %}
+          {# Get required kernel version based on the OS Version #}
+          {% if v_post_check['post_check_facts']['distribution_major_version'] == '7' %}
+            {% set required_kernel_ver = rhel7_reqd_kernel_ver %}
+          {% elif v_post_check['post_check_facts']['distribution_major_version'] == '8' %}
+            {% set required_kernel_ver = rhel8_reqd_kernel_ver %}
+          {% else %}
+            {% set required_kernel_ver = 'UNKNOWN' %}
+          {% endif %}
 
-          <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('N/A') }}</td>
-          <td>{{ required_kernel_ver | default('N/A') }}</td>
-          <td class="{{ 'status-completed' if (v_post_check['post_check_facts']['kernel'] == required_kernel_ver) else 'status-failed'  }}">{{ v_post_check['post_check_facts']['kernel'] | default('N/A') }}</td>
-          {% if ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) and (v_post_check['post_check_facts']['kernel'] == required_kernel_ver) %}
-             {#  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues #} 
-            {% if (v_post_check['post_check_script_diff']) or ( v_post_check['post_check_services_diff'] | length > 0 ) %}
-                <td class="status-in-progress">Patch Completed but Post Check found some differences. Please check the details</td>
-                {% set ttl.partialsuccess = ttl.partialsuccess + 1 %}
-              {% else %}
-                <td class="status-completed">Success. All good.</td>
-                {% set ttl.success = ttl.success + 1 %}
-              {% endif %}
-          {% else %}
-            <td class="status-failed">Failed. Please check the details below</td>
-            
-          {% endif %}
-      {% else %}
-        {# Patching Failed in the process #}
-        {% set set ttl.failed = set ttl.failed + 1 %}
-          {% if  v_pre_check['pre_check_facts']['kernel'] is defined %}            
-            <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('UNKNOWN') }}</td>
-                {% if v_pre_check['pre_check_facts']['distribution_major_version'] == '7' %}
-                  {% set required_kernel_ver = rhel7_reqd_kernel_ver %}
-                {% elif v_pre_check['pre_check_facts']['distribution_major_version'] == '8' %}
-                  {% set required_kernel_ver = rhel8_reqd_kernel_ver %}
+            <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('N/A') }}</td>
+            <td>{{ required_kernel_ver | default('N/A') }}</td>
+            <td class="{{ 'status-completed' if (v_post_check['post_check_facts']['kernel'] == required_kernel_ver) else 'status-failed'  }}">{{ v_post_check['post_check_facts']['kernel'] | default('N/A') }}</td>
+            {% if ( not v_pre_check['pre_check_fail']|bool) and (not v_os_update['patch_fail']|bool) and (not v_post_check['post_check_fail']|bool ) and (v_post_check['post_check_facts']['kernel'] == required_kernel_ver) %}
+              {#  if we have post_check_script_diff or post_check_services_diff length gt 0 then we have some issues #} 
+              {% if (v_post_check['post_check_script_diff']) or ( v_post_check['post_check_services_diff'] | length > 0 ) %}
+                  <td class="status-in-progress">Patch Completed but Post Check found some differences. Please check the details</td>
+                  {% set ttl.partialsuccess = ttl.partialsuccess + 1 %}
                 {% else %}
-                  {% set required_kernel_ver = 'UNKNOWN' %}
-                {% endif %} 
-            <td>{{ required_kernel_ver | default('UNKNOWN') }}</td>
-                {% if v_post_check['post_check_facts']['kernel'] is defined %}
-                  <td class="{{ 'status-completed' if (v_post_check['post_check_facts']['kernel'] == required_kernel_ver) else 'status-failed'  }}">{{ v_post_check['post_check_facts']['kernel'] | default('N/A') }}</td>
-                {% else %}
-                  <td class="status-failed">UNKNOWN</td>
-                {% endif %}       
-          {% else %}
-            <td class="status-failed">UNKNOWN</td>
-            <td class="status-failed">UNKNOWN</td>
-            <td class="status-failed">UNKNOWN</td>
-          {% endif %}
-        <td class="status-failed">Failed. Please check the details below</td>
-      {% endif %}
-    </tr>
+                  <td class="status-completed">Success. All good.</td>
+                  {% set ttl.success = ttl.success + 1 %}
+                {% endif %}
+            {% else %}
+              <td class="status-failed">Failed. Please check the details below</td>
+              
+            {% endif %}
+        {% else %}
+          {# Patching Failed in the process #}
+            {% set ttl.failed = set ttl.failed + 1 %}
+            {% if  v_pre_check['pre_check_facts']['kernel'] is defined %}            
+              <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('UNKNOWN') }}</td>
+                  {% if v_pre_check['pre_check_facts']['distribution_major_version'] == '7' %}
+                    {% set required_kernel_ver = rhel7_reqd_kernel_ver %}
+                  {% elif v_pre_check['pre_check_facts']['distribution_major_version'] == '8' %}
+                    {% set required_kernel_ver = rhel8_reqd_kernel_ver %}
+                  {% else %}
+                    {% set required_kernel_ver = 'UNKNOWN' %}
+                  {% endif %} 
+              <td>{{ required_kernel_ver | default('UNKNOWN') }}</td>
+                  {% if v_post_check['post_check_facts']['kernel'] is defined %}
+                    <td class="{{ 'status-completed' if (v_post_check['post_check_facts']['kernel'] == required_kernel_ver) else 'status-failed'  }}">{{ v_post_check['post_check_facts']['kernel'] | default('N/A') }}</td>
+                  {% else %}
+                    <td class="status-failed">UNKNOWN</td>
+                  {% endif %}       
+            {% else %}
+              <td class="status-failed">UNKNOWN</td>
+              <td class="status-failed">UNKNOWN</td>
+              <td class="status-failed">UNKNOWN</td>
+            {% endif %}
+          <td class="status-failed">Failed. Please check the details below</td>
+        {% endif %}
+      </tr>
 
     {% endfor %}
     </table>
