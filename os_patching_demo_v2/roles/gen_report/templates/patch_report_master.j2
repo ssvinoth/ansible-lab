@@ -106,7 +106,7 @@
             {% endif %}
         {% else %}
           {# Patching Failed in the process #}
-            {% set ttl.failed = set ttl.failed + 1 %}
+            {% set ttl.failed =  ttl.failed + 1 %}
             {% if  v_pre_check['pre_check_facts']['kernel'] is defined %}            
               <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('UNKNOWN') }}</td>
                   {% if v_pre_check['pre_check_facts']['distribution_major_version'] == '7' %}
