@@ -13,6 +13,11 @@
       ansible.builtin.debug: 
         var: pre_check_fail | default(false)
 
+    - name: 'Test Failure'
+      ansible.builtin.set_fact: 
+        pre_check_fail: true
+      when: inventory_hostname == 'rhelvm-5'
+
     - name: 'OS_PRE_CHECK | Fail if there were errors in the pre-checks'
       ansible.builtin.fail: 
         msg: 'OS_PRE_CHECK for {{ inventory_hostname }} has failed. Failed stage: {{ pre_check_fail_stage }}'     
