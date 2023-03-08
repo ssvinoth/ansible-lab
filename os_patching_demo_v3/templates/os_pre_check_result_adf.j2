@@ -94,7 +94,7 @@
     {% set server_status = 'Unreachable' %}
     {% set server_text_color = '#ff5630' %}
     {% set server_result = '' %}
-{% elseif hostvars[thehost]['pre_check_fail'] %}
+{% elif hostvars[thehost]['pre_check_fail'] %}
     {% set server_status = 'Fail' %}
     {% set server_text_color = '#ff5630' %}
     {% set server_result = 'Failed at stage {{ hostvars[thehost]['pre_check_fail_stage'] }}' %}
