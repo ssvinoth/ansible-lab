@@ -37,6 +37,7 @@
         dest: "{{ report_out_dir  }}/os_precheck_app_{{ app_name | default('') }}_adf_json_{{hostvars['localhost'].datetime}}.json"   
       vars:
         report_out_dir: '/opt/ansible/reports/patching'
+        v_table_heading: "OS_PRE_CHECK: App Server Status"
 
     - name: 'OS_PRE_CHECK | Fail if there were errors in the pre-checks'
       ansible.builtin.fail: 
