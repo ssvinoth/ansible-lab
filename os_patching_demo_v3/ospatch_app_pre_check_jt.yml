@@ -11,8 +11,8 @@
 
     - name: 'debug facts'
       ansible.builtin.debug: 
-        var: hostvars['localhost']['fact_pre_check']
-      run_once: true
+        var: pre_check_fail | defautlt(false)
+      #run_once: true
 
     # - name: 'debug facts'
     #   ansible.builtin.debug: 

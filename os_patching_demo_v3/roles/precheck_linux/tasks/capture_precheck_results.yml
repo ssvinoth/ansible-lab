@@ -14,20 +14,20 @@
             }
           }  
 
-    - name: 'PRECHK_RESULTS | Capture all precheck results in Facts'
-      ansible.builtin.set_fact: 
-        fact_pre_check: "{{ fact_pre_check | default({}) | combine ({ item.key : item.value }) }}"
-      delegate_to: localhost
-      delegate_facts: true
-      with_items:
-        - { "key": "{{ inventory_hostname_short }}" , "value": {
-              "pre_check_facts" : "{{ ansible_facts }}",
-              "pre_check_fail" : "{{ pre_check_fail | default(false) }}",
-              "pre_check_fail_stage" : "{{ pre_check_fail_stage | default('') }}",
-              "pre_check_fail_msg" : "{{ pre_check_fail_msg | default('') }}",
-              "pre_check_script_out" : "{{ precheck_script_result | default('') }}"
-            }
-          }  
+    # - name: 'PRECHK_RESULTS | Capture all precheck results in Facts'
+    #   ansible.builtin.set_fact: 
+    #     fact_pre_check: "{{ fact_pre_check | default({}) | combine ({ item.key : item.value }) }}"
+    #   delegate_to: localhost
+    #   delegate_facts: true
+    #   with_items:
+    #     - { "key": "{{ inventory_hostname_short }}" , "value": {
+    #           "pre_check_facts" : "{{ ansible_facts }}",
+    #           "pre_check_fail" : "{{ pre_check_fail | default(false) }}",
+    #           "pre_check_fail_stage" : "{{ pre_check_fail_stage | default('') }}",
+    #           "pre_check_fail_msg" : "{{ pre_check_fail_msg | default('') }}",
+    #           "pre_check_script_out" : "{{ precheck_script_result | default('') }}"
+    #         }
+    #       }  
   rescue:
     - name: 'PRECHK_RESULTS |  Set failure message'
       ansible.builtin.set_fact:

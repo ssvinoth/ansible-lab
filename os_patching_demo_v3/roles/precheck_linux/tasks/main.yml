@@ -3,6 +3,12 @@
 # - name: 'Precheck | Check Connectivity'
 #   ansible.builtin.include_tasks:
 #     file: 'check_connectivity.yml'
+- name: 'Precheck | Set default facts'
+  ansible.builtin.set_fact:
+    pre_check_status: true
+    pre_check_fail: false
+    pre_check_fail_stage: ''
+    pre_check_fail_msg: '' 
 
 - name: 'Precheck | Gather all facts'
   ansible.builtin.include_tasks:
