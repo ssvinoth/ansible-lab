@@ -8,3 +8,8 @@
     - name: 'Include OS pre-check role'
       ansible.builtin.include_role: 
         name: 'precheck_{{ db_server_os_type }}'
+
+    - name: 'OS_PRE_CHECK | Fail if there were errors in the pre-checks'
+      ansible.builtin.fail: 
+        msg: 'OS_PRE_CHECK for {{ inventory_hostname }} has failed. Failed stage: {{ pre_check_fail_stage }}'     
+      when: pre_check_fail

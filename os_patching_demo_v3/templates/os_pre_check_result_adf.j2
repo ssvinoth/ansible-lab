@@ -1,0 +1,181 @@
+{
+    "version": 1,
+    "type": "doc",
+    "content": [
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 2
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{{ v_table_heading }}"
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "attrs": {
+          "isNumberColumnEnabled": false,
+          "layout": "default",
+          "localId": "4c1eddae-f44e-4aad-b903-06dd14b0235d"
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "attrs": {},
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Server Name",
+                        "marks": [
+                          {
+                            "type": "strong"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {},
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Status",
+                        "marks": [
+                          {
+                            "type": "strong"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {},
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Result",
+                        "marks": [
+                          {
+                            "type": "strong"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+
+{% for thehost in ansible_play_hosts_all %}
+{# Lets do the status and error message / colors#}
+{% if thehost not in ansible_play_hosts %}
+    {% set server_status = 'Unreachable' %}
+    {% set server_text_color = '#ff5630' %}
+    {% set server_result = '' %}
+{% elseif hostvars[thehost]['pre_check_fail'] %}
+    {% set server_status = 'Fail' %}
+    {% set server_text_color = '#ff5630' %}
+    {% set server_result = 'Failed at stage {{ hostvars[thehost]['pre_check_fail_stage'] }}' %}
+{% else %}
+    {% set server_status = 'Success' %}
+    {% set server_text_color = '#417c3a' %}
+    {% set server_result = '' %}
+{% endif %}  
+
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {},
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "{{ thehost }}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {},
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "{{ server_status }}",
+                        "marks": [
+                          {
+                            "type": "textColor",
+                            "attrs": {
+                              "color": "{{ server_text_color }}"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {},
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "{{ server_result }}",
+                        "marks": [
+                          {
+                            "type": "textColor",
+                            "attrs": {
+                              "color": "{{ server_text_color }}"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+
+
+{{ "," if not loop.last else "" }}
+{% endfor %}
+
+        ]
+      }
+    ]
+  }
