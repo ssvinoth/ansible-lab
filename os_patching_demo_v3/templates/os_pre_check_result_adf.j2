@@ -97,7 +97,7 @@
 {% elif hostvars[thehost]['pre_check_fail'] %}
     {% set server_status = 'Fail' %}
     {% set server_text_color = '#ff5630' %}
-    {% set server_result = 'Failed at stage {{ hostvars[thehost]['pre_check_fail_stage'] }}' %}
+    {% set server_result = "Failed at stage {{ hostvars[thehost]['pre_check_fail_stage'] }}" %}
 {% else %}
     {% set server_status = 'Success' %}
     {% set server_text_color = '#417c3a' %}
