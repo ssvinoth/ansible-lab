@@ -14,7 +14,7 @@
             }
           }  
 
-    - name: 'PRECHK_RESULTS | Capture all precheck results'
+    - name: 'PRECHK_RESULTS | Capture all precheck results in Facts'
       ansible.builtin.set_fact: 
         fact_pre_check: "{{ fact_pre_check | default({}) | combine ({ item.key : item.value }) }}"
       delegate_to: localhost
