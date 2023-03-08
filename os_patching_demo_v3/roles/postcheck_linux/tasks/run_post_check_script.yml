@@ -1,0 +1,22 @@
+- name: 'Post Check |  BLOCK : Run Post Check Script'
+  block:
+
+    - name: 'POSTCHK_SCRIPT | Run post-check script'
+      ansible.builtin.script:
+        cmd: rhel_check_vaulted.sh pst
+        decrypt: true
+        chdir: /tmp
+      register: postcheck_script_result
+    
+    - name: 'POSTCHK_SCRIPT | Check if post check script found any difference'
+      ansible.builtin.set_fact:
+        post_check_script_diff: true
+      when: postcheck_script_result.stdout is search("ERROR:")
+      
+  rescue:
+    - name: 'POSTCHK_SCRIPT |  Set failure message'
+      ansible.builtin.set_fact:
+        post_check_status: false
+        post_check_fail: true
+        post_check_fail_stage: 'POSTCHK_SCRIPT'
+        post_check_fail_msg: "{{ ansible_failed_result }}"       

@@ -1,0 +1,206 @@
+---
+- name: Playbook Name
+  hosts: "{{ vm_nodes }}"
+  gather_facts: false
+  become: true
+
+  # >> 2gb in /var
+  # 500Mb in /usr
+  # 1Gb in /
+  # 250Mb /boot
+
+  vars:
+    some_var: 'test variable'
+    fs_check_val:
+      - mount: '/'
+        free_size_g: 1
+        free_size_b: 1073741824
+        #free_size_b: 5358223360
+        lv_snapshot_name: snap_root
+      - mount: '/usr'
+        free_size_g: 0.5
+        free_size_b: 524288000
+        lv_snapshot_name: snap_usr
+      - mount: '/var'
+        free_size_g: 2
+        free_size_b: 2147483648
+        lv_snapshot_name: snap_var      
+      - mount: '/boot'
+        free_size_g: 0.25
+        free_size_b: 262144000
+    vol_fail_msgs: []
+    vg_fail_msgs: []
+    vg_reqd_sizes: {}
+    pre_check_fail: false
+    
+  tasks:
+    # - name: 'Precheck | Get the precheck facts'
+    #   ansible.builtin.setup:
+    #   register: precheck_facts_result
+
+    # - name: 'Precheck | Get service facts'
+    #   ansible.builtin.service_facts:
+    #   register: precheck_servicefacts_result
+    
+    - name: 'Precheck | Run pre-check script'
+      ansible.builtin.script:
+        cmd: rhel_check_vaulted.sh pre
+        decrypt: true
+        chdir: /tmp
+      register: precheck_script_result
+
+    # - name: 'Precheck | Run post-check script'
+    #   ansible.builtin.script:
+    #     cmd: rhel_check_vaulted.sh pst
+    #     decrypt: true
+    #     chdir: /tmp
+    #   register: postcheck_script_result
+
+    # - name: Getting process IDs of the process
+    #   community.general.pids:
+    #       name: ssh
+    #   register: pids_of_ssh
+
+    # - name: Getting process IDs of the process - sshd
+    #   community.general.pids:
+    #       name: sshd
+    #   register: pids_of_sshd
+
+    # - name: 'Precheck | debug service facts'
+    #   ansible.builtin.debug:
+    #     var: ansible_facts.services
+
+    # - name: 'Precheck | service fact'
+    #   ansible.builtin.set_fact:
+    #     pre_services_list: "{{ ansible_facts.services | dict2items }}"
+    #     pre_running_svcs_list: "{{ ansible_facts.services | dict2items | json_query(running_services_jq) }}"
+    #   vars:
+    #     running_services_jq: "[?value.state==`running`].key"
+
+    # - name: 'Precheck | debug service facts'
+    #   ansible.builtin.debug:
+    #     var: ansible_facts.services
+
+    # - name: 'Precheck | debug service facts list'
+    #   ansible.builtin.debug:
+    #     var: pre_running_svcs_list
+
+    # - name: 'Precheck | debug run service facts list'
+    #   ansible.builtin.debug:
+    #     msg: "{{pre_services_list | json_query(running_services_jq)}}"
+    #   vars:
+    #     temp_var: 'running'
+    #     running_services_jq: "[?value.state==`{{temp_var}}`]"
+
+    # - name: 'Precheck | debug run service facts list'
+    #   ansible.builtin.debug:
+    #     msg: "{{ansible_facts.services | dict2items | json_query(running_services_jq)}}"
+    #   vars:
+    #     temp_var: 'running'
+    #     running_services_jq: "[?value.state==`{{temp_var}}`].key"
+    # # services[?value.state == 'running']
+
+    # # Check if we have enough space using when - gets all fs with not enough space
+    # - name: 'Precheck |  BLOCK : Check if we have enough free space in the required root volumes'
+    #   block:
+    #     - name: 'FS_CHECK | Check if enough free space is NOT available on the required root volumes'
+    #       ansible.builtin.set_fact:
+    #         vol_fail_msgs: "{{ vol_fail_msgs + vol_fail_msg }} "
+    #       when: size_avail | int < item.free_size_b
+    #       vars:
+    #         size_avail_json_query: "mounts[?mount==`{{ item.mount }}`].size_available | [0]"
+    #         size_avail: "{{ ansible_facts | json_query(size_avail_json_query)  }}"
+    #         vol_fail_msg: "{{ item.mount }} does not have enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
+    #         success_msg: "{{ item.mount }} has enough free space. Required={{ item.free_size_b }} Available={{ size_avail }} "
+    #       loop: "{{ fs_check_val }}"
+        
+    #     # Get the vg name from the mount list dict. Add the required free size to the value in vg_required_sizes dictionary
+    #     # This addsup all the required spaces so that we can check it in next task
+    #     - name: 'FS_CHECK | Get required free size for each VG'
+    #       ansible.builtin.set_fact:
+    #         vg_reqd_sizes: "{{ vg_reqd_sizes | combine({ mount_device_vg : (vg_reqd_sizes[mount_device_vg] | default(0) + item.free_size_g)}) }}"
+    #       when: "'/dev/mapper' in mount_device"
+    #       vars:
+    #         device_json_query: "mounts[?mount==`{{ item.mount }}`].device | [0]"
+    #         # This is assuming its based on lvm and also the /dev/mapper/vgname-lvname format
+    #         mount_device: "{{ ansible_facts | json_query(device_json_query)  }}"
+    #         mount_device_vg: "{{ mount_device.split('/')[3].split('-')[0]  }}"
+    #       loop: "{{ fs_check_val }}"        
+        
+    #     - name: debug vg_reqd_sizes
+    #       ansible.builtin.debug:
+    #         var: vg_reqd_sizes
+
+    #     - name: 'FS_CHECK | Check if required free space is NOT available in VGs'
+    #       ansible.builtin.set_fact:
+    #         vg_fail_msgs: "{{ vg_fail_msgs + vg_fail_msg }} "
+    #       when: ansible_facts.lvm.vgs[item.key].free_g | float  < item.value
+    #       vars:
+    #         vg_fail_msg: "{{ item.key }} VG does not have enough free space. Required={{ item.value }} Available={{ ansible_facts.lvm.vgs[item.key].free_g }} "
+    #       loop: "{{ vg_reqd_sizes | dict2items }}"
+
+    #     - name: 'FS_CHECK | Check if any failures'
+    #       ansible.builtin.fail:
+    #         msg: "{{ (vol_fail_msgs + vg_fail_msgs) | join('\n') }}"
+    #       when: 
+    #         - ((vol_fail_msgs|default([]) | length > 0) or (vg_fail_msgs|default([]) | length > 0))
+
+    #   rescue:
+    #     - name: 'FS_CHECK |  Set failure message'
+    #       ansible.builtin.set_fact:
+    #         pre_check_status: false
+    #         pre_check_fail: true
+    #         pre_check_fail_stage: 'FS_CHECK'
+    #         pre_check_fail_msg: "{{ ansible_failed_result }}" 
+
+    # - name: 'Precheck |  BLOCK : Create LVM Snapshots'
+      # block:
+      #   - name: 'LVM_SNAPSHOT | Make sure there are no existing snapshots for the root volumes'
+      #     community.general.lvol:
+      #       vg: "{{ mount_device_vg }}"
+      #       lv: "{{ mount_device_lv }}"
+      #       snapshot: "{{ item.lv_snapshot_name }}"
+      #       state: absent
+      #       force: true
+      #     when: "'/dev/mapper' in mount_device"
+      #     vars:
+      #       device_json_query: "mounts[?mount==`{{ item.mount }}`].device | [0]"
+      #       # This is assuming its based on lvm and also the /dev/mapper/vgname-lvname format
+      #       mount_device: "{{ ansible_facts | json_query(device_json_query)  }}"
+      #       mount_device_vg: "{{ mount_device.split('/')[3].split('-')[0]  }}"
+      #       mount_device_lv: "{{ mount_device.split('/')[3].split('-')[1]  }}"
+      #     loop: "{{ fs_check_val }}"        
+
+      #   - name: 'LVM_SNAPSHOT | Create /boot backup in /var/backup'
+      #     ansible.builtin.copy:
+      #       src: /boot
+      #       dest: /var/backup/
+      #       remote_src: true
+         
+      #   - name: 'LVM_SNAPSHOT | Create snapshots for the root volumes'
+      #     community.general.lvol:
+      #       vg: "{{ mount_device_vg }}"
+      #       lv: "{{ mount_device_lv }}"
+      #       snapshot: "{{ item.lv_snapshot_name }}"
+      #       size: "{{ item.free_size_g }}g"
+      #       state: present
+      #     when: "'/dev/mapper' in mount_device"
+      #     vars:
+      #       device_json_query: "mounts[?mount==`{{ item.mount }}`].device | [0]"
+      #       # This is assuming its based on lvm and also the /dev/mapper/vgname-lvname format
+      #       mount_device: "{{ ansible_facts | json_query(device_json_query)  }}"
+      #       mount_device_vg: "{{ mount_device.split('/')[3].split('-')[0]  }}"
+      #       mount_device_lv: "{{ mount_device.split('/')[3].split('-')[1]  }}"
+      #     loop: "{{ fs_check_val }}"  
+
+      #   - name: 'Precheck | Get the precheck LVM facts'
+      #     ansible.builtin.setup:
+      #     register: lvm_facts_result
+      # when: not pre_check_fail
+      # rescue:
+      #   - name: 'LVM_SNAPSHOT |  Set failure message'
+      #     ansible.builtin.set_fact:
+      #       pre_check_status: false
+      #       pre_check_fail: true
+      #       pre_check_fail_stage: 'LVM_SNAPSHOT'
+      #       pre_check_fail_msg: "{{ ansible_failed_result }}"       

@@ -1,0 +1,11 @@
+{{ ansible_play_hosts_all }}
+{{ pre_check | to_yaml }}
+{% for thehost in ansible_play_hosts_all | sort %}
+    {% set v_pre_check =  pre_check[thehost] | default({}) %}
+    {% set v_os_update =  os_update[thehost]  %}
+    {% set v_post_check = post_check[thehost] %}
+    
+    {% if pre_check[thehost] is not defined %}
+      <a class=missing-style href="#{{ thehost }}">{{ thehost }}</a>
+    {% endif %}
+{% endfor %}

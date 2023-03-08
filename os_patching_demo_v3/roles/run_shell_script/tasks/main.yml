@@ -1,0 +1,12 @@
+---
+# tasks file for run_shell_script
+- name: 'Run script {{ }}'
+  ansible.builtin.script:
+    cmd: rhel_check_vaulted.sh pre
+    decrypt: "{{ v_decrypt }}"
+    chdir: "{{ v_chdir }}"
+  when: 
+    - v_shell_script_location is defined
+    - v_shell_script_location | trim | length > 0
+  ignore_errors: "{{ v_ignore_errors }}"
+  register: r_shell_script_result   

@@ -1,0 +1,21 @@
+---
+- name: Workflow Test PB1
+  hosts: "{{ vm_nodes }}"
+  gather_facts: true
+  become: false
+  ignore_errors: true
+
+  vars:
+    some_var: 'test variable'
+
+  tasks:
+    
+    - name: 'Fail if rhelvm3'
+      ansible.builtin.fail:
+        msg: "Failing RHELVM3"
+      when: inventory_hostname == 'rhelvm-3'
+
+    - name: debug testvar
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} works"
+      
