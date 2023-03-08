@@ -1,0 +1,10 @@
+---
+- name: "OS Patching : Precheck Process"
+  hosts: "{{ db_servers }}"
+  #strategy: free
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'Include OS pre-check role'
+      ansible.builtin.include_role: 
+        name: 'precheck_{{ db_server_os_type }}'
