@@ -33,7 +33,7 @@
       delegate_to: localhost
       run_once: true
       template:
-        src: templates/patch_logs_json.j2
+        src: templates/os_pre_check_result_adf.j2
         dest: "{{ report_out_dir  }}/os_precheck_app_{{ app_name | default('') }}_adf_json_{{hostvars['localhost'].datetime}}.json"   
       vars:
         report_out_dir: '/opt/ansible/reports/patching'
