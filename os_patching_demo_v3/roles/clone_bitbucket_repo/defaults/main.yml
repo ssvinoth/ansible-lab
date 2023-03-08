@@ -1,0 +1,5 @@
+---
+# defaults file for clone_bitbucket_repo
+v_repo_branch: 'master'
+v_clone_dest_dir: ''
+v_bitbucket_repo: ''

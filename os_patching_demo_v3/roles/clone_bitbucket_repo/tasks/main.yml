@@ -1,0 +1,12 @@
+---
+# tasks file for clone_bitbucket_repo
+- name: Example clone of a single branch
+  ansible.builtin.git:
+    repo: https://{{ bb_username }}:{{ bb_app_password }}@{{ v_bitbucket_repo }}
+    dest: "{{ v_clone_dest_dir }}"
+    single_branch: yes
+    version: "{{ v_repo_branch }}"
+  when: 
+    - v_bitbucket_repo is defined
+    - v_bitbucket_repo | trim | length > 0 
+  delegate_to: localhost

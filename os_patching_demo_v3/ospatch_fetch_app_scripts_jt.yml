@@ -1,0 +1,14 @@
+---
+- name: "Linux Patching : Precheck Process"
+  hosts: localhost
+  #strategy: free
+  gather_facts: false
+  #become: true
+  tasks:
+    - name: 'Include pre-check role'
+      ansible.builtin.include_role: 
+        name: clone_bitbucket_repo
+      vars:
+        v_repo_branch: 'main'
+        v_clone_dest_dir: '/opt/ansible/reports/bitbucket/{{ app_name }}'
+        v_bitbucket_repo: 'bitbucket.org:ssvinoth/{{ app_name }}.git'
