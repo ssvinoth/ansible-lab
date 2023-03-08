@@ -11,4 +11,4 @@
       vars:
         v_repo_branch: 'main'
         v_clone_dest_dir: '/opt/ansible/reports/bitbucket/{{ app_name }}'
-        v_bitbucket_repo: 'bitbucket.org:ssvinoth/{{ app_name }}.git'
+        v_bitbucket_repo: 'bitbucket.org/ssvinoth/{{ app_name }}.git'
