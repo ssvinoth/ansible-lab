@@ -11,9 +11,9 @@
 
     - name: 'debug facts'
       ansible.builtin.debug: 
-        var: fact_pre_check
-      
+        var: hostvars['localhost']['fact_pre_check']
+      run_once: true
 
-    - name: 'debug facts'
-      ansible.builtin.debug: 
-        msg: fact_pre_check 
+    # - name: 'debug facts'
+    #   ansible.builtin.debug: 
+    #     msg: fact_pre_check 
