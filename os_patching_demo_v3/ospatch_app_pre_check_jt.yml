@@ -11,7 +11,7 @@
 
     - name: 'debug facts'
       ansible.builtin.debug: 
-        var: pre_check_fail | defautlt(false)
+        var: pre_check_fail | default(false)
       #run_once: true
 
     # - name: 'debug facts'
