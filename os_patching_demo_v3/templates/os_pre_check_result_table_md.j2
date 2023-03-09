@@ -1,0 +1,24 @@
+h4. {{ v_table_heading }}
+
+| **ServerName** | **Status** | **Results**           |
+|----------------|------------|-----------------------|
+{%- for thehost in ansible_play_hosts_all -%}
+{# Lets set the status and error message / colors#}
+{%- if thehost not in ansible_play_hosts -%}
+    {% set server_status = 'Unreachable' %}
+    {% set server_text_color = '#ff5630' %}
+    {% set server_result = '' %}
+{%- elif hostvars[thehost]['pre_check_fail'] -%}
+    {% set server_status = 'Fail' %}
+    {% set server_text_color = '#ff5630' %}
+    {% set server_result = "Failed at stage {{ hostvars[thehost]['pre_check_fail_stage'] }}" %}
+{%- else -%}
+    {% set server_status = 'Success' %}
+    {% set server_text_color = '#417c3a' %}
+    {% set server_result = '' %}
+{%- endif -%}  
+| {{ thehost }}        | {{ server_status }}     |        {{ server_result }}          |
+{%- endfor -%}
+
+
+

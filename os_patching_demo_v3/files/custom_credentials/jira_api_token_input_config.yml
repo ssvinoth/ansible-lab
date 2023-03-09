@@ -1,0 +1,11 @@
+fields:
+  - id: jira_username
+    type: string
+    label: Jira Username
+  - id: jira_api_token
+    type: string
+    label: Jira API Token
+    secret: true
+required:
+  - jira_username
+  - jira_api_token

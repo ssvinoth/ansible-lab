@@ -1,0 +1,3 @@
+extra_vars:
+  jira_username: '{{ jira_username  }}'
+  jira_api_token: '{{ jira_api_token }}'

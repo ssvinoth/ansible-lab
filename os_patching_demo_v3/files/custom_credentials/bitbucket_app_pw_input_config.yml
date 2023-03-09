@@ -1,0 +1,11 @@
+fields:
+  - id: bb_username
+    type: string
+    label: Bitbucket Username
+  - id: bb_app_password
+    type: string
+    label: App Password
+    secret: true
+required:
+  - bb_username
+  - bb_app_password

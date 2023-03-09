@@ -1,0 +1,3 @@
+extra_vars:
+  bb_username: '{{ bb_username  }}'
+  bb_app_password: '{{ bb_app_password }}'
