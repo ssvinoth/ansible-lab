@@ -1,12 +1,36 @@
 # TODO: Check Network Interfaces and active status
 # BELOW IS DUMMY - NEED TOBE CHANGED
-- name: 'PRE_POST_COMPARE | Get Pre and Post Network Interfaces List'
-  ansible.builtin.set_fact:
-    pre_mount_points: "{{ pre_check[inventory_hostname].pre_check_facts.mounts | map(attribute='mount')| list }}"
-    post_mount_points: "{{ ansible_facts.mounts  | map(attribute='mount')| list  }}"
 
-
-- name: 'PRE_POST_COMPARE | Run Pre and Post Network Interfaces list comparision'
+- name: 'PRE_POST_COMPARE | Get Pre and Post Network Interfaces details'
   ansible.builtin.set_fact:
-    mount_points_diff: "{{ true if (pre_mount_points | difference(post_mount_points) | length > 0) else false }}"
-    mount_points_diff_val: "{{ pre_mount_points | difference(post_mount_points)}}"
+    pre_nw_intfs: "{{ pre_check[inventory_hostname].pre_check_facts.interfaces }}"
+    post_nw_intfs: "{{ ansible_facts.interfaces }}"
+    pre_nw_ipv4s: "{{ pre_check[inventory_hostname].pre_check_facts.all_ipv4_addresses }}"
+    post_nw_ipv4s: "{{ ansible_facts.all_ipv4_addresses }}"
+    pre_nw_ipv6s: "{{ pre_check[inventory_hostname].pre_check_facts.all_ipv6_addresses }}"
+    post_nw_ipv6s: "{{ ansible_facts.all_ipv6_addresses }}"    
+
+# check if all the interfaces active state is same , when both the interface list are same
+- name: 'PRE_POST_COMPARE | Get any difference in active state of Network Interfaces'
+  ansible.builtin.set_fact:
+    intfs_active_diff: "{{ intfs_active_diff | default([]) + [item] }}"
+  when: 
+    - pre_nw_intfs | symmetric_difference(post_nw_intfs) | length == 0
+    - pre_check[inventory_hostname].pre_check_facts[item].active | default(true) != ansible_facts[item].active | default(true)
+  loop: post_nw_intfs
+
+- name: 'PRE_POST_COMPARE | Run Pre and Post Network Interfaces comparision'
+  ansible.builtin.set_fact:
+    nw_intfs_diff: "{{ true if (pre_nw_intfs | symmetric_difference(post_nw_intfs) | length > 0) else false }}"
+    nw_intfs_diff_val: "{{ pre_nw_intfs | symmetric_difference(post_nw_intfs) }}"
+    nw_ipv4s_diff: "{{ true if (pre_nw_ipv4s | symmetric_difference(post_nw_ipv4s) | length > 0) else false }}"
+    nw_ipv4s_diff_val: "{{ pre_nw_ipv4s | symmetric_difference(post_nw_ipv4s) }}"
+    nw_ipv6s_diff: "{{ true if (pre_nw_ipv6s | symmetric_difference(post_nw_ipv6s) | length > 0) else false }}"
+    nw_ipv6s_diff_val: "{{ pre_nw_ipv6s | symmetric_difference(post_nw_ipv6s) }}"
+    nw_intfs_active_diff: "{{ true if (intfs_active_diff | length > 0) else false }}"
+    nw_intfs_active_diff_val: "{{ intfs_active_diff | default([]) }}"
+
+- name: 'PRE_POST_COMPARE | Get Pre and Post Network Comparision Status'
+  ansible.builtin.set_fact:
+    nw_intfs_compare_diff: "{{ true if (nw_intfs_diff or nw_ipv4s_diff or nw_ipv6s_diff or nw_intfs_active_diff) else false }}"
+

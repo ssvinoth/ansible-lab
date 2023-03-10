@@ -26,7 +26,17 @@
               "running_svcs_diff" : "{{ running_svcs_diff | default(false) }}",
               "running_svcs_diff_val" : "{{ running_svcs_diff_val | default([]) }}",
               "mount_points_diff" : "{{ mount_points_diff | default(false) }}",
-              "mount_points_diff_val" : "{{ mount_points_diff_val | default([]) }}"              
+              "mount_points_diff_val" : "{{ mount_points_diff_val | default([]) }}",
+              "nw_intfs_diff" : "{{ nw_intfs_diff | default(false) }}",
+              "nw_intfs_diff_val" : "{{ nw_intfs_diff_val | default([]) }}",
+              "nw_ipv4s_diff" : "{{ nw_ipv4s_diff | default(false) }}",
+              "nw_ipv4s_diff_val" : "{{ nw_ipv4s_diff_val | default([]) }}",
+              "nw_ipv6s_diff" : "{{ nw_ipv6s_diff | default(false) }}",
+              "nw_ipv6s_diff_val" : "{{ nw_ipv6s_diff_val | default([]) }}",
+              "nw_intfs_active_diff" : "{{ nw_intfs_active_diff | default(false) }}",
+              "nw_intfs_active_diff_val" : "{{ nw_intfs_active_diff_val | default([]) }}",
+              "nw_intfs_compare_diff" : "{{ nw_intfs_compare_diff | default(false) }}"
+
             }
           }  
 
