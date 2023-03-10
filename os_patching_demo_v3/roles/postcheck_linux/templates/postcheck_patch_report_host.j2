@@ -22,11 +22,11 @@
 {# Host Info #}
   <p><strong>{% raw %}Host info{% endraw %}</strong></p>
     <ul>
-      <li>{% raw %}Hostname: {% endraw %} {{ v_post_check['hostname']}}</li>
-      <li>{% raw %}FQDN: {% endraw %} {{ v_post_check['nodename']}}</li>
-      <li>{% raw %}OS: {% endraw %}{{ v_post_check['distribution'] | default('N/A') }} {{ v_post_check['distribution_version'] | default('N/A') }}
-      <li>{% raw %}IP addresses: {% endraw %}{{ v_post_check['all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
-      <li>{% raw %}Kernel: {% endraw %}{{ v_post_check['kernel'] | default('N/A') }}</li>
+      <li>{% raw %}Hostname: {% endraw %} {{ v_post_check['ansible_facts']['hostname']}}</li>
+      <li>{% raw %}FQDN: {% endraw %} {{ v_post_check['ansible_facts']['nodename']}}</li>
+      <li>{% raw %}OS: {% endraw %}{{ v_post_check['ansible_facts']['distribution'] | default('N/A') }} {{ v_post_check['ansible_facts']['distribution_version'] | default('N/A') }}
+      <li>{% raw %}IP addresses: {% endraw %}{{ v_post_check['ansible_facts']['all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
+      <li>{% raw %}Kernel: {% endraw %}{{ v_post_check['ansible_facts']['kernel'] | default('N/A') }}</li>
       <li>{% raw %}Uptime:  {% endraw %}{{ v_post_check['post_uptime'] | default('N/A') }}</li>
     </ul>  
 
