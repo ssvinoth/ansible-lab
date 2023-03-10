@@ -5,7 +5,8 @@
   run_once: true
 
 - ansible.builtin.set_fact:
-    datetime: "{{ ansible_date_time.date }}_{{ ansible_date_time.time |  replace(':','-') }}" 
+    #datetime: "{{ ansible_date_time.date }}_{{ ansible_date_time.time |  replace(':','-') }}" 
+    datetime: "{{ ansible_date_time.date }} {{ ansible_date_time.time }} {{ ansible_date_time.tz }}" 
     end_time: "{{ lookup('pipe','date \"+%T %Z %F\"') }}"
   delegate_to: localhost
   delegate_facts: true
