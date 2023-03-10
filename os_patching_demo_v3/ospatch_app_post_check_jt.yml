@@ -12,6 +12,7 @@
         v_precheck_results_file: "/opt/ansible/reports/patching/interim_results/{{ jira_key }}-app-pre_check.json"
         v_os_update_results_file: "/opt/ansible/reports/patching/interim_results/{{ jira_key }}-app-osupdate.json"
         v_server_type: 'app'
+        v_app_name: "{{ app_name }}"
         v_post_check_report_file: "/opt/ansible/reports/patching/{{ jira_key }}-app-postcheck-report.html"
     
     - name: 'POST_CHECK | Fail if there were errors in the Post Checks'

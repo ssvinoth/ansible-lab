@@ -43,6 +43,7 @@
     - name: 'Post Check | Get Uptime details'
       ansible.builtin.set_fact:
         post_uptime: "{{ uptime_results.stdout }}, {{ansible_facts.date_time.date}} {{ansible_facts.date_time.time}} {{ansible_facts.date_time.tz}}"
+        post_time: "{{ansible_facts.date_time.date}} {{ansible_facts.date_time.time}} {{ansible_facts.date_time.tz}}"
 
     # Before making any comparisions with prechecks, we need to fetch it from interim results json
     - name: 'Post Check | Fetch pre-check details from interim results json'

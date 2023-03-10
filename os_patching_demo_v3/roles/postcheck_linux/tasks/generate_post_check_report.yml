@@ -1,3 +1,21 @@
+- ansible.builtin.setup:
+    filter: ansible_date_time
+  register: result
+  delegate_to: localhost
+  run_once: true
+
+- ansible.builtin.set_fact:
+    datetime: "{{ ansible_date_time.date }}_{{ ansible_date_time.time |  replace(':','-') }}" 
+    end_time: "{{ lookup('pipe','date \"+%T %Z %F\"') }}"
+  delegate_to: localhost
+  delegate_facts: true
+  run_once: true
+
+- name: debug datetime
+  ansible.builtin.debug:
+    var: hostvars['localhost'].datetime
+  run_once: true
+
 - name: Save job report to {{ report_out_dir }}
   delegate_to: localhost
   run_once: true
