@@ -1,0 +1,12 @@
+---
+# tasks file for run_shell_scripts
+- name: '{{ v_stage }} | Running scripts'
+  ansible.builtin.include_tasks:
+    file: run_shell_script.yml
+  loop: "{{ v_shell_scripts | split(',') | list }}"
+  loop_control:
+    loop_var: v_script 
+
+
+
+

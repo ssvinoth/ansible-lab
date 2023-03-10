@@ -1,0 +1,7 @@
+---
+# tasks file for capture_results
+- name: 'Save results in json to {{ result_out_dir }}/{{ result_out_filename }}.json'
+  delegate_to: localhost
+  template:
+    src: templates/capture_results_in_json.j2
+    dest: "{{ result_out_dir  }}/{{ result_out_filename }}.json"   

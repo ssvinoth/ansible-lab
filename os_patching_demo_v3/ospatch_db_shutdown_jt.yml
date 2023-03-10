@@ -1,0 +1,15 @@
+---
+- name: "DB Shutdown | Run DB Shutdown scripts"
+  hosts: "{{ db_servers }}"
+  #strategy: free
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'DB Shutdown | Run DB Shutdown scripts'
+      ansible.builtin.include_role: 
+        name: 'run_shell_scripts'
+      vars:
+        v_shell_scripts: "{{ db_stop_scripts }}"
+        v_stage: 'DB_SHUTDOWN'
+        v_script_user: "{{ db_scripts_user }}"
+      

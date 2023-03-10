@@ -1,6 +1,0 @@
----
-# defaults file for run_shell_script
-v_shell_script_location: ''
-v_chdir: '/var/tmp'
-v_decrypt: true
-v_ignore_errors: true

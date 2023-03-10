@@ -1,0 +1,15 @@
+---
+- name: "App Shutdown | Run App Shutdown scripts"
+  hosts: "{{ app_servers }}"
+  #strategy: free
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'App Shutdown | Run App Shutdown scripts'
+      ansible.builtin.include_role: 
+        name: 'run_shell_scripts'
+      vars:
+        v_shell_scripts: "{{ app_stop_scripts }}"
+        v_stage: 'APP_SHUTDOWN'
+        v_script_user: "{{ app_scripts_user }}"
+      

@@ -1,0 +1,5 @@
+---
+# defaults file for run_shell_script
+# v_shell_scripts: []
+v_ignore_errors: false
+# 

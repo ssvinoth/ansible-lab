@@ -11,5 +11,5 @@
 
     - name: 'OS_PRE_CHECK | Fail if there were errors in the pre-checks'
       ansible.builtin.fail: 
-        msg: 'OS_PRE_CHECK for {{ inventory_hostname }} has failed. Failed stage: {{ pre_check_fail_stage }}'     
+        msg: "OS_PRE_CHECK for {{ inventory_hostname }} has failed. Failed stage: {{ pre_check_fail_stage }} and Fail Message: {{ lookup('ansible.builtin.template', 'get_fail_msg.j2', template_vars={'fail_msg_obj': pre_check_fail_msg}) }}"     
       when: pre_check_fail

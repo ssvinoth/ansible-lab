@@ -1,0 +1,6 @@
+---
+# defaults file for capture_results
+result_out_dir: '/opt/ansible/reports/patching/interim_results/'
+#result_out_filename: 'jirakey-pre'
+#result_data_var: 'pre_check'
+#result_data: pre_check

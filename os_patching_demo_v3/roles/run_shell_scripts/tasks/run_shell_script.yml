@@ -1,0 +1,15 @@
+- name: '{{ v_stage }} | Running script {{ v_script }}'
+  ansible.builtin.shell:
+    cmd: "{{ v_script }}"
+    chdir: "{{ v_script | dirname }}"
+  become_user: "{{ omit if v_script_user == '' else v_script_user }}"
+  register: r_shell_script_result   
+
+- name: '{{ v_stage }} | Debug {{ v_script }} output'
+  ansible.builtin.debug:
+    var: r_shell_script_result.stdout_lines + r_shell_script_result.stderr_lines
+
+- name: '{{ v_stage }} | Check {{ v_script }} failures'
+  ansible.builtin.fail:
+    msg: "{{ v_script }} failed execution"
+  when: r_shell_script_result.rc != 0  
