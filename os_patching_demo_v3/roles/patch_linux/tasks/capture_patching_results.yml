@@ -10,9 +10,9 @@
       set_stats: 
         data:
           os_update: "{{ os_update | default({}) | combine ({ item.key : item.value }) }}"
-      when:
-        - pre_check[inventory_hostname_short] is defined 
-        - not pre_check[inventory_hostname_short].pre_check_fail
+      # when:
+      #   - pre_check[inventory_hostname_short] is defined 
+      #   - not pre_check[inventory_hostname_short].pre_check_fail
       with_items:
         - { "key": "{{ inventory_hostname_short }}" , "value": {
               "patch_fail" : "{{ patch_fail | default(false) }}",
@@ -22,21 +22,21 @@
             }
           }  
 
-    - name: 'PATCHING_RESULTS | Capture all patching results - Skipped Details'
-      set_stats: 
-        data:
-          os_update: "{{ os_update | default({}) | combine ({ item.key : item.value }) }}"
-      when:
-        - pre_check[inventory_hostname_short] is defined 
-        - pre_check[inventory_hostname_short].pre_check_fail
-      with_items:
-        - { "key": "{{ inventory_hostname_short }}" , "value": {
-              "patch_fail" : true,
-              "patch_fail_stage" : "SKIPPED",
-              "patch_fail_msg" : "SKIPPED due to precheck failure",
-              "patch_yum_history" : {},
-            }
-          }  
+    # - name: 'PATCHING_RESULTS | Capture all patching results - Skipped Details'
+    #   set_stats: 
+    #     data:
+    #       os_update: "{{ os_update | default({}) | combine ({ item.key : item.value }) }}"
+    #   when:
+    #     - pre_check[inventory_hostname_short] is defined 
+    #     - pre_check[inventory_hostname_short].pre_check_fail
+    #   with_items:
+    #     - { "key": "{{ inventory_hostname_short }}" , "value": {
+    #           "patch_fail" : true,
+    #           "patch_fail_stage" : "SKIPPED",
+    #           "patch_fail_msg" : "SKIPPED due to precheck failure",
+    #           "patch_yum_history" : {},
+    #         }
+    #       }  
   rescue:
     - name: 'PATCHING_RESULTS |  Set failure message'
       ansible.builtin.set_fact:

@@ -1,0 +1,15 @@
+---
+- name: "OS Patching : Patching Process"
+  hosts: "{{ app_servers }}"
+  #strategy: free
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'Include os update role'
+      ansible.builtin.include_role: 
+        name: 'patch_{{ app_server_os_type }}'
+
+    - name: 'OS_UPDATE | Fail if there were errors in the OS Update'
+      ansible.builtin.fail: 
+        msg: "OS_UPDATE for {{ inventory_hostname }} has failed. Failed stage: {{ patch_fail_stage }} and Fail Message: {{ lookup('ansible.builtin.template', 'get_fail_msg.j2', template_vars={'fail_msg_obj': patch_fail_msg}) }}"     
+      when: patch_fail

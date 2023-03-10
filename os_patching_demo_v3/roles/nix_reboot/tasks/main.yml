@@ -1,0 +1,9 @@
+---
+# tasks file for nix_reboot
+- name: 'REBOOT_AFTER_UPDATE | Perform Reboot after updates'
+  ansible.builtin.reboot:
+    reboot_timeout: "{{ reboot_timeout }}"
+    connect_timeout: "{{ check_conn_freq }}"
+    post_reboot_delay: "{{ post_reboot_delay }}"
+    test_command: "{{ test_command }}"
+    pre_reboot_delay: "{{ pre_reboot_delay }}"

@@ -12,5 +12,5 @@ pre_reboot_delay: 60
 required_pkgs: ['NetworkManager*']
 exclude_pkgs:  []
 # Patching task vars in seconds
-patching_timeout: 1800
+patching_timeout: 2700
 patching_poll: 5
