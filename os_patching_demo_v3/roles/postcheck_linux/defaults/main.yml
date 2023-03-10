@@ -1,3 +1,4 @@
 ---
 # defaults file for postcheck_linux
 report_out_dir: '/opt/ansible/reports/patching'
+# v_server_type: 'app'

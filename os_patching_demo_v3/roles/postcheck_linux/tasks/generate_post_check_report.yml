@@ -1,0 +1,6 @@
+- name: Save job report to {{ report_out_dir }}
+  delegate_to: localhost
+  run_once: true
+  template:
+    src: templates/postcheck_patch_report_master.j2
+    dest: "{{ v_post_check_report_file }}"    

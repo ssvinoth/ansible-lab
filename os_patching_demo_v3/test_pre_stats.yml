@@ -38,10 +38,10 @@
         dest: "{{ report_out_dir  }}/patch_report.html"    
     # - name: 'Show all os_update stats data msg'
     #   ansible.builtin.debug: 
-    #     msg: "CHECK_MSG={{ post_check[inventory_hostname_short] }}"
+    #     msg: "CHECK_MSG={{ post_check[inventory_hostname] }}"
     # - name: 'Show all stats data var'
     #   ansible.builtin.debug: 
-    #     var: pre_check[inventory_hostname_short]
+    #     var: pre_check[inventory_hostname]
     # - name: 'Show all stats data var'
     #   ansible.builtin.debug: 
-    #     var: pre_check[inventory_hostname_short]
+    #     var: pre_check[inventory_hostname]

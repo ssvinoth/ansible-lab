@@ -42,8 +42,8 @@
     #   #when: not patch_fail 
 
   # when: 
-  #   - pre_check[inventory_hostname_short] is defined
-  #   - not pre_check[inventory_hostname_short].pre_check_fail
+  #   - pre_check[inventory_hostname] is defined
+  #   - not pre_check[inventory_hostname].pre_check_fail
   
 # Capture Patching Results
 - name: 'Patching | Capture Patching Results'

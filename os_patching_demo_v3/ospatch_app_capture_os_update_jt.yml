@@ -1,0 +1,17 @@
+---
+- name: "OS Patching : Precheck Process"
+  hosts: "{{ app_servers }}"
+  #strategy: free
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'Include capture pre-check results role'
+      ansible.builtin.include_role: 
+        name: 'capture_results'
+      vars:
+        result_out_dir: '/opt/ansible/reports/patching/interim_results/'
+        result_out_filename: '{{ jira_key }}-app-osupdate'
+        result_data_var: 'os_update'
+        result_data: "{{ os_update }}"
+
+ 

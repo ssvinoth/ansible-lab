@@ -3,7 +3,7 @@
     <hr>
     <h2 id="{{ thehost }}">{{ thehost }}</h2>
     <!-- 
-      If the host is in ansible_play_hosts_all and in the post_check[inventory_hostname_short] then its a success_list
+      If the host is in ansible_play_hosts_all and in the post_check[inventory_hostname] then its a success_list
       If the host is not in post_check vars then there was a failure in either pre,patch or post.
     -->
     {% if pre_check[thehost] is not defined %}

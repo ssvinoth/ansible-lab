@@ -1,0 +1,10 @@
+- name: 'PRE_POST_COMPARE | Get Pre and Post Mount point List'
+  ansible.builtin.set_fact:
+    pre_mount_points: "{{ pre_check[inventory_hostname].pre_check_facts.mounts | map(attribute='mount')| list }}"
+    post_mount_points: "{{ ansible_facts.mounts  | map(attribute='mount')| list  }}"
+
+
+- name: 'PRE_POST_COMPARE | Run Pre and Post Mount point list comparision'
+  ansible.builtin.set_fact:
+    mount_points_diff: "{{ true if (pre_mount_points | difference(post_mount_points) | length > 0) else false }}"
+    mount_points_diff_val: "{{ pre_mount_points | difference(post_mount_points)}}"

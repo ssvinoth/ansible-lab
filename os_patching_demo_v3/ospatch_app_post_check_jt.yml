@@ -1,0 +1,31 @@
+---
+- name: "Post Checks : Post Check Process"
+  hosts: "{{ app_servers }}"
+  #strategy: free
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'Include os postcheck role'
+      ansible.builtin.include_role: 
+        name: 'postcheck_{{ app_server_os_type }}'
+      vars:
+        v_precheck_results_file: "/opt/ansible/reports/patching/interim_results/{{ jira_key }}-app-pre_check.json"
+        v_os_update_results_file: "/opt/ansible/reports/patching/interim_results/{{ jira_key }}-app-osupdate.json"
+        v_server_type: 'app'
+        v_post_check_report_file: "/opt/ansible/reports/patching/{{ jira_key }}-app-postcheck-report.html"
+    
+    - name: 'POST_CHECK | Fail if there were errors in the Post Checks'
+      ansible.builtin.fail: 
+        msg: "POST_CHECK for {{ inventory_hostname }} has failed. Failed stage: {{ post_check_fail_stage }} and Fail Message: {{ lookup('ansible.builtin.template', 'get_fail_msg.j2', template_vars={'fail_msg_obj': post_check_fail_msg}) }}"     
+      when: post_check_fail
+
+    - name: 'POST_CHECK | Fail if the post-patch kernel version does not match the desired kernel version '
+      ansible.builtin.fail: 
+        msg: "POST_CHECK_KERNEL_VERSION for {{ inventory_hostname }} has failed. Expected Kernel Version: {{ desired_kernel_ver }} but Current Kernel Version is: {{ ansibel_facts['kernel'] }} "     
+      when: desired_kernel_diff
+
+    - name: 'POST_CHECK | Fail if there were errors in the Post Check comparisions'
+      ansible.builtin.fail: 
+        msg: "POST_CHECK_COMPARISION for {{ inventory_hostname }} has failed. Please check the patch report for more details."     
+      when: 
+        - (post_check_script_diff or running_svcs_diff or mount_points_diff)

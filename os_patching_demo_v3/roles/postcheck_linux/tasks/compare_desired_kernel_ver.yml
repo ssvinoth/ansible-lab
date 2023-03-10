@@ -1,0 +1,8 @@
+- name: 'PRE_POST_COMPARE | Select Desired Kernel version based on os version'
+  ansible.builtin.set_fact:
+    desired_kernel_ver: "{% if ansible_facts['distribution_major_version'] == '7' %}{{ rhel7_reqd_kernel_ver }}{% elif ansible_facts['distribution_major_version'] == '8' %}{{ rhel8_reqd_kernel_ver }}{% else %}UNKNOWN{% endif %}"
+
+- name: 'PRE_POST_COMPARE | Check if post kernel ver is same as desired kernel ver'
+  ansible.builtin.set_fact:
+    desired_kernel_diff: "{{ true if (ansible_facts['kernel'] != desired_kernel_ver) else false }}"
+    desired_kernel_diff_val: "{{ ansible_facts['kernel'] }}"

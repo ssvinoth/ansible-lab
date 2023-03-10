@@ -19,8 +19,8 @@
 
     # - name: 'Show all stats data var'
     #   ansible.builtin.debug: 
-    #     var: pre_check[inventory_hostname_short]
+    #     var: pre_check[inventory_hostname]
     # - name: 'Run only if pre_check_fail is not true'
     #   ansible.builtin.debug: 
-    #     msg: 'All good in precheck for {{ inventory_hostname_short }}'
-    #   when: not pre_check[inventory_hostname_short].pre_check_fail
+    #     msg: 'All good in precheck for {{ inventory_hostname }}'
+    #   when: not pre_check[inventory_hostname].pre_check_fail

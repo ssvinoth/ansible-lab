@@ -8,10 +8,7 @@
         chdir: /tmp
       register: postcheck_script_result
     
-    - name: 'POSTCHK_SCRIPT | Check if post check script found any difference'
-      ansible.builtin.set_fact:
-        post_check_script_diff: true
-      when: postcheck_script_result.stdout is search("ERROR:")
+
       
   rescue:
     - name: 'POSTCHK_SCRIPT |  Set failure message'

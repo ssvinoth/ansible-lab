@@ -5,44 +5,52 @@
       set_stats: 
         data:
           post_check: "{{ post_check | default({}) | combine ({ item.key : item.value }) }}"
-      when: 
-        - pre_check[inventory_hostname_short] is defined
-        - os_update[inventory_hostname_short] is defined
-        - not pre_check[inventory_hostname_short].pre_check_fail
-        - not os_update[inventory_hostname_short].patch_fail 
+      # when: 
+      #   - pre_check[inventory_hostname] is defined
+      #   - os_update[inventory_hostname] is defined
+      #   - not pre_check[inventory_hostname].pre_check_fail
+      #   - not os_update[inventory_hostname].patch_fail 
       with_items:
-        - { "key": "{{ inventory_hostname_short }}" , "value": {
+        - { "key": "{{ inventory_hostname }}" , "value": {
               "post_check_facts" : "{{ ansible_facts }}",
               "post_check_fail" : "{{ post_check_fail | default(false) }}",
               "post_check_fail_stage" : "{{ post_check_fail_stage | default('') }}",
               "post_check_fail_msg" : "{{ post_check_fail_msg | default('') }}",
+              "post_check_uptime" : "{{ post_uptime | default('')}}",
+              "desired_kernel_ver" : "{{ desired_kernel_ver | default('UNKNOWN')}}",
+              "desired_kernel_diff" : "{{ desired_kernel_diff | default(false) }}",
+              "desired_kernel_diff_val" : "{{ desired_kernel_diff_val | default('') }}",
               "post_check_script_out" : "{{ postcheck_script_result | default('') }}",
-              "post_check_services_diff" : "{{ running_svcs_diff | default([]) }}",
               "post_check_script_diff" : "{{ post_check_script_diff | default(false) }}",
-              "post_check_uptime" : "{{ post_uptime | default('')}}"
+              "post_check_script_diff_val" : "{{ post_check_script_diff_val | default([]) }}",
+              "running_svcs_diff" : "{{ running_svcs_diff | default(false) }}",
+              "running_svcs_diff_val" : "{{ running_svcs_diff_val | default([]) }}",
+              "mount_points_diff" : "{{ mount_points_diff | default(false) }}",
+              "mount_points_diff_val" : "{{ mount_points_diff_val | default([]) }}"              
             }
           }  
 
-    - name: 'POSTCHECK_RESULTS | Capture all post check results - Skipped Details'
-      set_stats: 
-        data:
-          post_check: "{{ post_check | default({}) | combine ({ item.key : item.value }) }}"
-      when: 
-        - pre_check[inventory_hostname_short] is defined
-        - os_update[inventory_hostname_short] is defined
-        - (pre_check[inventory_hostname_short].pre_check_fail) or (os_update[inventory_hostname_short].patch_fail)
-      with_items:
-        - { "key": "{{ inventory_hostname_short }}" , "value": {
-              "post_check_facts" : "{{ ansible_facts }}",
-              "post_check_fail" : true,
-              "post_check_fail_stage" : "SKIPPED",
-              "post_check_fail_msg" : "SKIPPED due to precheck/os_update failure",
-              "post_check_script_out" : "",
-              "post_check_services_diff" : "[]",
-              "post_check_script_diff" : false,
-              "post_check_uptime" : ""
-            }
-          }  
+    # - name: 'POSTCHECK_RESULTS | Capture all post check results - Skipped Details'
+    #   set_stats: 
+    #     data:
+    #       post_check: "{{ post_check | default({}) | combine ({ item.key : item.value }) }}"
+    #   when: 
+    #     - pre_check[inventory_hostname] is defined
+    #     - os_update[inventory_hostname] is defined
+    #     - (pre_check[inventory_hostname].pre_check_fail) or (os_update[inventory_hostname].patch_fail)
+    #   with_items:
+    #     - { "key": "{{ inventory_hostname }}" , "value": {
+    #           "post_check_facts" : "{{ ansible_facts }}",
+    #           "post_check_fail" : true,
+    #           "post_check_fail_stage" : "SKIPPED",
+    #           "post_check_fail_msg" : "SKIPPED due to precheck/os_update failure",
+    #           "post_check_script_out" : "",
+    #           "post_check_services_diff" : "[]",
+    #           "post_check_script_diff" : false,
+    #           "post_check_uptime" : ""
+    #         }
+    #       }  
+
   rescue:
     - name: 'POSTCHECK_RESULTS |  Set failure message'
       ansible.builtin.set_fact:
