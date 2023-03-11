@@ -28,7 +28,7 @@
     nw_ipv4s_diff_val: "{{ pre_nw_ipv4s | difference(post_nw_ipv4s) }}"
     nw_ipv6s_diff: "{{ true if (pre_nw_ipv6s | difference(post_nw_ipv6s) | length > 0) else false }}"
     nw_ipv6s_diff_val: "{{ pre_nw_ipv6s | difference(post_nw_ipv6s) }}"
-    nw_intfs_active_diff: "{{ true if (intfs_active_diff | length > 0) else false }}"
+    nw_intfs_active_diff: "{{ true if (intfs_active_diff | default([]) | length > 0) else false }}"
     nw_intfs_active_diff_val: "{{ intfs_active_diff | default([]) }}"
 
 - name: 'PRE_POST_COMPARE | Get Pre and Post Network Comparision Status'
