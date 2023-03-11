@@ -18,7 +18,7 @@
     #- pre_nw_intfs | difference(post_nw_intfs) | length == 0
     - pre_check[inventory_hostname].pre_check_facts[item] is defined
     - pre_check[inventory_hostname].pre_check_facts[item].active | default(true) != ansible_facts[item].active | default(true)
-  loop: post_nw_intfs
+  loop: "{{ post_nw_intfs }}"
 
 - name: 'PRE_POST_COMPARE | Run Pre and Post Network Interfaces comparision'
   ansible.builtin.set_fact:
