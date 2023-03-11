@@ -79,8 +79,19 @@
         {% endif %} 
       </tr>
 
+    {# Network Interfaces Comparision Diff #}
+      <tr>
+        <td>Network Interface Details</td>
+        {% if not (v_post_check['nw_intfs_compare_diff'] | bool)  %}
+            <td class="status-completed">No Difference</td>
+            <td></td>
+          {% else %}
+            <td class="status-failed">There are Differences.</td>
+            <td class="status-failed">{{ v_post_check['nw_intfs_compare_diff_val'] }}</td>
+        {% endif %} 
+      </tr>
 
-      {# Post-Check Script Out Diff #}
+    {# Post-Check Script Out Diff #}
       <tr>
         <td>Post-Check Script</td>
           {% if not (v_post_check['post_check_script_diff'] | bool) %}
@@ -98,19 +109,9 @@
         </td>
       </tr>
 
-    {# Network Interfaces Comparision Diff #}
-      <tr>
-        <td>Mount Points</td>
-        {% if not (v_post_check['nw_intfs_compare_diff'] | bool)  %}
-            <td class="status-completed">No Difference</td>
-            <td></td>
-          {% else %}
-            <td class="status-failed">There are Differences.</td>
-            <td class="status-failed">{{ v_post_check['nw_intfs_compare_diff_val'] }}</td>
-        {% endif %} 
-      </tr>
 
-      {# Running Services Diff #}
+
+    {# Running Services Diff #}
       <tr>
         <td>Running Services</td>
         {% if not (v_post_check['running_svcs_diff'] | bool)  %}
