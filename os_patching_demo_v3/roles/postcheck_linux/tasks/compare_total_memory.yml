@@ -1,0 +1,10 @@
+- name: 'PRE_POST_COMPARE | Get Pre and Post total memory'
+  ansible.builtin.set_fact:
+    pre_total_mem: "{{ pre_check[inventory_hostname].pre_check_facts.memtotal_mb | default(0) }}"
+    post_total_mem: "{{ ansible_facts.memtotal_mb | default(0) }}"
+
+
+- name: 'PRE_POST_COMPARE | Run Pre and Post total memory comparision'
+  ansible.builtin.set_fact:
+    total_mem_diff: "{{ true if (pre_total_mem != post_total_mem) else false }}"
+    total_mem_diff_val: "PRE_CHECK_total_mem:{{ pre_total_mem }} POST_CHECK_total_mem: {{ post_total_mem }}"

@@ -4,7 +4,10 @@
        (v_post_check['desired_kernel_diff'] | bool) or 
        (v_post_check['post_check_script_diff'] | bool) or 
        (v_post_check['running_svcs_diff'] | bool) or 
-       (v_post_check['mount_points_diff'] | bool))  %}
+       (v_post_check['mount_points_diff'] | bool) or
+       (v_post_check['nw_intfs_compare_diff'] | bool) or
+       (v_post_check['cpu_cores_diff'] | bool) or
+       (v_post_check['total_mem_diff'] | bool))  %}
 true
 {% else %}
 false
@@ -23,7 +26,10 @@ false
 {% macro check_postcompare_failure(v_post_check) %}
 {% if ((v_post_check['post_check_script_diff'] | bool) or 
        (v_post_check['running_svcs_diff'] | bool) or 
-       (v_post_check['mount_points_diff'] | bool))  %}
+       (v_post_check['mount_points_diff'] | bool) or
+       (v_post_check['nw_intfs_compare_diff'] | bool) or
+       (v_post_check['cpu_cores_diff'] | bool) or
+       (v_post_check['total_mem_diff'] | bool))  %}
 true
 {% else %}
 false

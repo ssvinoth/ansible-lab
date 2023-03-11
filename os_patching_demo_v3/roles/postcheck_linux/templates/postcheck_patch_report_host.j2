@@ -39,21 +39,46 @@
       <th>Output</th>
     </tr>
 
-      {# Running Services Diff #}
+    {# CPU Cores Comparision Diff #}
       <tr>
-        <td>Running Services</td>
-        {% if not (v_post_check['running_svcs_diff'] | bool)  %}
+        <td>{% raw %}(v)CPU Cores{% endraw %}</td>
+        {% if not (v_post_check['cpu_cores_diff'] | bool)  %}
+            <td class="status-completed">No Difference</td>
+            <td></td>
+          {% else %}
+            <td class="status-failed">There are Differences.</td>
+            <td class="status-failed">{{ v_post_check['cpu_cores_diff_val'] }}</td>
+        {% endif %} 
+      </tr>
+
+    {# Total Memory Comparision Diff #}
+      <tr>
+        <td>{% raw %}Total Memory MB{% endraw %}</td>
+        {% if not (v_post_check['total_mem_diff'] | bool)  %}
+            <td class="status-completed">No Difference</td>
+            <td></td>
+          {% else %}
+            <td class="status-failed">There are Differences.</td>
+            <td class="status-failed">{{ v_post_check['total_mem_diff_val'] }}</td>
+        {% endif %} 
+      </tr>
+
+    {# Mount Points Diff #}
+      <tr>
+        <td>Mount Points</td>
+        {% if not (v_post_check['mount_points_diff'] | bool)  %}
             <td class="status-completed">No Difference</td>
             <td></td>
           {% else %}
             <td class="status-failed">There are Differences.</td>
             <td class="status-failed">
-              {% for lineitem in v_post_check['running_svcs_diff_val'] %}
+              {% for lineitem in v_post_check['mount_points_diff_val'] %}
                 {{ lineitem }}
             {% endfor %}               
             </td>
         {% endif %} 
       </tr>
+
 
       {# Post-Check Script Out Diff #}
       <tr>
@@ -73,23 +98,35 @@
         </td>
       </tr>
 
-    {# Mount Points Diff #}
+    {# Network Interfaces Comparision Diff #}
       <tr>
         <td>Mount Points</td>
-        {% if not (v_post_check['mount_points_diff'] | bool)  %}
+        {% if not (v_post_check['nw_intfs_compare_diff'] | bool)  %}
+            <td class="status-completed">No Difference</td>
+            <td></td>
+          {% else %}
+            <td class="status-failed">There are Differences.</td>
+            <td class="status-failed">{{ v_post_check['nw_intfs_compare_diff_val'] }}</td>
+        {% endif %} 
+      </tr>
+
+      {# Running Services Diff #}
+      <tr>
+        <td>Running Services</td>
+        {% if not (v_post_check['running_svcs_diff'] | bool)  %}
             <td class="status-completed">No Difference</td>
             <td></td>
           {% else %}
             <td class="status-failed">There are Differences.</td>
             <td class="status-failed">
-              {% for lineitem in v_post_check['mount_points_diff_val'] %}
+              {% for lineitem in v_post_check['running_svcs_diff_val'] %}
                 {{ lineitem }}
             {% endfor %}               
             </td>
         {% endif %} 
       </tr>
-  </table>
 
+  </table>
 
 {# Patch Info - What changed  #}
 

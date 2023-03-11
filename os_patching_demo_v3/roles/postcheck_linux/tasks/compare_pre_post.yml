@@ -3,12 +3,14 @@
     - name: 'Post Check | Check Pre and Post check differences'
       ansible.builtin.include_tasks:
         file: 'compare_{{ compare_test }}.yml'   
-      loop:
+      loop:      
         - desired_kernel_ver
+        - cpu_cores
+        - total_memory
+        - mount_points
         - post_check_script
         - running_svcs
-        - mount_points
-        #- network_interfaces
+        - network_interfaces
       loop_control:
         loop_var: compare_test
     
