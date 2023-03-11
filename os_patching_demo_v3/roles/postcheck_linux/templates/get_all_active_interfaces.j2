@@ -1,9 +1,0 @@
-{%- if fail_msg_obj is string -%}
-    {{ fail_msg_obj | default('') }}
-{%- elif fail_msg_obj is mapping -%}
-    {%- if fail_msg_obj['results'] is defined -%}
-        {{ fail_msg_obj['results'] | selectattr('failed','defined')|  selectattr('failed','equalto',true) | map(attribute='msg')| list | join('\n') }}
-    {%- elif fail_msg_obj['msg'] is defined -%}
-        {{ fail_msg_obj['msg']}}
-    {%- endif -%} 
-{%- endif -%}

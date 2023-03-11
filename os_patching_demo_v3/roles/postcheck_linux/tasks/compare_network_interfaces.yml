@@ -15,22 +15,23 @@
   ansible.builtin.set_fact:
     intfs_active_diff: "{{ intfs_active_diff | default([]) + [item] }}"
   when: 
-    - pre_nw_intfs | symmetric_difference(post_nw_intfs) | length == 0
+    #- pre_nw_intfs | difference(post_nw_intfs) | length == 0
+    - pre_check[inventory_hostname].pre_check_facts[item] is defined
     - pre_check[inventory_hostname].pre_check_facts[item].active | default(true) != ansible_facts[item].active | default(true)
   loop: post_nw_intfs
 
 - name: 'PRE_POST_COMPARE | Run Pre and Post Network Interfaces comparision'
   ansible.builtin.set_fact:
-    nw_intfs_diff: "{{ true if (pre_nw_intfs | symmetric_difference(post_nw_intfs) | length > 0) else false }}"
-    nw_intfs_diff_val: "{{ pre_nw_intfs | symmetric_difference(post_nw_intfs) }}"
-    nw_ipv4s_diff: "{{ true if (pre_nw_ipv4s | symmetric_difference(post_nw_ipv4s) | length > 0) else false }}"
-    nw_ipv4s_diff_val: "{{ pre_nw_ipv4s | symmetric_difference(post_nw_ipv4s) }}"
-    nw_ipv6s_diff: "{{ true if (pre_nw_ipv6s | symmetric_difference(post_nw_ipv6s) | length > 0) else false }}"
-    nw_ipv6s_diff_val: "{{ pre_nw_ipv6s | symmetric_difference(post_nw_ipv6s) }}"
+    nw_intfs_diff: "{{ true if (pre_nw_intfs | difference(post_nw_intfs) | length > 0) else false }}"
+    nw_intfs_diff_val: "{{ pre_nw_intfs | difference(post_nw_intfs) }}"
+    nw_ipv4s_diff: "{{ true if (pre_nw_ipv4s | difference(post_nw_ipv4s) | length > 0) else false }}"
+    nw_ipv4s_diff_val: "{{ pre_nw_ipv4s | difference(post_nw_ipv4s) }}"
+    nw_ipv6s_diff: "{{ true if (pre_nw_ipv6s | difference(post_nw_ipv6s) | length > 0) else false }}"
+    nw_ipv6s_diff_val: "{{ pre_nw_ipv6s | difference(post_nw_ipv6s) }}"
     nw_intfs_active_diff: "{{ true if (intfs_active_diff | length > 0) else false }}"
     nw_intfs_active_diff_val: "{{ intfs_active_diff | default([]) }}"
 
 - name: 'PRE_POST_COMPARE | Get Pre and Post Network Comparision Status'
   ansible.builtin.set_fact:
     nw_intfs_compare_diff: "{{ true if (nw_intfs_diff or nw_ipv4s_diff or nw_ipv6s_diff or nw_intfs_active_diff) else false }}"
-
+    nw_intfs_compare_diff_val: "{{ lookup('ansible.builtin.template', 'get_interface_compare_result.j2') }}"

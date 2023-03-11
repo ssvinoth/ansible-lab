@@ -1,0 +1,20 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+{% if nw_intfs_diff %}
+These interfaces are missing in post_check:
+{{ nw_intfs_diff_val }}
+{% endif %}
+
+{% if nw_ipv4s_diff %}
+These IPV4 addresses are missing in post_check:
+{{ nw_ipv4s_diff_val }}
+{% endif %}
+
+{% if nw_ipv6s_diff %}
+These IPV6 addresses are missing in post_check:
+{{ nw_ipv6s_diff_val }}
+{% endif %}
+
+{% if nw_intfs_active_diff %}
+These interfaces had its active state changed in post_check:
+{{ nw_intfs_active_diff_val }}
+{% endif %}
