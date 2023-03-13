@@ -5,7 +5,10 @@
     file: run_shell_script.yml
   loop: "{{ v_shell_scripts | split(',') | list }}"
   loop_control:
-    loop_var: v_script 
+    loop_var: v_script
+  when: 
+    - v_shell_scripts is defined
+    - v_shell_scripts | trim != ''
 
 
 
