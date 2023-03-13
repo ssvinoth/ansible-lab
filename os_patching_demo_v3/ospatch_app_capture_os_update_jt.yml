@@ -5,13 +5,18 @@
   gather_facts: false
   become: true
   tasks:
-    - name: 'Include capture pre-check results role'
-      ansible.builtin.include_role: 
-        name: 'capture_results'
-      vars:
-        result_out_dir: '/opt/ansible/reports/patching/interim_results/'
-        result_out_filename: '{{ jira_key }}-app-osupdate'
-        result_data_var: 'os_update'
-        result_data: "{{ os_update }}"
+    - name: 'BLOCK : Check if the os type is supported'
+      block:
+        - name: 'Include capture pre-check results role'
+          ansible.builtin.include_role: 
+            name: 'capture_results'
+          vars:
+            result_out_dir: '{{ interim_results_dir }}'
+            result_out_filename: '{{ jira_key }}-app-osupdate'
+            result_data_var: 'os_update'
+            result_data: "{{ os_update }}"
+      
+      when: app_server_os_type in supported_nix_os_types 
+
 
  

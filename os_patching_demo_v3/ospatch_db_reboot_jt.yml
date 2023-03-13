@@ -5,9 +5,14 @@
   gather_facts: false
   become: true
   tasks:
-    - name: 'Include Reboot role'
-      ansible.builtin.include_role: 
-        name: 'nix_reboot'
-      when: db_server_os_type in supported_nix_os_types
+    - name: 'BLOCK : Check if the os type is supported'
+      block:
+        - name: 'Include Reboot role'
+          ansible.builtin.include_role: 
+            name: 'nix_reboot'
+
+
+      
+      when: db_server_os_type in supported_nix_os_types 
 
 

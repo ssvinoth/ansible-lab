@@ -5,11 +5,17 @@
   gather_facts: false
   become: true
   tasks:
-    - name: 'DB Shutdown | Run DB Shutdown scripts'
-      ansible.builtin.include_role: 
-        name: 'run_shell_scripts'
-      vars:
-        v_shell_scripts: "{{ db_stop_scripts }}"
-        v_stage: 'DB_SHUTDOWN'
-        v_script_user: "{{ db_scripts_user }}"
+    - name: 'BLOCK : Check if the os type is supported'
+      block:
+        - name: 'DB Shutdown | Run DB Shutdown scripts'
+          ansible.builtin.include_role: 
+            name: 'run_shell_scripts'
+          vars:
+            v_shell_scripts: "{{ db_stop_scripts }}"
+            v_stage: 'DB_SHUTDOWN'
+            v_script_user: "{{ db_scripts_user }}"
       
+
+      
+      when: db_server_os_type in supported_nix_os_types 
+

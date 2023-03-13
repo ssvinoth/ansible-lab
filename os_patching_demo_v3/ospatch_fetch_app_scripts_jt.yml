@@ -5,10 +5,13 @@
   gather_facts: false
   #become: true
   tasks:
-    - name: 'Include pre-check role'
-      ansible.builtin.include_role: 
-        name: clone_bitbucket_repo
-      vars:
-        v_repo_branch: 'main'
-        v_clone_dest_dir: '/opt/ansible/reports/bitbucket/{{ app_name }}'
-        v_bitbucket_repo: 'bitbucket.org/ssvinoth/{{ app_name }}.git'
+    - name: 'BLOCK : Check if the os type is supported'
+      block:
+        - name: 'Include pre-check role'
+          ansible.builtin.include_role: 
+            name: clone_bitbucket_repo
+          vars:
+            v_repo_branch: 'main'
+            v_clone_dest_dir: '/opt/ansible/reports/bitbucket/{{ app_name }}'
+            v_bitbucket_repo: 'bitbucket.org/ssvinoth/{{ app_name }}.git'      
+      when: db_server_os_type in supported_nix_os_types 

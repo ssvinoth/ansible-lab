@@ -5,11 +5,16 @@
   gather_facts: false
   become: true
   tasks:
-    - name: 'Include os update role'
-      ansible.builtin.include_role: 
-        name: 'patch_{{ db_server_os_type }}'
+    - name: 'BLOCK : Check if the os type is supported'
+      block:
+        - name: 'Include os update role'
+          ansible.builtin.include_role: 
+            name: 'patch_{{ db_server_os_type }}'
 
-    - name: 'OS_UPDATE | Fail if there were errors in the OS Update'
-      ansible.builtin.fail: 
-        msg: "OS_UPDATE for {{ inventory_hostname }} has failed. Failed stage: {{ patch_fail_stage }} and Fail Message: {{ lookup('ansible.builtin.template', 'get_fail_msg.j2', template_vars={'fail_msg_obj': patch_fail_msg}) }}"     
-      when: patch_fail
+        - name: 'OS_UPDATE | Fail if there were errors in the OS Update'
+          ansible.builtin.fail: 
+            msg: "OS_UPDATE for {{ inventory_hostname }} has failed. Failed stage: {{ patch_fail_stage }} and Fail Message: {{ lookup('ansible.builtin.template', 'get_fail_msg.j2', template_vars={'fail_msg_obj': patch_fail_msg}) }}"     
+          when: patch_fail
+
+      
+      when: db_server_os_type in supported_nix_os_types 

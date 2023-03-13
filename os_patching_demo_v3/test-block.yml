@@ -1,0 +1,6 @@
+    - name: 'BLOCK : Check if the os type is supported'
+      block:
+
+
+      
+      when: db_server_os_type in supported_nix_os_types 

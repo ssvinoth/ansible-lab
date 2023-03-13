@@ -5,11 +5,16 @@
   gather_facts: false
   become: true
   tasks:
-    - name: 'App Shutdown | Run App Shutdown scripts'
-      ansible.builtin.include_role: 
-        name: 'run_shell_scripts'
-      vars:
-        v_shell_scripts: "{{ app_stop_scripts }}"
-        v_stage: 'APP_SHUTDOWN'
-        v_script_user: "{{ app_scripts_user }}"
+    - name: 'BLOCK : Check if the os type is supported'
+      block:
+        - name: 'App Shutdown | Run App Shutdown scripts'
+          ansible.builtin.include_role: 
+            name: 'run_shell_scripts'
+          vars:
+            v_shell_scripts: "{{ app_stop_scripts }}"
+            v_stage: 'APP_SHUTDOWN'
+            v_script_user: "{{ app_scripts_user }}"
+      
+      when: app_server_os_type in supported_nix_os_types 
+
       

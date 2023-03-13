@@ -5,11 +5,15 @@
   gather_facts: false
   become: true
   tasks:
-    - name: 'Include OS pre-check role'
-      ansible.builtin.include_role: 
-        name: 'precheck_{{ db_server_os_type }}'
+    - name: 'BLOCK : Check if the os type is supported'
+      block:
+        - name: 'Include OS pre-check role'
+          ansible.builtin.include_role: 
+            name: 'precheck_{{ db_server_os_type }}'
 
-    - name: 'OS_PRE_CHECK | Fail if there were errors in the pre-checks'
-      ansible.builtin.fail: 
-        msg: "OS_PRE_CHECK for {{ inventory_hostname }} has failed. Failed stage: {{ pre_check_fail_stage }} and Fail Message: {{ lookup('ansible.builtin.template', 'get_fail_msg.j2', template_vars={'fail_msg_obj': pre_check_fail_msg}) }}"     
-      when: pre_check_fail
+        - name: 'OS_PRE_CHECK | Fail if there were errors in the pre-checks'
+          ansible.builtin.fail: 
+            msg: "OS_PRE_CHECK for {{ inventory_hostname }} has failed. Failed stage: {{ pre_check_fail_stage }} and Fail Message: {{ lookup('ansible.builtin.template', 'get_fail_msg.j2', template_vars={'fail_msg_obj': pre_check_fail_msg}) }}"     
+          when: pre_check_fail      
+      when: db_server_os_type in supported_nix_os_types 
+
