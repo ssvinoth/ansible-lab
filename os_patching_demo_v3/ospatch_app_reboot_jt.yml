@@ -8,6 +8,6 @@
     - name: 'Include Reboot role'
       ansible.builtin.include_role: 
         name: 'nix_reboot'
-
+      when: app_server_os_type in supported_nix_os_types
 
 

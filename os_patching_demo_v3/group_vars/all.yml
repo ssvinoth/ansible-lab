@@ -1,0 +1,4 @@
+supported_nix_os_types:
+  - 'linux'
+#  - 'solaris'
+#  - 'aix'
