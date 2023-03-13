@@ -1,0 +1,7 @@
+---
+# vars file for precheck_linux
+vol_fail_msgs: []
+vg_fail_msgs: []
+vg_reqd_sizes: {}
+vg_reqd_size: 0
+pre_check_fail: false

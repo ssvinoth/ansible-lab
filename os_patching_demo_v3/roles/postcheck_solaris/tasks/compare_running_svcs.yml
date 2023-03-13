@@ -1,0 +1,13 @@
+
+- name: 'PRE_POST_COMPARE | Get Pre and Post Running Service List'
+  ansible.builtin.set_fact:
+    pre_running_svcs: "{{ pre_check[inventory_hostname].pre_check_facts.services | dict2items | selectattr('value.state','equalto','running') | map(attribute='key')| list }}"
+    post_running_svcs: "{{ ansible_facts.services | dict2items | selectattr('value.state','equalto','running') | map(attribute='key')| list }}"
+
+
+- name: 'PRE_POST_COMPARE | Run Pre and Post Services list comparision'
+  ansible.builtin.set_fact:
+    running_svcs_diff: "{{ true if (pre_running_svcs | difference(post_running_svcs) | length > 0) else false }}"
+    # we will not fail if there is any running svcs difference
+    #running_svcs_diff: false 
+    running_svcs_diff_val: "{{ pre_running_svcs | difference(post_running_svcs)}}"

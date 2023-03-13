@@ -1,0 +1,91 @@
+---
+# tasks file for post check linux
+- name: 'Post Check | BLOCK - Run Post Checks if precheck and patch is successful'
+  block:
+    - name: 'Post Check |  Set default facts'
+      ansible.builtin.set_fact:
+        post_check_status: true
+        post_check_fail: false
+        post_check_fail_stage: ''
+        post_check_fail_msg: ""  
+    # Get post facts
+    - name: 'Post Check | Get Post update ansible facts'
+      ansible.builtin.setup:
+      register: postcheck_facts_result
+
+    # Get all running services
+    # - name: 'Post Check | Get service facts'
+    #   ansible.builtin.service_facts:
+    #   register: postcheck_servicefacts_result
+    
+    # Run the Post-Check Script
+    - name: 'Post Check | Run postcheck script'
+      ansible.builtin.include_tasks:
+        file: 'run_post_check_script.yml'
+      when: not post_check_fail
+
+    # # Capture all postcheck results
+    # - name: 'Precheck | Capture all precheck details'
+    #   ansible.builtin.include_tasks:
+    #     file: 'capture_postcheck_results.yml'
+    #   when: not post_check_fail 
+    
+    # Capture the uptime details
+    - name: 'Post Check | Get Uptime in human readable format'
+      ansible.builtin.command: /usr/bin/python
+      args:
+        stdin: |
+          import datetime
+          print(datetime.timedelta(seconds={{ ansible_facts['uptime_seconds']| default(0) |int }}))
+      register: uptime_results
+      delegate_to: localhost      
+
+    - name: 'Post Check | Get Uptime details'
+      ansible.builtin.set_fact:
+        post_uptime: "{{ uptime_results.stdout }}, {{ansible_facts.date_time.date}} {{ansible_facts.date_time.time}} {{ansible_facts.date_time.tz}}"
+        post_time: "{{ansible_facts.date_time.date}} {{ansible_facts.date_time.time}} {{ansible_facts.date_time.tz}}"
+
+    # Before making any comparisions with prechecks, we need to fetch it from interim results json
+    - name: 'Post Check | Fetch pre-check details from interim results json'
+      ansible.builtin.set_fact:
+        pre_check_data: "{{ lookup('file', v_precheck_results_file ) | from_json }}"
+        os_update_data: "{{ lookup('file', v_os_update_results_file ) | from_json }}"    
+
+    # Before making any comparisions with prechecks, we need to fetch it from interim results json
+    - name: 'Post Check | Fetch pre-check details from interim results'
+      ansible.builtin.set_fact:
+        pre_check: "{{ pre_check_data.pre_check }}"
+        os_update: "{{ os_update_data.os_update }}"   
+
+    # Compare Pre and Post Check Services
+    - name: 'Post Check | Get Services Difference'
+      ansible.builtin.include_tasks:
+        file: 'compare_pre_post.yml'
+      when: not post_check_fail 
+
+    # # Capture Patching Results
+    # - name: 'Patching | Capture Post Check Results'
+    #   ansible.builtin.include_tasks:
+    #     file: 'capture_postcheck_results.yml'
+    #   #when: not post_check_fail 
+    
+    # TODO: Create Report 
+
+  # when: 
+  #   - pre_check[inventory_hostname] is defined
+  #   - os_update[inventory_hostname] is defined
+  #   - not pre_check[inventory_hostname].pre_check_fail
+  #   - not os_update[inventory_hostname].patch_fail
+  
+  # Capture Post Check Results
+- name: 'Post Check | Capture Post Check Results'
+  ansible.builtin.include_tasks:
+    file: 'capture_postcheck_results.yml'
+  #when: not post_check_fail 
+  # Generate Post-Check Report 
+
+- name: 'Post Check | Generate Post Check Report'
+  ansible.builtin.include_tasks:
+    file: 'generate_post_check_report.yml'
+
+  

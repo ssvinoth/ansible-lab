@@ -1,0 +1,71 @@
+- name: 'Precheck |  BLOCK : Check if we have enough free space in the required root volumes'
+  block:
+    - name: 'FS_CHECK | Get all free space on the mounts'
+      ansible.builtin.set_fact:
+        mount_free_space: "{{ ansible_facts.mounts | items2dict('mount','size_available') }} "
+
+    # Check if /usr and /var have separate mount points
+    # if not then add the free space required to the root volume free_size_b
+    - name: 'FS_CHECK | Check if /usr , /var has separate mount points and adjust the free space required accordingly'
+      ansible.builtin.set_fact:
+        root_reqd_free_space_sum: "{{ ( (root_reqd_free_space_sum | default(fs_check_val['/'].free_size_b)|int) + (fs_check_val[item].free_size_b | default(0)| int) ) }}"
+      when: 
+        - fs_check_val['/'].free_size_b is defined
+        - mount_free_space[item] is not defined
+      loop: "{{ fs_non_root_vols }}"
+
+
+    - name: 'FS_CHECK | Check if enough free space is available on /  volume'
+      ansible.builtin.assert:
+        that:
+          - size_avail | int > size_required | int
+        fail_msg: "'/' does not have enough free space. Required={{ size_required }} Available={{ size_avail }} "
+        success_msg: "'/' has enough free space. Required={{ size_required }} Available={{ size_avail }} "    
+      vars:
+        size_avail: "{{ mount_free_space['/'] | default(0)}}"
+        size_required: "{{ root_reqd_free_space_sum is defined | ternary(root_reqd_free_space_sum,fs_check_val['/'].free_size_b) }}"
+
+
+    - name: 'FS_CHECK | Check if enough free space is available on other required root volumes'
+      ansible.builtin.assert:
+        that:
+          - size_avail | int > size_required | int
+        fail_msg: "{{ item.key }} does not have enough free space. Required={{ size_required }} Available={{ size_avail }} "
+        success_msg: "{{ item.key }} has enough free space. Required={{ size_required }} Available={{ size_avail }} "    
+      when: 
+        - item.key != '/'
+        - mount_free_space[item.key] is defined
+      vars:
+        size_avail: "{{ mount_free_space[item.key] | default(0)}}"
+        size_required: "{{ item.value.free_size_b }}"
+      loop: "{{ fs_check_val_list }}"
+
+    # Assumption : All root volumes are in same vg = rootvg
+    - name: 'FS_CHECK | Get total required free size on rootvg'
+      ansible.builtin.set_fact:
+        vg_reqd_size: "{{ ((vg_reqd_size | default(0)|float) + (item.value.free_size_g |float)) }}"
+      when: not (item.key=='/boot')
+      loop: "{{ fs_check_val_list }}"
+
+    - name: debug vg_reqd_size
+      ansible.builtin.debug:
+        var: vg_reqd_size
+
+    - name: 'FS_CHECK | Check if enough free space is available on the required rootvg'
+      ansible.builtin.assert:
+        that:
+          - vg_size_avail | float  > vg_reqd_size | float
+        fail_msg: "{{ root_vol_vg }} vg does not have enough free space. Required={{ vg_reqd_size }} Available={{ vg_size_avail }} "
+        success_msg: "{{ root_vol_vg }} vg has enough free space. Required={{ vg_reqd_size }} Available={{ vg_size_avail }} "    
+      #when: ansible_facts.lvm.vgs[root_vol_vg] is defined
+      vars:
+        vg_size_avail: "{{ (ansible_facts.lvm.vgs[root_vol_vg] is defined) | ternary(ansible_facts.lvm.vgs[root_vol_vg].free_g,0) }}"
+
+
+  rescue:
+    - name: 'FS_CHECK |  Set failure message'
+      ansible.builtin.set_fact:
+        pre_check_status: false
+        pre_check_fail: true
+        pre_check_fail_stage: 'FS_CHECK'
+        pre_check_fail_msg: "{{ ansible_failed_result }}" 

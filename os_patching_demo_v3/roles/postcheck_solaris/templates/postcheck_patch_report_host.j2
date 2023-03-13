@@ -1,0 +1,144 @@
+
+{# This is a 'child' template sourced from our master report template. #}
+{# To reference a host's facts, use our loop variable named thehost, i.e. hostvars[thehost]['some_fact'] #} 
+{% import 'check_patch_failures.j2' as tools with context %}
+<hr>
+
+{# Hostname #}
+<h2 id="{{ thehost }}">{{ thehost }}</h2>
+  {% set v_pre_check = pre_check[thehost] %}
+  {% set v_os_update = os_update[thehost] %}
+  {% set v_post_check = hostvars[thehost] %}
+
+{# Patching summary text #}
+  {% if not (tools.check_patch_postcompare_failure(v_post_check) | trim | bool) %}
+    <p style="color:green;"><strong>Patching Successful. Please see details below.</strong></p>
+  {% elif (tools.check_patch_failure(v_post_check) | trim | bool) %}
+    <p style="color:red;"><strong>Patching failed; please investigate</strong></p>
+  {% elif (tools.check_postcompare_failure(v_post_check) | trim | bool) %}
+    <p style="color:orange;"><strong>Patching Successful but post-check comparision failed. Please check details below.</strong></p>
+  {% endif %}
+
+{# Host Info #}
+  <p><strong>{% raw %}Host info{% endraw %}</strong></p>
+    <ul>
+      <li>{% raw %}Hostname: {% endraw %} {{ v_post_check['ansible_facts']['hostname']}}</li>
+      <li>{% raw %}FQDN: {% endraw %} {{ v_post_check['ansible_facts']['nodename']}}</li>
+      <li>{% raw %}OS: {% endraw %}{{ v_post_check['ansible_facts']['distribution'] | default('N/A') }} {{ v_post_check['ansible_facts']['distribution_version'] | default('N/A') }}
+      <li>{% raw %}IP addresses: {% endraw %}{{ v_post_check['ansible_facts']['all_ipv4_addresses'] | d(['unknown']) | join(', ') }}</li>
+      <li>{% raw %}Kernel: {% endraw %}{{ v_post_check['ansible_facts']['kernel'] | default('N/A') }}</li>
+      <li>{% raw %}Uptime:  {% endraw %}{{ v_post_check['post_uptime'] | default('N/A') }}</li>
+    </ul>  
+
+{# Pre and Post Comparision Results - Table #}
+  <p><strong>{% raw %}Post Check Comparision:  {% endraw %}</strong></p>
+  <table>
+    <tr>
+      <th>Post Check</th>
+      <th>Status</th>
+      <th>Output</th>
+    </tr>
+
+    {# CPU Cores Comparision Diff #}
+      <tr>
+        <td>{% raw %}(v)CPU Cores{% endraw %}</td>
+        {% if not (v_post_check['cpu_cores_diff'] | bool)  %}
+            <td class="status-completed">No Difference</td>
+            <td></td>
+          {% else %}
+            <td class="status-failed">There are Differences.</td>
+            <td class="status-failed">{{ v_post_check['cpu_cores_diff_val'] }}</td>
+        {% endif %} 
+      </tr>
+
+    {# Total Memory Comparision Diff #}
+      <tr>
+        <td>{% raw %}Total Memory MB{% endraw %}</td>
+        {% if not (v_post_check['total_mem_diff'] | bool)  %}
+            <td class="status-completed">No Difference</td>
+            <td></td>
+          {% else %}
+            <td class="status-failed">There are Differences.</td>
+            <td class="status-failed">{{ v_post_check['total_mem_diff_val'] }}</td>
+        {% endif %} 
+      </tr>
+
+    {# Mount Points Diff #}
+      <tr>
+        <td>Mount Points</td>
+        {% if not (v_post_check['mount_points_diff'] | bool)  %}
+            <td class="status-completed">No Difference</td>
+            <td></td>
+          {% else %}
+            <td class="status-failed">There are Differences.</td>
+            <td class="status-failed">
+              {% for lineitem in v_post_check['mount_points_diff_val'] %}
+                {{ lineitem }}
+            {% endfor %}               
+            </td>
+        {% endif %} 
+      </tr>
+
+    {# Network Interfaces Comparision Diff #}
+      <tr>
+        <td>Network Interface Details</td>
+        {% if not (v_post_check['nw_intfs_compare_diff'] | bool)  %}
+            <td class="status-completed">No Difference</td>
+            <td></td>
+          {% else %}
+            <td class="status-failed">There are Differences.</td>
+            <td class="status-failed">{{ v_post_check['nw_intfs_compare_diff_val'] }}</td>
+        {% endif %} 
+      </tr>
+
+    {# Post-Check Script Out Diff #}
+      <tr>
+        <td>Post-Check Script</td>
+          {% if not (v_post_check['post_check_script_diff'] | bool) %}
+            <td class="status-completed">No Difference</td>
+          {% else %}
+            <td class="status-failed">There are Differences.</td>
+          {% endif %} 
+            <td>
+              {# For items under pre tag, we should not have any leading spaces. It will take it literally and print it. #}
+              <div class="code"><pre>
+{% for lineitem in v_post_check['post_check_script_diff_val'] %}
+{{ lineitem }}
+{% endfor %}
+            </pre></div>         
+        </td>
+      </tr>
+
+
+
+    {# Running Services Diff #}
+    {# Commented as it is not implemented for solaris
+      <tr>
+        <td>Running Services</td>
+        {% if not (v_post_check['running_svcs_diff'] | bool)  %}
+            <td class="status-completed">No Difference</td>
+            <td></td>
+          {% else %}
+            <td class="status-failed">There are Differences.</td>
+            <td class="status-failed">
+              {% for lineitem in v_post_check['running_svcs_diff_val'] %}
+                {{ lineitem }}
+            {% endfor %}               
+            </td>
+        {% endif %} 
+      </tr>
+    #}
+
+  </table>
+
+{# Patch Info - What changed  #}
+  {# Commented as it is not implemented for solaris
+  <p><strong>{% raw %}Patches Info (what was changed):  {% endraw %}</strong></p>
+    <div class="code">
+      <pre>
+{% for lineitem in v_os_update['patch_yum_history']['stdout_lines']| default(['No Updates']) %}
+{{ lineitem }}
+{% endfor %}
+      </pre>
+    </div>    
+#}

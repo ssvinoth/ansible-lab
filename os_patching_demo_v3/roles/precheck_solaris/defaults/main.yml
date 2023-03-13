@@ -1,0 +1,28 @@
+---
+# root_vol_vg: rootvg
+# fs_check_val:
+#   "/":
+#     free_size_g: 1
+#     free_size_b: 1073741824
+#     #free_size_b: 5358223360
+#     lv_snapshot_name: snap_root
+#     vg_name: rootvg
+#   "/usr":
+#     free_size_g: 0.5
+#     free_size_b: 524288000
+#     lv_snapshot_name: snap_usr
+#     vg_name: rootvg
+#   "/var":   
+#     free_size_g: 2
+#     free_size_b: 2147483648
+#     lv_snapshot_name: snap_var
+#     vg_name: rootvg 
+#   "/boot":
+#     # free_size_g: 0.25
+#     # free_size_b: 262144000
+#     free_size_g: 0.06
+#     free_size_b: 61440
+# fs_check_val_list: "{{ fs_check_val | dict2items }}"
+# fs_non_root_vols:
+#   - "/usr"
+#   - "/var"

@@ -1,0 +1,10 @@
+- name: 'PRE_POST_COMPARE | Get Pre and Post (v)CPU Cores'
+  ansible.builtin.set_fact:
+    pre_cpu_cores: "{{ (pre_check[inventory_hostname].pre_check_facts.processor_vcpus is defined) | ternary(pre_check[inventory_hostname].pre_check_facts.processor_vcpus, pre_check[inventory_hostname].pre_check_facts.processor_cores) }}"
+    post_cpu_cores: "{{ (ansible_facts.processor_vcpus is defined)  | ternary(ansible_facts.processor_vcpus, ansible_facts.processor_cores) }}"
+
+
+- name: 'PRE_POST_COMPARE | Run Pre and Post (v)CPU Cores comparision'
+  ansible.builtin.set_fact:
+    cpu_cores_diff: "{{ true if (pre_cpu_cores != post_cpu_cores) else false }}"
+    cpu_cores_diff_val: "PRE_CHECK_CPU_CORES:{{ pre_cpu_cores }} POST_CHECK_CPU_CORES: {{ post_cpu_cores }}"

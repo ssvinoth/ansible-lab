@@ -1,0 +1,23 @@
+- name: 'Post Check |  BLOCK : Run Pre and Post Comparision'
+  block:
+    - name: 'Post Check | Check Pre and Post check differences'
+      ansible.builtin.include_tasks:
+        file: 'compare_{{ compare_test }}.yml'   
+      loop:      
+        - desired_kernel_ver
+        - cpu_cores
+        - total_memory
+        - mount_points
+        - post_check_script
+        #- running_svcs
+        - network_interfaces
+      loop_control:
+        loop_var: compare_test
+    
+  rescue:
+    - name: 'PRE_POST_COMPARE |  Set failure message'
+      ansible.builtin.set_fact:
+        post_check_status: false
+        post_check_fail: true
+        post_check_fail_stage: 'PRE_POST_COMPARE'
+        post_check_fail_msg: "{{ ansible_failed_result }}"  

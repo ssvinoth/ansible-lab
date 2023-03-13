@@ -1,0 +1,19 @@
+- name: 'Post Check |  BLOCK : Run Post Check Script'
+  block:
+
+    - name: 'POSTCHK_SCRIPT | Run post-check script'
+      ansible.builtin.script:
+        cmd: solaris_check.sh pst
+        decrypt: true
+        chdir: /tmp
+      register: postcheck_script_result
+    
+
+      
+  rescue:
+    - name: 'POSTCHK_SCRIPT |  Set failure message'
+      ansible.builtin.set_fact:
+        post_check_status: false
+        post_check_fail: true
+        post_check_fail_stage: 'POSTCHK_SCRIPT'
+        post_check_fail_msg: "{{ ansible_failed_result }}"       
