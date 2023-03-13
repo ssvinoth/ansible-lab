@@ -36,6 +36,7 @@
               "nw_intfs_active_diff" : "{{ nw_intfs_active_diff | default(false) }}",
               "nw_intfs_active_diff_val" : "{{ nw_intfs_active_diff_val | default([]) }}",
               "nw_intfs_compare_diff" : "{{ nw_intfs_compare_diff | default(false) }}",
+              "nw_intfs_compare_diff_val" : "{{ nw_intfs_compare_diff_val | default('') }}",
               "total_mem_diff" : "{{ total_mem_diff | default(false) }}",
               "total_mem_diff_val" : "{{ total_mem_diff_val | default('') }}",
               "cpu_cores_diff" : "{{ cpu_cores_diff | default(false) }}",
