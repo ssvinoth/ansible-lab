@@ -1,0 +1,19 @@
+---
+- name: "DB Startup | Run DB Startup scripts"
+  hosts: "{{ db_servers }}"
+  #strategy: free
+  gather_facts: false
+  become: true
+  tasks:
+    - name: 'BLOCK : Check if the os type is supported'
+      block:
+        - name: 'DB Startup | Run DB Startup scripts'
+          ansible.builtin.include_role: 
+            name: 'run_shell_scripts'
+          vars:
+            v_shell_scripts: "{{ db_start_scripts }}"
+            v_stage: 'DB_STARTUP'
+            v_script_user: "{{ db_scripts_user }}"
+  
+      when: db_server_os_type in supported_nix_os_types 
+
