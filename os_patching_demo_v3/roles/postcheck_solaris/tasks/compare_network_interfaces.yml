@@ -11,14 +11,20 @@
     post_nw_ipv6s: "{{ ansible_facts.all_ipv6_addresses }}"    
 
 # check if all the interfaces active state is same , when both the interface list are same
-- name: 'PRE_POST_COMPARE | Get any difference in active state of Network Interfaces'
+# - name: 'PRE_POST_COMPARE | Get any difference in active state of Network Interfaces'
+#   ansible.builtin.set_fact:
+#     intfs_active_diff: "{{ intfs_active_diff | default([]) + [item] }}"
+#   when: 
+#     #- pre_nw_intfs | difference(post_nw_intfs) | length == 0
+#     - pre_check[inventory_hostname].pre_check_facts[item] is defined
+#     - pre_check[inventory_hostname].pre_check_facts[item].active | default(true) != ansible_facts[item].active | default(true)
+#   loop: "{{ post_nw_intfs }}"
+
+# check if all the interfaces active state is same , when both the interface list are same
+- name: 'PRE_POST_COMPARE | Get any difference in state of Network Interfaces'
   ansible.builtin.set_fact:
-    intfs_active_diff: "{{ intfs_active_diff | default([]) + [item] }}"
-  when: 
-    #- pre_nw_intfs | difference(post_nw_intfs) | length == 0
-    - pre_check[inventory_hostname].pre_check_facts[item] is defined
-    - pre_check[inventory_hostname].pre_check_facts[item].active | default(true) != ansible_facts[item].active | default(true)
-  loop: "{{ post_nw_intfs }}"
+    intfs_active_diff: "{{ lookup('ansible.builtin.template', 'compare_nw_intf_details.j2') }}"
+
 
 - name: 'PRE_POST_COMPARE | Run Pre and Post Network Interfaces comparision'
   ansible.builtin.set_fact:

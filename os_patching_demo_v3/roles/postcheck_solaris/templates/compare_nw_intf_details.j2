@@ -1,0 +1,17 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+{% for item in pre_nw_intfs %}
+    {% if ansible_facts[item] is defined %}
+        {% set pre_intf =  pre_check[inventory_hostname].pre_check_facts[item] %}
+        {% set post_intf =  ansible_facts[item] %}
+        {% set pre_ipv4s = ( pre_intf.ipv4 | items2dict(key_name='address', value_name='flags') ) %}
+        {% set post_ipv4s = ( post_intf.ipv4 | items2dict(key_name='address', value_name='flags') ) %}
+        {% for ipv4_item in pre_ipv4s.keys()  %}
+            {% set pre_post_flags_diff = (pre_ipv4s[ipv4_item] | difference(post_ipv4s[ipv4_item])) %}
+            {% if (pre_post_flags_diff | length > 0) %}
+{{ pre_intf.device }}: {{ ipv4_item }} has different flags. flag_difference= {{ pre_post_flags_diff }} . pre_flags={{ pre_ipv4s[ipv4_item] }} . post_flags={{ post_ipv4s[ipv4_item] }} .
+            {% endif %}
+        {% endfor %}
+    {% else %}
+{{ item }} not found in post_check_facts.
+    {% endif %}
+{% endfor %}
