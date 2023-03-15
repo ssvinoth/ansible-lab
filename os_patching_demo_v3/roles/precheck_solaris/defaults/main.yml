@@ -26,3 +26,5 @@
 # fs_non_root_vols:
 #   - "/usr"
 #   - "/var"
+patching_timeout: 1800
+patching_poll: 5

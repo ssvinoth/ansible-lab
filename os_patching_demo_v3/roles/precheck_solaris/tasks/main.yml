@@ -27,6 +27,12 @@
 #     file: 'create_lvm_snapshots.yml'
 #   when: not pre_check_fail
 
+# Run the OS update dry run and check enough space
+- name: 'Precheck | Run OS update dry run and check if enough free space available'
+  ansible.builtin.include_tasks:
+    file: 'pkg_update_dry_run_check_space.yml'
+  when: not pre_check_fail
+
 # Run the Pre-Check Script
 - name: 'Precheck | Run precheck script'
   ansible.builtin.include_tasks:

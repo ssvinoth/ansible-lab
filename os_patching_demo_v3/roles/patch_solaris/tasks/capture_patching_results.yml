@@ -18,7 +18,7 @@
               "patch_fail" : "{{ patch_fail | default(false) }}",
               "patch_fail_stage" : "{{ patch_fail_stage | default('') }}",
               "patch_fail_msg" : "{{ patch_fail_msg | default('') }}",
-              "patch_yum_history" : "{{ yum_update_history_result | default({}) }}",
+              "pkg_update_result" : "{{ pkg_update_result | default({}) }}",
             }
           }  
 

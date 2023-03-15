@@ -1,0 +1,60 @@
+- name: 'Precheck |  BLOCK : Check if we have enough free space in the required root volumes'
+  block:
+    - name: 'PRE_CHECK | Perform OS update dry-run'
+      ansible.builtin.shell:
+        cmd: "pkg update -nv --accept '*'"
+        #cmd: "pkg update -nv developer/build/ant"
+      become: true
+      async: "{{ patching_timeout }}"
+      poll: "{{ patching_poll }}"
+      ignore_errors: true
+      register: pkg_update_dryrun_result   
+
+    - name: debug pkg_update_dryrun_result
+      ansible.builtin.debug:
+        var: pkg_update_dryrun_result
+        verbosity: 0
+
+    - name: 'PRE_CHECK | Fail if any errors in OS update dry-run'
+      ansible.builtin.fail:
+        msg: "Error while running os update dry run. Either no updates available or other errors occured. Please check dry-run output"
+      when: pkg_update_dryrun_result.rc != 0
+
+    - name: 'PRE_CHECK | Check if we have enough space for the os updates'
+      block:
+
+        - name: 'PRE_CHECK | Get required space and available space lines'
+          ansible.builtin.set_fact:
+            reqd_space_line: "{{ pkg_update_dryrun_result.stdout_lines | select('match','.*Estimated space to be consumed.*') }}"
+            avail_space_line: "{{ pkg_update_dryrun_result.stdout_lines | select('match','.*Estimated space available.*') }}"        
+        
+        - name: 'PRE_CHECK | Get required space and available space in bytes'
+          ansible.builtin.set_fact:
+            reqd_space_bytes: "{{ (reqd_space_line| first | split(':'))[1] | trim | human_to_bytes | int }}"
+            avail_space_bytes: "{{ (avail_space_line| first | split(':'))[1] | trim | human_to_bytes | int }}"
+          when: 
+            - reqd_space_line is defined and reqd_space_line | length > 0
+            - avail_space_line is defined and avail_space_line | length > 0
+
+        - name: debug reqd_space_bytes
+          ansible.builtin.debug:
+            var: reqd_space_bytes | int |  human_readable
+            verbosity: 0
+        - name: debug avail_space_bytes
+          ansible.builtin.debug:
+            var: avail_space_bytes | int | human_readable
+            verbosity: 0
+
+        - name: 'PRE_CHECK | Fail if the required space is not available'
+          ansible.builtin.fail:
+            msg: "Not enough space available. Required Space: {{ reqd_space_bytes | int | human_readable}} Available Space: {{ avail_space_bytes | int | human_readable }}"
+          when: (avail_space_bytes | int)  <= (reqd_space_bytes | int)
+      when: pkg_update_dryrun_result.rc == 0
+
+  rescue:
+    - name: 'DRY_RUN_FS_CHECK |  Set failure message'
+      ansible.builtin.set_fact:
+        pre_check_status: false
+        pre_check_fail: true
+        pre_check_fail_stage: 'DRY_RUN_FS_CHECK'
+        pre_check_fail_msg: "{{ ansible_failed_result }}" 
