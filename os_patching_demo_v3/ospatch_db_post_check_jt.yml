@@ -24,7 +24,7 @@
 
         - name: 'POST_CHECK | Fail if the post-patch kernel version does not match the desired kernel version '
           ansible.builtin.fail: 
-            msg: "POST_CHECK_KERNEL_VERSION for {{ inventory_hostname }} has failed. Expected Kernel Version: {{ desired_kernel_ver }} but Current Kernel Version is: {{ ansibel_facts['kernel'] }} "     
+            msg: "POST_CHECK_KERNEL_VERSION for {{ inventory_hostname }} has failed. Expected Kernel Version: {{ desired_kernel_ver }} but Current Kernel Version is: {{ desired_kernel_diff_val }} "     
           when: desired_kernel_diff
 
         - name: 'POST_CHECK | Fail if there were errors in the Post Check comparisions'

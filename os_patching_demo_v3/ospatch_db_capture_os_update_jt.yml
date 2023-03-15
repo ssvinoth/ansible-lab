@@ -17,7 +17,8 @@
             result_data: "{{ os_update }}"
 
       
-      when: db_server_os_type in supported_nix_os_types 
-
+      when: 
+        - app_server_os_type in supported_nix_os_types 
+        - not (run_only_post_check | bool)
 
  

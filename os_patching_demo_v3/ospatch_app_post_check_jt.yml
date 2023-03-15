@@ -41,4 +41,5 @@
 
 
       
-      when: app_server_os_type in supported_nix_os_types 
+      when: 
+        - app_server_os_type in supported_nix_os_types

@@ -16,4 +16,6 @@
             msg: "OS_UPDATE for {{ inventory_hostname }} has failed. Failed stage: {{ patch_fail_stage }} and Fail Message: {{ lookup('ansible.builtin.template', 'get_fail_msg.j2', template_vars={'fail_msg_obj': patch_fail_msg}) }}"     
           when: patch_fail
       
-      when: app_server_os_type in supported_nix_os_types 
+      when: 
+        - app_server_os_type in supported_nix_os_types 
+        - not (run_only_post_check | bool)
