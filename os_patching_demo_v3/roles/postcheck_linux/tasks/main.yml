@@ -2,6 +2,11 @@
 # tasks file for post check linux
 - name: 'Post Check | BLOCK - Run Post Checks if precheck and patch is successful'
   block:
+    - name: 'Post Check | Grace period wait before post checks are done. Waiting for {{ v_post_check_grace_wait_secs }} secs'
+      ansible.builtin.wait_for:
+        timeout: "{{ v_post_check_grace_wait_secs }}"
+      delegate_to: localhost
+
     - name: 'Post Check |  Set default facts'
       ansible.builtin.set_fact:
         post_check_status: true
