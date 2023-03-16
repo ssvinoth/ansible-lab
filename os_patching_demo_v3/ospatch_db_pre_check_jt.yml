@@ -5,6 +5,12 @@
   gather_facts: false
   become: true
   tasks:
+    - name: debug supported_nix_os_types
+      ansible.builtin.debug:
+        var: supported_nix_os_types 
+    - name: debug supported_nix_os_types
+      ansible.builtin.debug:
+        var: db_server_os_type 
     - name: 'BLOCK : Check if the os type is supported'
       block:
         - name: 'Include OS pre-check role'
