@@ -31,12 +31,12 @@
           ansible.builtin.fail: 
             msg: "POST_CHECK_COMPARISION for {{ inventory_hostname }} has failed. Please check the patch report for more details."     
           when: 
-            - (post_check_script_diff or 
-              running_svcs_diff or 
-              cpu_cores_diff or
-              total_mem_diff or
-              mount_points_diff or
-              nw_intfs_compare_diff)
+            - (post_check_script_diff | default(false) or 
+              running_svcs_diff | default(false) or 
+              cpu_cores_diff | default(false) or
+              total_mem_diff | default(false) or
+              mount_points_diff | default(false) or
+              nw_intfs_compare_diff | default(false))
 
       
       when: db_server_os_type in supported_nix_os_types 
