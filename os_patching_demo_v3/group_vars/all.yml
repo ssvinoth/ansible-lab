@@ -1,6 +1,6 @@
 supported_nix_os_types:
   - 'linux'
-#  - 'solaris'
+  - 'solaris'
 #  - 'aix'
 interim_results_dir: '/opt/ansible/reports/patching/interim_results'
 os_patch_report_dir: '/opt/ansible/reports/patching'
