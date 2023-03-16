@@ -63,7 +63,7 @@
         os_update: "{{ os_update_data.os_update }}"   
 
     # Compare Pre and Post Check Services
-    - name: 'Post Check | Get Services Difference'
+    - name: 'Post Check | Compare Pre and Post Check Differences'
       ansible.builtin.include_tasks:
         file: 'compare_pre_post.yml'
       when: not post_check_fail 
