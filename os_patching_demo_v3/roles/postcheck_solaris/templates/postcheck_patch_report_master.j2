@@ -88,9 +88,9 @@
         {% else %}
           {# Patching Successful #}
             {% set ttl.success = ttl.success + 1 %}
-            <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('N/A') }}</td>
+            <td>{{ v_pre_check['pre_check_facts']['kernel_version'] | default('N/A') }}</td>
             <td>{{ v_post_check['desired_kernel_ver'] | default('UNKNOWN') }}</td>
-            <td class="{{ 'status-failed' if (v_post_check['desired_kernel_diff'] | bool) else 'status-completed'  }}">{{ v_post_check['ansible_facts']['kernel'] | default('N/A') }}</td>
+            <td class="{{ 'status-failed' if (v_post_check['desired_kernel_diff'] | bool) else 'status-completed'  }}">{{ v_post_check['ansible_facts']['kernel_version'] | default('N/A') }}</td>
             <td class="status-completed"">Success</td>
             <td class="status-completed">{{ v_post_check['post_uptime'] | default('') }}</td>             
         {% endif %}
