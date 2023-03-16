@@ -74,10 +74,10 @@
         {% if (tools.check_patch_postcompare_failure(v_post_check) | trim | bool)  %}
           {# Patching Failed in the process #}
             {% set ttl.failed =  ttl.failed + 1 %}
-            {% if  v_pre_check['pre_check_facts']['kernel'] is defined %}            
-              <td>{{ v_pre_check['pre_check_facts']['kernel'] | default('UNKNOWN') }}</td>
+            {% if  v_pre_check['pre_check_facts']['kernel_version'] is defined %}            
+              <td>{{ v_pre_check['pre_check_facts']['kernel_version'] | default('UNKNOWN') }}</td>
               <td>{{ v_post_check['desired_kernel_ver'] | default('UNKNOWN') }}</td>
-              <td class="{{ 'status-failed' if (v_post_check['desired_kernel_diff'] | bool) else 'status-completed'  }}">{{ v_post_check['ansible_facts']['kernel'] | default('N/A') }}</td>  
+              <td class="{{ 'status-failed' if (v_post_check['desired_kernel_diff'] | bool) else 'status-completed'  }}">{{ v_post_check['ansible_facts']['kernel_version'] | default('N/A') }}</td>  
             {% else %}
               <td class="status-failed">UNKNOWN</td>
               <td class="status-failed">UNKNOWN</td>
