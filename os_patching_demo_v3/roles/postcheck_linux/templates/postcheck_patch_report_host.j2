@@ -13,13 +13,13 @@
 
 {# Hostname and Patching summary text #}
   {% if not (tools.check_patch_postcompare_failure(v_post_check) | trim | bool) %}
-    </div class="card-host-success"><h2 id="{{ thehost }}">{{ thehost }}</h2></div>
+    <div class="card-host-success"><h2 id="{{ thehost }}">{{ thehost }}</h2></div>
     <p class="text-success"><strong>Patching Successful. Please see details below.</strong></p>
   {% elif (tools.check_patch_failure(v_post_check) | trim | bool) %}
-    </div class="card-host-fail"><h2 id="{{ thehost }}">{{ thehost }}</h2></div>
+    <div class="card-host-fail"><h2 id="{{ thehost }}">{{ thehost }}</h2></div>
     <p class="text-fail"><strong>Patching failed; please investigate</strong></p>
   {% elif (tools.check_postcompare_failure(v_post_check) | trim | bool) %}
-    </div class="card-host-inprogress"><h2 id="{{ thehost }}">{{ thehost }}</h2></div>
+    <div class="card-host-inprogress"><h2 id="{{ thehost }}">{{ thehost }}</h2></div>
     <p class="text-inprogress"><strong>Patching Successful but post-check comparision failed. Please check details below.</strong></p>
   {% endif %}
 {# Host Info #}
