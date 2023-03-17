@@ -46,6 +46,7 @@
     <h4>{% raw %}Server Type: {% endraw %} {{ v_server_type }}</h4>
     <hr>
     <div class="card-note"><h1 id="summary">Summary</h1></div>
+   <br>
     {# Create a table for each hosts #}
     <table>
       <tr>
@@ -113,7 +114,7 @@
       </tr>
     </table>
     <hr>
-    <div class="card-note"><h1 id="patch_details">Host Details</h1></div>
+    <div class="card-note"><h1 id="patch_details">Host Results</h1></div>
 
     {% for thehost in ansible_play_hosts | sort %}
       {% include './postcheck_patch_report_host.j2' %}
