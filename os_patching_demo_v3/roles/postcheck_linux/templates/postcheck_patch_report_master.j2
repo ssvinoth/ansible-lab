@@ -40,12 +40,12 @@
 
 
   <div class="content">
-    <h1 id="top">Patch Status Report</h1>
+    <div class="card-note"><h1 id="top">Patch Status Report</h1></div>
     <h4>{% raw %}Generated time: {% endraw %} {{ hostvars.localhost.datetime }}</h4>
     <h4>{% raw %}Application Name: {% endraw %} {{ v_app_name }}</h4>
     <h4>{% raw %}Server Type: {% endraw %} {{ v_server_type }}</h4>
     <hr>
-    <h1 id="summary">Summary</h1>
+    <div class="card-note"><h1 id="summary">Summary</h1></div>
     {# Create a table for each hosts #}
     <table>
       <tr>
@@ -113,7 +113,7 @@
       </tr>
     </table>
     <hr>
-    <h1 id="patch_details">Patch Details</h1>
+    <div class="card-note"><h1 id="patch_details">Host Details</h1></div>
 
     {% for thehost in ansible_play_hosts | sort %}
       {% include './postcheck_patch_report_host.j2' %}
