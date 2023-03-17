@@ -5,22 +5,27 @@
 <hr>
 
 {# Hostname #}
-<h2 id="{{ thehost }}">{{ thehost }}</h2>
+{# <h2 id="{{ thehost }}">{{ thehost }}</h2> #}
+
   {% set v_pre_check = pre_check[thehost] %}
   {% set v_os_update = os_update[thehost] %}
   {% set v_post_check = hostvars[thehost] %}
 
-{# Patching summary text #}
+{# Hostname and Patching summary text #}
   {% if not (tools.check_patch_postcompare_failure(v_post_check) | trim | bool) %}
-    <p style="color:green;"><strong>Patching Successful. Please see details below.</strong></p>
+    <div class="card-host-success"><h2 id="{{ thehost }}">{{ thehost }}</h2></div>
+    <p class="text-success"><strong>Patching Successful. Please see details below.</strong></p>
   {% elif (tools.check_patch_failure(v_post_check) | trim | bool) %}
-    <p style="color:red;"><strong>Patching failed; please investigate</strong></p>
+    <div class="card-host-fail"><h2 id="{{ thehost }}">{{ thehost }}</h2></div>
+    <p class="text-fail"><strong>Patching failed; please investigate</strong></p>
   {% elif (tools.check_postcompare_failure(v_post_check) | trim | bool) %}
-    <p style="color:orange;"><strong>Patching Successful but post-check comparision failed. Please check details below.</strong></p>
+    <div class="card-host-inprogress"><h2 id="{{ thehost }}">{{ thehost }}</h2></div>
+    <p class="text-inprogress"><strong>Patching Successful but post-check comparision failed. Please check details below.</strong></p>
   {% endif %}
 
 {# Host Info #}
   <p><strong>{% raw %}Host info{% endraw %}</strong></p>
+  <div class="card-host">
     <ul>
       <li>{% raw %}Hostname: {% endraw %} {{ v_post_check['ansible_facts']['hostname']}}</li>
       <li>{% raw %}FQDN: {% endraw %} {{ v_post_check['ansible_facts']['nodename']}}</li>
@@ -29,7 +34,7 @@
       <li>{% raw %}Kernel: {% endraw %}{{ v_post_check['ansible_facts']['kernel_version'] | default('N/A') }}</li>
       <li>{% raw %}Uptime:  {% endraw %}{{ v_post_check['post_uptime'] | default('N/A') }}</li>
     </ul>  
-
+  </div>
 {# Pre and Post Comparision Results - Table #}
   <p><strong>{% raw %}Post Check Comparision:  {% endraw %}</strong></p>
   <table>
