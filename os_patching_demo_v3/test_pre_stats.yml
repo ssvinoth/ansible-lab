@@ -8,40 +8,40 @@
   tasks:
     - name: 'Show all pre_check stats data var'
       ansible.builtin.debug: 
-        var: pre_check
-    - name: 'Show all os_update stats data var'
-      ansible.builtin.debug: 
-        var: os_update
-    - name: 'Show all post_check stats data vars'
-      ansible.builtin.debug: 
-        var: post_check
-
-    - name: Save job json logs to {{ report_out_dir }}
-      delegate_to: localhost
-      run_once: true
-      template:
-        src: templates/patch_logs_json.j2
-        dest: "{{ report_out_dir  }}/patch_logs_json.json"   
-
-    - name: Save job yaml logs to {{ report_out_dir }}
-      delegate_to: localhost
-      run_once: true
-      template:
-        src: templates/patch_logs_yaml.j2
-        dest: "{{ report_out_dir  }}/patch_logs_yaml.yml"   
-
-    - name: Save job report to {{ report_out_dir }}
-      delegate_to: localhost
-      run_once: true
-      template:
-        src: templates/patch_report_master.j2
-        dest: "{{ report_out_dir  }}/patch_report.html"    
-    # - name: 'Show all os_update stats data msg'
+        var: host_exclude_items | default('NOT DEFINED')
+    # - name: 'Show all os_update stats data var'
     #   ansible.builtin.debug: 
-    #     msg: "CHECK_MSG={{ post_check[inventory_hostname] }}"
-    # - name: 'Show all stats data var'
+    #     var: os_update
+    # - name: 'Show all post_check stats data vars'
     #   ansible.builtin.debug: 
-    #     var: pre_check[inventory_hostname]
-    # - name: 'Show all stats data var'
-    #   ansible.builtin.debug: 
-    #     var: pre_check[inventory_hostname]
+    #     var: post_check
+
+    # - name: Save job json logs to {{ report_out_dir }}
+    #   delegate_to: localhost
+    #   run_once: true
+    #   template:
+    #     src: templates/patch_logs_json.j2
+    #     dest: "{{ report_out_dir  }}/patch_logs_json.json"   
+
+    # - name: Save job yaml logs to {{ report_out_dir }}
+    #   delegate_to: localhost
+    #   run_once: true
+    #   template:
+    #     src: templates/patch_logs_yaml.j2
+    #     dest: "{{ report_out_dir  }}/patch_logs_yaml.yml"   
+
+    # - name: Save job report to {{ report_out_dir }}
+    #   delegate_to: localhost
+    #   run_once: true
+    #   template:
+    #     src: templates/patch_report_master.j2
+    #     dest: "{{ report_out_dir  }}/patch_report.html"    
+    # # - name: 'Show all os_update stats data msg'
+    # #   ansible.builtin.debug: 
+    # #     msg: "CHECK_MSG={{ post_check[inventory_hostname] }}"
+    # # - name: 'Show all stats data var'
+    # #   ansible.builtin.debug: 
+    # #     var: pre_check[inventory_hostname]
+    # # - name: 'Show all stats data var'
+    # #   ansible.builtin.debug: 
+    # #     var: pre_check[inventory_hostname]
