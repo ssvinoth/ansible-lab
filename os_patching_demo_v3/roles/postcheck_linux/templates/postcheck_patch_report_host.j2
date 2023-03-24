@@ -48,7 +48,7 @@
         <td>{% raw %}(v)CPU Cores{% endraw %}</td>
         {% if not (v_post_check['cpu_cores_diff'] | bool)  %}
             <td class="status-completed">No Difference</td>
-            <td></td>
+            <td>{{ v_post_check['cpu_cores_diff_val'] }}</td>
           {% else %}
             <td class="status-failed">There are Differences.</td>
             <td class="status-failed">{{ v_post_check['cpu_cores_diff_val'] }}</td>
@@ -60,7 +60,7 @@
         <td>{% raw %}Total Memory MB{% endraw %}</td>
         {% if not (v_post_check['total_mem_diff'] | bool)  %}
             <td class="status-completed">No Difference</td>
-            <td></td>
+            <td>{{ v_post_check['total_mem_diff_val'] }}</td>
           {% else %}
             <td class="status-failed">There are Differences.</td>
             <td class="status-failed">{{ v_post_check['total_mem_diff_val'] }}</td>
