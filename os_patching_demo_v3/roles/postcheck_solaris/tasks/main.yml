@@ -4,8 +4,7 @@
   block:
     - name: 'Post Check | Grace period wait before post checks are done. Waiting for {{ v_post_check_grace_wait_secs }} secs'
       ansible.builtin.wait_for:
-        #timeout: "{{ v_post_check_grace_wait_secs }}"
-        timeout: 3600
+        timeout: "{{ v_post_check_grace_wait_secs }}"
       delegate_to: localhost
 
     - name: 'Post Check |  Set default facts'
@@ -56,7 +55,7 @@
       ansible.builtin.set_fact:
         pre_check_data: "{{ lookup('file', v_precheck_results_file ) | from_json }}"
         os_update_data: "{{ lookup('file', v_os_update_results_file ) | from_json }}"    
-      delegate_to: report_server
+
       
     # Before making any comparisions with prechecks, we need to fetch it from interim results json
     - name: 'Post Check | Fetch pre-check details from interim results'
