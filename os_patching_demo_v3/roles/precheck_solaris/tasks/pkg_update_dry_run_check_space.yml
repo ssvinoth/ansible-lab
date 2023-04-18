@@ -15,10 +15,23 @@
         var: pkg_update_dryrun_result
         verbosity: 0
 
-    - name: 'PRE_CHECK | Fail if any errors in OS update dry-run'
-      ansible.builtin.fail:
-        msg: "Error while running os update dry run. Either no updates available or other errors occured. Please check dry-run output"
-      when: pkg_update_dryrun_result.rc != 0
+    - name: 'PRE_CHECK | Check we have OS updates to apply'
+      block:
+        - name: "PRE_CHECK | Check we have OS updates to apply"
+          ansible.builtin.debug:
+            msg: "No updates available. Skipping checks"
+            verbosity: 0
+          when: "'No updates available' in pkg_update_dryrun_result.stdout"
+
+        - name: 'PRE_CHECK | Fail if any errors in OS update dry-run'
+          ansible.builtin.fail:
+            msg: "Error while running os update dry run. Either no updates available or other errors occured. Please check dry-run output"
+          when: not "'No updates available' in pkg_update_dryrun_result.stdout"     
+      when: pkg_update_dryrun_result.rc != 0  
+    # - name: 'PRE_CHECK | Fail if any errors in OS update dry-run'
+    #   ansible.builtin.fail:
+    #     msg: "Error while running os update dry run. Either no updates available or other errors occured. Please check dry-run output"
+    #   when: pkg_update_dryrun_result.rc != 0
 
     - name: 'PRE_CHECK | Check if we have enough space for the os updates'
       block:
@@ -49,7 +62,9 @@
           ansible.builtin.fail:
             msg: "Not enough space available. Required Space: {{ reqd_space_bytes | int | human_readable}} Available Space: {{ avail_space_bytes | int | human_readable }}"
           when: (avail_space_bytes | int)  <= (reqd_space_bytes | int)
-      when: pkg_update_dryrun_result.rc == 0
+      when: 
+        - pkg_update_dryrun_result.rc == 0
+        #- not "'No updates available' in pkg_update_dryrun_result.stdout"
 
   rescue:
     - name: 'DRY_RUN_FS_CHECK |  Set failure message'

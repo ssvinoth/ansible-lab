@@ -1,0 +1,22 @@
+---
+- name: Restore KVM VM Snampshot
+  hosts: "{{ vm_update_group }}"
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Restore VM Snapshot
+      shell: "virsh snapshot-revert --domain {{ kvm_vm_name }} --snapshotname {{ snapshot_name }} --running"
+      register: vm_snapshot_result
+      delegate_to: vm_host
+      ignore_errors: true
+
+    - name: VM restore snapshot result
+      debug:
+        var: vm_snapshot_result
+
+    # - name: Save information of hostname for subsequent workflow
+    #   set_stats:
+    #     data:
+    #       vm_name: "{{ inventory_hostname }}"
+    #     per_host: true
+    #   when: "'created' in vm_snapshot_result.stdout"
