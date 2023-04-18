@@ -10,9 +10,26 @@
         cmd: "pkg update --accept '{{ required_pkgs }}'"
         #chdir: "{{ v_script | dirname }}"
       become: true
+      ignore_errors: true
       async: "{{ patching_timeout }}"
       poll: "{{ patching_poll }}"
-      register: pkg_update_result   
+      register: pkg_update_result  
+
+
+    - name: 'OS_UPDATE | Check for errors'
+      block:
+        - name: "OS_UPDATE | Check we have OS updates to apply"
+          ansible.builtin.debug:
+            msg: "No updates available."
+            verbosity: 0
+          when: "'No updates available' in pkg_update_result.stdout"
+
+        - name: 'OS_UPDATE | Fail if any errors in OS update'
+          ansible.builtin.fail:
+            msg: "Error while running os update. Please check patching output"
+          when: not "'No updates available' in pkg_update_result.stdout"     
+      when: pkg_update_result.rc != 0  
+
 
     - name: 'OS_UPDATE | Debug pkg update output'
       ansible.builtin.debug:
