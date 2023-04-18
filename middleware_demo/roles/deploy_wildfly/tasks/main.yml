@@ -12,10 +12,10 @@
     state: present
     key: "{{ epel_rpm_key }}"
 
-- name: Upgrade all packages
-  yum:
-    name: '*'
-    state: latest
+# - name: Upgrade all packages
+#   yum:
+#     name: '*'
+#     state: latest
 
 - name: Install the required packages
   yum:
