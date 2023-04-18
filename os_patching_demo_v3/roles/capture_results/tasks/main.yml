@@ -1,5 +1,11 @@
 ---
 # tasks file for capture_results
+- name: 'Remove old {{ result_out_dir }}/{{ result_out_filename }}.json files'
+  delegate_to: localhost
+  ansible.builtin.file:
+    path: "{{ result_out_dir  }}/{{ result_out_filename }}.json"
+    state: absent
+
 - name: 'Save results in json to {{ result_out_dir }}/{{ result_out_filename }}.json'
   delegate_to: localhost
   template:
@@ -7,5 +13,5 @@
     dest: "{{ result_out_dir  }}/{{ result_out_filename }}.json"   
     # owner: awx
     # group: awx
-    mode: '664'
+    #mode: '666'
     force: true
