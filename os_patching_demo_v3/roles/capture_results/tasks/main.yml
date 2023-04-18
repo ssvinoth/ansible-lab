@@ -2,7 +2,7 @@
 # tasks file for capture_results
 - name: 'Remove old {{ result_out_dir }}/{{ result_out_filename }}.json files'
   delegate_to: report_server
-  #become: true
+  become: true
   ansible.builtin.file:
     path: "{{ result_out_dir  }}/{{ result_out_filename }}.json"
     state: absent
