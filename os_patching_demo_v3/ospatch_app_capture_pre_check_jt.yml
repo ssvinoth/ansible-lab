@@ -3,7 +3,7 @@
   hosts: "{{ app_servers }}"
   #strategy: free
   gather_facts: false
-  #become: true
+  become: true
   tasks:
     - name: 'BLOCK : Check if the os type is supported'
       block:

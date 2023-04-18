@@ -16,3 +16,4 @@
     # group: awx
     #mode: '666'
     force: true
+    setype: container_file_t
