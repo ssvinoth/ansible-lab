@@ -55,7 +55,8 @@
       ansible.builtin.set_fact:
         pre_check_data: "{{ lookup('file', v_precheck_results_file ) | from_json }}"
         os_update_data: "{{ lookup('file', v_os_update_results_file ) | from_json }}"    
-
+      delegate_to: report_server
+      
     # Before making any comparisions with prechecks, we need to fetch it from interim results json
     - name: 'Post Check | Fetch pre-check details from interim results'
       ansible.builtin.set_fact:
