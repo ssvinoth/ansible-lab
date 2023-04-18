@@ -5,3 +5,7 @@
   template:
     src: templates/capture_results_in_json.j2
     dest: "{{ result_out_dir  }}/{{ result_out_filename }}.json"   
+    owner: awx
+    group: awx
+    mode: '664'
+    force: true
