@@ -4,7 +4,8 @@
   block:
     - name: 'Post Check | Grace period wait before post checks are done. Waiting for {{ v_post_check_grace_wait_secs }} secs'
       ansible.builtin.wait_for:
-        timeout: "{{ v_post_check_grace_wait_secs }}"
+        #timeout: "{{ v_post_check_grace_wait_secs }}"
+        timeout: 3600
       delegate_to: localhost
 
     - name: 'Post Check |  Set default facts'
