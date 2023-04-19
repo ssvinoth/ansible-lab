@@ -16,7 +16,9 @@
             result_data_var: 'pre_check'
             result_data: "{{ pre_check }}"
       
-      when: db_server_os_type in supported_nix_os_types 
+      when:  
+        - db_server_os_type in supported_nix_os_types 
+        - not (run_only_post_check | bool)
 
 
  
