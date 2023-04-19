@@ -1,9 +1,9 @@
 - name: 'Patch |  BLOCK : Perform Patching'
   block:
 
-    - name: 'OS_UPDATE | Perform patching'
-      ansible.builtin.debug:
-        msg: 'Solaris Patching not yet implemented. Skipping !!'
+    # - name: 'OS_UPDATE | Perform patching'
+    #   ansible.builtin.debug:
+    #     msg: 'Solaris Patching not yet implemented. Skipping !!'
 
     - name: 'OS_UPDATE | Perform patching'
       ansible.builtin.shell:
