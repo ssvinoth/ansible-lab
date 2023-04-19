@@ -2,4 +2,4 @@
 # defaults file for postcheck_linux
 report_out_dir: '/opt/ansible/reports/patching'
 # v_server_type: 'app'
-v_post_check_grace_wait_secs: 300
+v_post_check_grace_wait_secs: 30
