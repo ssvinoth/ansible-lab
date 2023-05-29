@@ -1,6 +1,6 @@
 ---
 - name: Restore KVM VM Snampshot
-  hosts: "{{ vm_update_group }}"
+  hosts: "{{ NODES }}"
   become: yes
   gather_facts: no
   tasks:
