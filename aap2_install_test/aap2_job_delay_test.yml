@@ -1,0 +1,20 @@
+---
+- name: Job delay test
+  hosts: localhost
+  become: false
+  gather_facts: false
+  vars:
+    v_delay_sec: 300
+  tasks:
+    - name: debug init
+      debug:
+        msg: 'Debugging job delay'
+
+    - name: Delay job for {{ v_delay_sec }} seconds
+      ansible.builtin.wait_for:
+        timeout: "{{ v_delay_sec }}"
+      delegate_to: localhost
+
+    - name: debug complete
+      debug:
+        msg: 'Job Completed'
